@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: user-service
+  profiles:
+    default: dev
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  cloud:
+    config:
+      enabled: false
+    discovery:
+      enabled: false
+eureka:
+  client:
+    enabled: false

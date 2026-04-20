@@ -15,7 +15,7 @@ class JwtTokenProviderTest {
 
     private static final String SECRET = "this-is-a-long-enough-secret-for-hmac-sha-256-signing-key!!";
 
-    private final JwtTokenProvider provider = new JwtTokenProvider(SECRET, 1800, 604800);
+    private final JwtTokenProvider provider = new JwtTokenProvider(SECRET, 1_800_000, 604_800_000);
 
     @Test
     void issueAndParseAccessToken() {

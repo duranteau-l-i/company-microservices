@@ -1,0 +1,12 @@
+include:
+  - docker-compose.infra.yml
+
+services:
+  # Business services (api-gateway, user-service, company-service, officer-service)
+  # are added in their respective phases.
+  # This file currently only includes the infrastructure stack via the `include` directive.
+  placeholder:
+    image: alpine:3.20
+    profiles:
+      - never
+    command: ["true"]

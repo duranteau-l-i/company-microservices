@@ -33,12 +33,14 @@ class ListUsersHandlerTest {
     @Test
     void adminListsAll() {
         List<UserReadModel> result = handler.list(new ListUsersUseCase.Query(UserId.generate(), Role.ADMIN, null));
+
         assertThat(result).hasSize(2);
     }
 
     @Test
     void managerListsAll() {
         List<UserReadModel> result = handler.list(new ListUsersUseCase.Query(UserId.generate(), Role.MANAGER, null));
+
         assertThat(result).hasSize(2);
     }
 
@@ -51,6 +53,7 @@ class ListUsersHandlerTest {
     @Test
     void searchFiltersByName() {
         List<UserReadModel> result = handler.list(new ListUsersUseCase.Query(UserId.generate(), Role.ADMIN, "Jane"));
+
         assertThat(result).hasSize(1);
         assertThat(result.get(0).email().value()).isEqualTo("jane@co.com");
     }

@@ -75,13 +75,21 @@ public final class User {
     }
 
     public UserId id() { return id; }
+
     public EmailAddress email() { return email; }
+
     public String passwordHash() { return passwordHash; }
+
     public String firstName() { return firstName; }
+
     public String lastName() { return lastName; }
+
     public Role role() { return role; }
+
     public boolean active() { return active; }
+
     public Instant createdAt() { return createdAt; }
+
     public Instant updatedAt() { return updatedAt; }
 
     private static String requireNonBlank(String value, String field) {

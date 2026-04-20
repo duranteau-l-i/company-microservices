@@ -27,6 +27,7 @@ class JwtTokenProviderTest {
         assertThat(pair.expiresInSeconds()).isEqualTo(1800);
 
         Claims claims = provider.parseClaims(pair.accessToken());
+
         assertThat(claims.getSubject()).isEqualTo(id.value().toString());
         assertThat(claims.get("email", String.class)).isEqualTo("a@co.com");
         assertThat(claims.get("role", String.class)).isEqualTo("USER");
@@ -36,6 +37,7 @@ class JwtTokenProviderTest {
     @Test
     void isAccessTokenDistinguishesTypes() {
         TokenPair pair = provider.issueTokens(UserId.generate(), "a@co.com", Role.USER);
+
         assertThat(provider.isAccessToken(pair.accessToken())).isTrue();
         assertThat(provider.isAccessToken(pair.refreshToken())).isFalse();
     }
@@ -46,7 +48,9 @@ class JwtTokenProviderTest {
         TokenPair refreshed = provider.refresh(original.refreshToken());
 
         assertThat(refreshed.accessToken()).isNotBlank();
+
         Claims claims = provider.parseClaims(refreshed.accessToken());
+
         assertThat(claims.get("role", String.class)).isEqualTo("MANAGER");
     }
 
@@ -67,6 +71,7 @@ class JwtTokenProviderTest {
     void tamperedTokenRejected() {
         TokenPair pair = provider.issueTokens(UserId.generate(), "a@co.com", Role.USER);
         String tampered = pair.accessToken().substring(0, pair.accessToken().length() - 5) + "xxxxx";
+
         assertThat(provider.isAccessToken(tampered)).isFalse();
     }
 }

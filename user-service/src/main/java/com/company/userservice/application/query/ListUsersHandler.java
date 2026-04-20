@@ -21,9 +21,11 @@ public class ListUsersHandler implements ListUsersUseCase {
         if (query.callerRole() == Role.USER) {
             throw new InsufficientPermissionException("USER role cannot list users");
         }
+
         if (query.search() != null && !query.search().isBlank()) {
             return repository.search(query.search());
         }
+
         return repository.findAll();
     }
 }

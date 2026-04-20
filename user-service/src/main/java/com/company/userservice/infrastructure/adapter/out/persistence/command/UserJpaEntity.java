@@ -55,12 +55,20 @@ public class UserJpaEntity {
     }
 
     public UUID getId() { return id; }
+
     public String getEmail() { return email; }
+
     public String getPasswordHash() { return passwordHash; }
+
     public String getFirstName() { return firstName; }
+
     public String getLastName() { return lastName; }
+
     public String getRole() { return role; }
+
     public boolean isActive() { return active; }
+
     public Instant getCreatedAt() { return createdAt; }
+
     public Instant getUpdatedAt() { return updatedAt; }
 }

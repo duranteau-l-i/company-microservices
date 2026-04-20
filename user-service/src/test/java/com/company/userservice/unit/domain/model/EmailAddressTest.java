@@ -11,18 +11,21 @@ class EmailAddressTest {
     @Test
     void acceptsValidEmail() {
         EmailAddress email = EmailAddress.of("foo@bar.com");
+
         assertThat(email.value()).isEqualTo("foo@bar.com");
     }
 
     @Test
     void normalizesToLowerCase() {
         EmailAddress email = EmailAddress.of("Foo@Bar.com");
+
         assertThat(email.value()).isEqualTo("foo@bar.com");
     }
 
     @Test
     void trimsWhitespace() {
         EmailAddress email = EmailAddress.of("  user@domain.com  ");
+
         assertThat(email.value()).isEqualTo("user@domain.com");
     }
 

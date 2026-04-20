@@ -51,6 +51,7 @@ class PostgresUserCommandRepositoryIT {
         repository.save(user);
 
         Optional<User> found = repository.findById(user.id());
+
         assertThat(found).isPresent();
         assertThat(found.get().email().value()).isEqualTo("ita@co.com");
     }
@@ -71,6 +72,7 @@ class PostgresUserCommandRepositoryIT {
         repository.save(user);
 
         repository.delete(user.id());
+
         assertThat(repository.findById(user.id())).isEmpty();
     }
 

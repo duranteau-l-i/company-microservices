@@ -30,14 +30,20 @@ public class CreateUserHandler implements CreateUserUseCase {
             throw new InsufficientPermissionException(
                     command.callerRole() + " cannot create " + command.targetRole());
         }
+
         EmailAddress email = EmailAddress.of(command.email());
         if (repository.existsByEmail(email)) {
             throw new DuplicateEmailException("Email already registered: " + email.value());
         }
+
         String hash = passwordHasher.hash(command.password());
+
         User.Created created = User.create(email, hash, command.firstName(), command.lastName(), command.targetRole());
+
         repository.save(created.user());
+
         publisher.publish(created.event());
+
         return UserReadModel.from(created.user());
     }
 }

@@ -24,16 +24,24 @@ public class UpdateUserHandler implements UpdateUserUseCase {
     @Override
     public UserReadModel update(Command command) {
         UserId targetId = command.targetId();
+
         boolean self = command.callerId().equals(targetId);
+
         boolean privileged = command.callerRole() == Role.ADMIN || command.callerRole() == Role.MANAGER;
+
         if (!self && !privileged) {
             throw new InsufficientPermissionException("Cannot update another user");
         }
+
         User user = repository.findById(targetId)
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + targetId));
+
         user.updateProfile(command.firstName(), command.lastName());
+
         repository.save(user);
+
         publisher.publish(UserUpdatedEvent.of(user.id(), user.email(), user.firstName(), user.lastName(), user.role(), user.updatedAt()));
+
         return UserReadModel.from(user);
     }
 }

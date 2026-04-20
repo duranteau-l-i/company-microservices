@@ -31,14 +31,18 @@ public class SignInHandler implements SignInUseCase {
         } catch (IllegalArgumentException ex) {
             throw new InvalidCredentialsException("Invalid credentials");
         }
+
         User user = repository.findByEmail(email)
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid credentials"));
+
         if (!user.active()) {
             throw new InvalidCredentialsException("Invalid credentials");
         }
+
         if (!passwordHasher.matches(command.password(), user.passwordHash())) {
             throw new InvalidCredentialsException("Invalid credentials");
         }
+
         return tokenProvider.issueTokens(user.id(), user.email().value(), user.role());
     }
 }

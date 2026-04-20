@@ -24,10 +24,14 @@ public class DeleteUserHandler implements DeleteUserUseCase {
         if (command.callerRole() != Role.ADMIN) {
             throw new InsufficientPermissionException("Only ADMIN can delete users");
         }
+
         User user = repository.findById(command.targetId())
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + command.targetId()));
+
         user.deactivate();
+
         repository.save(user);
+
         publisher.publish(UserDeletedEvent.of(user.id(), user.updatedAt()));
     }
 }

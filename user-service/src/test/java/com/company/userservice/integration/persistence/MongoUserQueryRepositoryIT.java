@@ -80,6 +80,7 @@ class MongoUserQueryRepositoryIT {
         repository.save(model("bob@co.com", "Bob", "Jones"));
 
         List<UserReadModel> result = repository.search("alice");
+
         assertThat(result).hasSize(1);
         assertThat(result.get(0).firstName()).isEqualTo("Alice");
     }
@@ -105,6 +106,7 @@ class MongoUserQueryRepositoryIT {
         repository.save(m);
 
         repository.deleteById(m.id());
+
         assertThat(repository.findById(m.id())).isEmpty();
     }
 }

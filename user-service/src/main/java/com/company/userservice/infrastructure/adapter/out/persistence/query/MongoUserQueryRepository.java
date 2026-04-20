@@ -32,6 +32,7 @@ public class MongoUserQueryRepository implements UserQueryRepository {
         if (query == null || query.isBlank()) {
             return findAll();
         }
+
         return mongo.searchByText(query).stream().map(UserDocumentMapper::toDomain).toList();
     }
 

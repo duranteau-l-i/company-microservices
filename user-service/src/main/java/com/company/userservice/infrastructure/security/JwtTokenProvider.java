@@ -64,12 +64,17 @@ public class JwtTokenProvider implements TokenProvider {
     @Override
     public TokenPair refresh(String refreshToken) {
         Claims claims = parseClaims(refreshToken);
+
         if (!"refresh".equals(claims.get("type", String.class))) {
             throw new InvalidCredentialsException("Not a refresh token");
         }
+
         UserId userId = UserId.of(UUID.fromString(claims.getSubject()));
+
         String email = claims.get("email", String.class);
+
         Role role = Role.valueOf(claims.get("role", String.class));
+
         return issueTokens(userId, email, role);
     }
 

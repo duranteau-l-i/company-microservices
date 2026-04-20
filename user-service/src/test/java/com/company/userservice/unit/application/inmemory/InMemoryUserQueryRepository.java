@@ -30,7 +30,9 @@ public class InMemoryUserQueryRepository implements UserQueryRepository {
         if (query == null || query.isBlank()) {
             return findAll();
         }
+
         String needle = query.toLowerCase(Locale.ROOT);
+
         return store.values().stream()
                 .filter(u -> u.email().value().contains(needle)
                         || u.firstName().toLowerCase(Locale.ROOT).contains(needle)
@@ -41,6 +43,7 @@ public class InMemoryUserQueryRepository implements UserQueryRepository {
     @Override
     public UserReadModel save(UserReadModel readModel) {
         store.put(readModel.id(), readModel);
+
         return readModel;
     }
 

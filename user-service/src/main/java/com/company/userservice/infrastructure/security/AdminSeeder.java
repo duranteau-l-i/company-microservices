@@ -33,23 +33,30 @@ public class AdminSeeder {
                 log.warn("ADMIN_PASSWORD not configured; skipping default admin seeding");
                 return;
             }
+
             boolean adminExists = queryRepository.findAll().stream()
                     .map(UserReadModel::role)
                     .anyMatch(r -> r == Role.ADMIN);
+
             if (adminExists) {
                 return;
             }
+
             if (commandRepository.existsByEmail(EmailAddress.of(adminEmail))) {
                 return;
             }
+
             User.Created created = User.create(
                     EmailAddress.of(adminEmail),
                     passwordHasher.hash(adminPassword),
                     "System",
                     "Admin",
                     Role.ADMIN);
+
             commandRepository.save(created.user());
+
             eventPublisher.publish(created.event());
+
             log.info("Seeded default admin {}", adminEmail);
         };
     }

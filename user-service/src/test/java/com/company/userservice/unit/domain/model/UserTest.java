@@ -26,6 +26,7 @@ class UserTest {
         assertThat(result.user().active()).isTrue();
 
         UserCreatedEvent event = result.event();
+
         assertThat(event.aggregateId()).isEqualTo(result.user().id().value());
         assertThat(event.email()).isEqualTo("jane@doe.com");
         assertThat(event.role()).isEqualTo("USER");
@@ -61,6 +62,7 @@ class UserTest {
     void deactivateMarksInactive() {
         User user = User.create(EmailAddress.of("a@b.com"), "h", "Jane", "Doe", Role.USER).user();
         user.deactivate();
+
         assertThat(user.active()).isFalse();
     }
 }

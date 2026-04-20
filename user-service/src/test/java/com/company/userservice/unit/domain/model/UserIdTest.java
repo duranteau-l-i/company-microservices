@@ -36,6 +36,7 @@ class UserIdTest {
     @Test
     void isEqualByValue() {
         UUID uuid = UUID.randomUUID();
+
         assertThat(UserId.of(uuid)).isEqualTo(UserId.of(uuid));
     }
 }

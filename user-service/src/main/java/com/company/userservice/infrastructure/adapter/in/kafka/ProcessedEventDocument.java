@@ -23,6 +23,8 @@ public class ProcessedEventDocument {
     }
 
     public UUID getEventId() { return eventId; }
+
     public String getEventType() { return eventType; }
+
     public Instant getProcessedAt() { return processedAt; }
 }

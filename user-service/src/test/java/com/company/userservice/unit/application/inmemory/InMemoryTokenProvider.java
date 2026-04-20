@@ -17,19 +17,25 @@ public class InMemoryTokenProvider implements TokenProvider {
     public TokenPair issueTokens(UserId userId, String email, Role role) {
         String access = "access-" + userId.value() + "-" + UUID.randomUUID();
         String refresh = "refresh-" + userId.value() + "-" + UUID.randomUUID();
+
         refreshTokens.put(refresh, userId);
+
         return new TokenPair(access, refresh, 1800L);
     }
 
     @Override
     public TokenPair refresh(String refreshToken) {
         UserId userId = refreshTokens.remove(refreshToken);
+
         if (userId == null) {
             throw new InvalidCredentialsException("Invalid refresh token");
         }
+
         String access = "access-" + userId.value() + "-" + UUID.randomUUID();
         String newRefresh = "refresh-" + userId.value() + "-" + UUID.randomUUID();
+
         refreshTokens.put(newRefresh, userId);
+
         return new TokenPair(access, newRefresh, 1800L);
     }
 

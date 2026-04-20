@@ -23,6 +23,7 @@ public class InMemoryUserEventPublisher implements UserEventPublisher {
         if (events.isEmpty()) {
             throw new IllegalStateException("No events have been published");
         }
+
         return events.get(events.size() - 1);
     }
 

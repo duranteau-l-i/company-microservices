@@ -47,6 +47,7 @@ public class RestExceptionHandler {
                 .map(fe -> fe.getField() + ": " + fe.getDefaultMessage())
                 .reduce((a, b) -> a + "; " + b)
                 .orElse("Validation failed");
+
         return body(HttpStatus.BAD_REQUEST, message);
     }
 

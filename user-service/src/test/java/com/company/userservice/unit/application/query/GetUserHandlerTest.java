@@ -32,12 +32,14 @@ class GetUserHandlerTest {
     @Test
     void returnsUser() {
         UserReadModel result = handler.get(new GetUserUseCase.Query(user.id(), Role.USER, user.id()));
+
         assertThat(result.email().value()).isEqualTo("u@co.com");
     }
 
     @Test
     void throwsWhenMissing() {
         UserId missing = UserId.generate();
+
         assertThatThrownBy(() -> handler.get(new GetUserUseCase.Query(user.id(), Role.USER, missing)))
                 .isInstanceOf(UserNotFoundException.class);
     }

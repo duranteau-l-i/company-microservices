@@ -27,13 +27,19 @@ public class SignUpHandler implements SignUpUseCase {
     @Override
     public UserReadModel signUp(Command command) {
         EmailAddress email = EmailAddress.of(command.email());
+
         if (repository.existsByEmail(email)) {
             throw new DuplicateEmailException("Email already registered: " + email.value());
         }
+
         String hash = passwordHasher.hash(command.password());
+
         User.Created created = User.create(email, hash, command.firstName(), command.lastName(), Role.USER);
+
         repository.save(created.user());
+
         publisher.publish(created.event());
+
         return UserReadModel.from(created.user());
     }
 }

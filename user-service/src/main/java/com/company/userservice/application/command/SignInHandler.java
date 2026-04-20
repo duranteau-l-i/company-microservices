@@ -1,0 +1,44 @@
+package com.company.userservice.application.command;
+
+import com.company.userservice.domain.exception.InvalidCredentialsException;
+import com.company.userservice.domain.model.EmailAddress;
+import com.company.userservice.domain.model.User;
+import com.company.userservice.domain.port.in.SignInUseCase;
+import com.company.userservice.domain.port.out.PasswordHasher;
+import com.company.userservice.domain.port.out.TokenProvider;
+import com.company.userservice.domain.port.out.TokenProvider.TokenPair;
+import com.company.userservice.domain.port.out.UserCommandRepository;
+
+public class SignInHandler implements SignInUseCase {
+
+    private final UserCommandRepository repository;
+    private final PasswordHasher passwordHasher;
+    private final TokenProvider tokenProvider;
+
+    public SignInHandler(UserCommandRepository repository,
+                         PasswordHasher passwordHasher,
+                         TokenProvider tokenProvider) {
+        this.repository = repository;
+        this.passwordHasher = passwordHasher;
+        this.tokenProvider = tokenProvider;
+    }
+
+    @Override
+    public TokenPair signIn(Command command) {
+        EmailAddress email;
+        try {
+            email = EmailAddress.of(command.email());
+        } catch (IllegalArgumentException ex) {
+            throw new InvalidCredentialsException("Invalid credentials");
+        }
+        User user = repository.findByEmail(email)
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid credentials"));
+        if (!user.active()) {
+            throw new InvalidCredentialsException("Invalid credentials");
+        }
+        if (!passwordHasher.matches(command.password(), user.passwordHash())) {
+            throw new InvalidCredentialsException("Invalid credentials");
+        }
+        return tokenProvider.issueTokens(user.id(), user.email().value(), user.role());
+    }
+}

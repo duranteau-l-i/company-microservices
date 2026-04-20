@@ -31,7 +31,7 @@ logs/
 *.iml
 *.iws
 *.ipr
-out/
+/out/
 
 # IDE - Eclipse
 .apt_generated

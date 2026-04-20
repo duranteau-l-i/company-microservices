@@ -79,6 +79,26 @@ services:
     networks:
       - backend
 
+  config-service:
+    build:
+      context: ./config-service
+      dockerfile: Dockerfile
+    container_name: config-service
+    environment:
+      CONFIG_REPO_LOCATION: "file:/config-repo/"
+    volumes:
+      - ./config-repo:/config-repo:ro
+    ports:
+      - "8888:8888"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--spider", "http://localhost:8888/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - backend
+
 volumes:
   postgres_data:
   mongo_data:

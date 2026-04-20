@@ -1,0 +1,41 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+  info:
+    env:
+      enabled: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+
+app:
+  security:
+    jwt:
+      secret: ${JWT_SECRET:local-dev-secret-change-me-to-a-long-random-string-at-least-256-bits-long}
+      access-token-expiration: ${JWT_ACCESS_TOKEN_EXPIRATION:1800000}
+      refresh-token-expiration: ${JWT_REFRESH_TOKEN_EXPIRATION:604800000}
+
+spring:
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.company.*"
+      auto-offset-reset: earliest

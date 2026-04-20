@@ -1,0 +1,47 @@
+server:
+  port: 8083
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/officer_db
+    username: ${POSTGRES_USER:admin}
+    password: ${POSTGRES_PASSWORD:local-dev-password}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+  data:
+    mongodb:
+      uri: mongodb://${MONGO_INITDB_ROOT_USERNAME:admin}:${MONGO_INITDB_ROOT_PASSWORD:local-dev-password}@${MONGO_HOST:localhost}:${MONGO_PORT:27017}/officer_query_db?authSource=admin
+  kafka:
+    consumer:
+      group-id: officer-service-group
+
+app:
+  kafka:
+    topics:
+      officer-events: officer-events
+      company-events: company-events
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      company-service:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+
+feign:
+  client:
+    config:
+      company-service:
+        connect-timeout: 3000
+        read-timeout: 5000

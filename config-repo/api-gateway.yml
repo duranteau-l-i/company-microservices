@@ -1,0 +1,45 @@
+server:
+  port: 8080
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+          lower-case-service-id: true
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/users/**
+        - id: company-service
+          uri: lb://company-service
+          predicates:
+            - Path=/api/companies/**
+        - id: officer-service
+          uri: lb://officer-service
+          predicates:
+            - Path=/api/officers/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOriginPatterns: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+
+app:
+  security:
+    public-paths:
+      - /api/users/signup
+      - /api/users/signin
+      - /api/users/auth/refresh
+      - /actuator/health
+      - /actuator/info

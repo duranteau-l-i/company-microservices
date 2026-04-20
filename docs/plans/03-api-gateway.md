@@ -101,3 +101,25 @@
 
 - [ ] **Step 4: Commit**
   `feat(api-gateway): add Docker support and compose integration`
+
+---
+
+### Task 5: README & OpenAPI aggregation
+
+Follow `.claude/skills/service-documentation.md`.
+
+**Files:**
+- Create: `api-gateway/README.md`
+- Modify: `api-gateway/pom.xml`, `api-gateway/src/main/resources/application.yml`
+
+- [ ] **Step 1: Add springdoc for WebFlux**
+  Dependency: `springdoc-openapi-starter-webflux-ui`. Pin version in properties.
+
+- [ ] **Step 2: Configure spec aggregation**
+  Declare each downstream service's `/v3/api-docs` URL under `springdoc.swagger-ui.urls` so Swagger UI lets users switch between per-service specs routed through the gateway. Permit `/v3/api-docs/**` and `/swagger-ui/**` in the reactive security config.
+
+- [ ] **Step 3: Write README**
+  Sections per the skill. Point to `http://localhost:8080/swagger-ui.html` for the aggregated Swagger UI.
+
+- [ ] **Step 4: Commit**
+  `docs(api-gateway): add README and aggregated OpenAPI spec`

@@ -254,3 +254,31 @@
 - [ ] **Step 2: Verify**: registers in Eureka, CRUD works through gateway.
 - [ ] **Step 3: Commit**
   `feat(officer-service): add Docker support`
+
+---
+
+### Task 11: README & OpenAPI
+
+Follow `.claude/skills/service-documentation.md`.
+
+**Files:**
+- Create: `officer-service/README.md`, `officer-service/src/main/java/com/company/officerservice/infrastructure/config/OpenApiConfig.java`
+- Modify: `officer-service/pom.xml`, `officer-service/src/main/resources/application.yml`, `SecurityConfig.java`
+
+- [ ] **Step 1: Add springdoc-openapi**
+  Dependency `springdoc-openapi-starter-webmvc-ui`. Pin version in properties.
+
+- [ ] **Step 2: Wire OpenApiConfig with bearerAuth**
+  Title, description, `bearerAuth` scheme, default security requirement.
+
+- [ ] **Step 3: Permit Swagger paths in SecurityConfig**
+  `/v3/api-docs/**`, `/swagger-ui/**`, `/swagger-ui.html`.
+
+- [ ] **Step 4: Annotate controllers**
+  `@Tag` per controller, `@Operation` per endpoint, `@SecurityRequirements` on anything public.
+
+- [ ] **Step 5: Write README**
+  All sections from the skill. Swagger UI at `http://localhost:8083/swagger-ui.html`.
+
+- [ ] **Step 6: Commit**
+  `docs(officer-service): add README and OpenAPI spec`

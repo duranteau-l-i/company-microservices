@@ -9,6 +9,8 @@ import com.company.userservice.domain.port.in.UpdateUserUseCase;
 import com.company.userservice.infrastructure.adapter.in.rest.dto.CreateUserRequest;
 import com.company.userservice.infrastructure.adapter.in.rest.dto.UpdateUserRequest;
 import com.company.userservice.infrastructure.adapter.in.rest.dto.UserResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +29,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")
+@Tag(name = "Users", description = "User management endpoints (authentication required)")
 public class UserController {
 
     private final CreateUserUseCase createUser;
@@ -48,9 +51,11 @@ public class UserController {
         this.listUsers = listUsers;
     }
 
+    @Operation(summary = "Create a user with a given role (ADMIN only)")
     @PostMapping
     public ResponseEntity<UserResponse> create(@Valid @RequestBody CreateUserRequest req) {
         AuthenticatedCaller caller = AuthenticatedCaller.current();
+
         UserResponse response = UserResponse.from(createUser.create(new CreateUserUseCase.Command(
                 caller.id(),
                 caller.role(),
@@ -62,24 +67,30 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @Operation(summary = "Fetch a user by id (callers can read themselves; ADMIN/MANAGER can read anyone)")
     @GetMapping("/{id}")
     public UserResponse get(@PathVariable UUID id) {
         AuthenticatedCaller caller = AuthenticatedCaller.current();
+
         return UserResponse.from(getUser.get(
                 new GetUserUseCase.Query(caller.id(), caller.role(), UserId.of(id))));
     }
 
+    @Operation(summary = "List users, optionally filtered by a free-text search (ADMIN/MANAGER only)")
     @GetMapping
     public List<UserResponse> list(@RequestParam(required = false) String search) {
         AuthenticatedCaller caller = AuthenticatedCaller.current();
+
         return listUsers.list(new ListUsersUseCase.Query(caller.id(), caller.role(), search)).stream()
                 .map(UserResponse::from)
                 .toList();
     }
 
+    @Operation(summary = "Update a user's profile (callers can update themselves; ADMIN can update anyone)")
     @PutMapping("/{id}")
     public UserResponse update(@PathVariable UUID id, @Valid @RequestBody UpdateUserRequest req) {
         AuthenticatedCaller caller = AuthenticatedCaller.current();
+
         return UserResponse.from(updateUser.update(new UpdateUserUseCase.Command(
                 caller.id(),
                 caller.role(),
@@ -88,10 +99,13 @@ public class UserController {
                 req.lastName())));
     }
 
+    @Operation(summary = "Delete a user (ADMIN only)")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         AuthenticatedCaller caller = AuthenticatedCaller.current();
+
         deleteUser.delete(new DeleteUserUseCase.Command(caller.id(), caller.role(), UserId.of(id)));
+        
         return ResponseEntity.noContent().build();
     }
 }

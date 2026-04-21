@@ -5,10 +5,10 @@ import com.company.userservice.domain.exception.InsufficientPermissionException;
 import com.company.userservice.domain.model.EmailAddress;
 import com.company.userservice.domain.model.User;
 import com.company.userservice.domain.model.UserReadModel;
-import com.company.userservice.domain.port.in.CreateUserUseCase;
-import com.company.userservice.domain.port.out.PasswordHasher;
-import com.company.userservice.domain.port.out.UserCommandRepository;
-import com.company.userservice.domain.port.out.UserEventPublisher;
+import com.company.userservice.domain.port.usecases.CreateUserUseCase;
+import com.company.userservice.domain.port.infrastructure.PasswordHasher;
+import com.company.userservice.domain.port.infrastructure.UserCommandRepository;
+import com.company.userservice.domain.port.infrastructure.UserEventPublisher;
 
 public class CreateUserHandler implements CreateUserUseCase {
 

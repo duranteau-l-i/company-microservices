@@ -3,11 +3,11 @@ package com.company.userservice.application.command;
 import com.company.userservice.domain.exception.InvalidCredentialsException;
 import com.company.userservice.domain.model.EmailAddress;
 import com.company.userservice.domain.model.User;
-import com.company.userservice.domain.port.in.SignInUseCase;
-import com.company.userservice.domain.port.out.PasswordHasher;
-import com.company.userservice.domain.port.out.TokenProvider;
-import com.company.userservice.domain.port.out.TokenProvider.TokenPair;
-import com.company.userservice.domain.port.out.UserCommandRepository;
+import com.company.userservice.domain.port.usecases.SignInUseCase;
+import com.company.userservice.domain.port.infrastructure.PasswordHasher;
+import com.company.userservice.domain.port.infrastructure.TokenProvider;
+import com.company.userservice.domain.port.infrastructure.TokenProvider.TokenPair;
+import com.company.userservice.domain.port.infrastructure.UserCommandRepository;
 
 public class SignInHandler implements SignInUseCase {
 

@@ -7,7 +7,7 @@ import com.company.userservice.domain.model.EmailAddress;
 import com.company.userservice.domain.model.Role;
 import com.company.userservice.domain.model.User;
 import com.company.userservice.domain.model.UserReadModel;
-import com.company.userservice.domain.port.in.UpdateUserUseCase;
+import com.company.userservice.domain.port.usecases.UpdateUserUseCase;
 import com.company.userservice.unit.application.inmemory.InMemoryUserCommandRepository;
 import com.company.userservice.unit.application.inmemory.InMemoryUserEventPublisher;
 import org.junit.jupiter.api.BeforeEach;

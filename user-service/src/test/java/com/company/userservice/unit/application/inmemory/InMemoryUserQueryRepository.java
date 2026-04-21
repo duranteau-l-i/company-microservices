@@ -2,7 +2,7 @@ package com.company.userservice.unit.application.inmemory;
 
 import com.company.userservice.domain.model.UserId;
 import com.company.userservice.domain.model.UserReadModel;
-import com.company.userservice.domain.port.out.UserQueryRepository;
+import com.company.userservice.domain.port.infrastructure.UserQueryRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;

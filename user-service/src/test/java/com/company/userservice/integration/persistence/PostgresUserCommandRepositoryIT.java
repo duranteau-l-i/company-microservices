@@ -4,7 +4,7 @@ import com.company.userservice.domain.model.EmailAddress;
 import com.company.userservice.domain.model.Role;
 import com.company.userservice.domain.model.User;
 import com.company.userservice.domain.model.UserId;
-import com.company.userservice.infrastructure.adapter.out.persistence.command.PostgresUserCommandRepository;
+import com.company.userservice.infrastructure.persistence.command.PostgresUserCommandRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;

@@ -3,7 +3,7 @@ package com.company.userservice.unit.application.inmemory;
 import com.company.userservice.domain.exception.InvalidCredentialsException;
 import com.company.userservice.domain.model.Role;
 import com.company.userservice.domain.model.UserId;
-import com.company.userservice.domain.port.out.TokenProvider;
+import com.company.userservice.domain.port.infrastructure.TokenProvider;
 
 import java.util.HashMap;
 import java.util.Map;

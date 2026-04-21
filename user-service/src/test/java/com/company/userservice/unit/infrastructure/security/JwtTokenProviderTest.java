@@ -3,8 +3,8 @@ package com.company.userservice.unit.infrastructure.security;
 import com.company.userservice.domain.exception.InvalidCredentialsException;
 import com.company.userservice.domain.model.Role;
 import com.company.userservice.domain.model.UserId;
-import com.company.userservice.domain.port.out.TokenProvider.TokenPair;
-import com.company.userservice.infrastructure.security.JwtTokenProvider;
+import com.company.userservice.domain.port.infrastructure.TokenProvider.TokenPair;
+import com.company.userservice.security.JwtTokenProvider;
 import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.Test;
 

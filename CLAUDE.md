@@ -81,18 +81,21 @@ These skills define how to implement specific patterns in this project. Use them
     │   │   ├── event/        # Domain events
     │   │   ├── exception/    # Domain exceptions
     │   │   └── port/
-    │   │       ├── in/       # Driving ports (use cases)
-    │   │       └── out/      # Driven ports (repos, messaging)
+    │   │       ├── usecases/       # Driving ports (use cases)
+    │   │       └── infrastructure/ # Driven ports (repos, messaging)
     │   ├── application/
     │   │   ├── command/      # Command handlers (write side)
     │   │   └── query/        # Query handlers (read side)
     │   ├── infrastructure/
-    │   │   ├── adapter/
-    │   │   │   ├── in/       # REST controllers, Kafka consumers
-    │   │   │   └── out/      # JPA repos, Mongo repos, Kafka producers, Feign
-    │   │   ├── config/       # Spring beans, config
-    │   │   └── security/     # JWT filter, auth
-    │   └── shared/           # DTOs, mappers (service-local only)
+    │   │   ├── messaging/    # Kafka producers
+    │   │   └── persistence/
+    │   │       ├── command/  # JPA entities, repos, mappers
+    │   │       └── query/    # MongoDB documents, repos, mappers
+    │   ├── presentation/     # Inbound adapters
+    │   │   ├── kafka/        # Kafka consumers
+    │   │   └── rest/         # REST controllers, DTOs
+    │   ├── config/           # Spring beans, config
+    │   └── security/         # JWT filter, auth
     ├── main/resources/
     │   ├── db/migration/     # Flyway (PostgreSQL)
     │   └── bootstrap.yml     # Config Server connection

@@ -5,7 +5,7 @@ import com.company.userservice.domain.event.UserCreatedEvent;
 import com.company.userservice.domain.exception.DuplicateEmailException;
 import com.company.userservice.domain.model.Role;
 import com.company.userservice.domain.model.UserReadModel;
-import com.company.userservice.domain.port.in.SignUpUseCase;
+import com.company.userservice.domain.port.usecases.SignUpUseCase;
 import com.company.userservice.unit.application.inmemory.InMemoryPasswordHasher;
 import com.company.userservice.unit.application.inmemory.InMemoryUserCommandRepository;
 import com.company.userservice.unit.application.inmemory.InMemoryUserEventPublisher;

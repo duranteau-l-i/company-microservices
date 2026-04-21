@@ -1,7 +1,7 @@
 package com.company.userservice.unit.application.inmemory;
 
 import com.company.userservice.domain.event.DomainEvent;
-import com.company.userservice.domain.port.out.UserEventPublisher;
+import com.company.userservice.domain.port.infrastructure.UserEventPublisher;
 
 import java.util.ArrayList;
 import java.util.List;

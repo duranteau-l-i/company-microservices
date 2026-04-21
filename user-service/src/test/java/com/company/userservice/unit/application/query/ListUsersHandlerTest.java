@@ -7,7 +7,7 @@ import com.company.userservice.domain.model.Role;
 import com.company.userservice.domain.model.User;
 import com.company.userservice.domain.model.UserId;
 import com.company.userservice.domain.model.UserReadModel;
-import com.company.userservice.domain.port.in.ListUsersUseCase;
+import com.company.userservice.domain.port.usecases.ListUsersUseCase;
 import com.company.userservice.unit.application.inmemory.InMemoryUserQueryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

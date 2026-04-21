@@ -3,7 +3,7 @@ package com.company.userservice.unit.application.inmemory;
 import com.company.userservice.domain.model.EmailAddress;
 import com.company.userservice.domain.model.User;
 import com.company.userservice.domain.model.UserId;
-import com.company.userservice.domain.port.out.UserCommandRepository;
+import com.company.userservice.domain.port.infrastructure.UserCommandRepository;
 
 import java.util.HashMap;
 import java.util.Map;

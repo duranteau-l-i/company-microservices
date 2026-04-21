@@ -6,7 +6,7 @@ import com.company.userservice.domain.exception.InsufficientPermissionException;
 import com.company.userservice.domain.model.Role;
 import com.company.userservice.domain.model.UserId;
 import com.company.userservice.domain.model.UserReadModel;
-import com.company.userservice.domain.port.in.CreateUserUseCase;
+import com.company.userservice.domain.port.usecases.CreateUserUseCase;
 import com.company.userservice.unit.application.inmemory.InMemoryPasswordHasher;
 import com.company.userservice.unit.application.inmemory.InMemoryUserCommandRepository;
 import com.company.userservice.unit.application.inmemory.InMemoryUserEventPublisher;

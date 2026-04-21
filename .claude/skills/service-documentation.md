@@ -50,7 +50,7 @@ Pin `springdoc.version` in the service `pom.xml` properties. Use `2.6.0` or newe
 
 ### Bean configuration
 
-Provide an `OpenApiConfig` under `infrastructure/config/`:
+Provide an `OpenApiConfig` under `config/`:
 
 - Set API title, description, version on the `OpenAPI` bean.
 - Declare a `bearerAuth` HTTP / bearer / JWT security scheme.

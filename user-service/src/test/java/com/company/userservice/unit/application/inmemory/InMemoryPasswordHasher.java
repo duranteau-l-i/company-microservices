@@ -1,6 +1,6 @@
 package com.company.userservice.unit.application.inmemory;
 
-import com.company.userservice.domain.port.out.PasswordHasher;
+import com.company.userservice.domain.port.infrastructure.PasswordHasher;
 
 public class InMemoryPasswordHasher implements PasswordHasher {
 

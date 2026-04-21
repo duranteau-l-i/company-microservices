@@ -2,8 +2,8 @@ package com.company.userservice.application.query;
 
 import com.company.userservice.domain.exception.UserNotFoundException;
 import com.company.userservice.domain.model.UserReadModel;
-import com.company.userservice.domain.port.in.GetUserUseCase;
-import com.company.userservice.domain.port.out.UserQueryRepository;
+import com.company.userservice.domain.port.usecases.GetUserUseCase;
+import com.company.userservice.domain.port.infrastructure.UserQueryRepository;
 
 public class GetUserHandler implements GetUserUseCase {
 

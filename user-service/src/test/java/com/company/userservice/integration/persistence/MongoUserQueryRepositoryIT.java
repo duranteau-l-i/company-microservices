@@ -4,7 +4,7 @@ import com.company.userservice.domain.model.EmailAddress;
 import com.company.userservice.domain.model.Role;
 import com.company.userservice.domain.model.UserId;
 import com.company.userservice.domain.model.UserReadModel;
-import com.company.userservice.infrastructure.adapter.out.persistence.query.MongoUserQueryRepository;
+import com.company.userservice.infrastructure.persistence.query.MongoUserQueryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

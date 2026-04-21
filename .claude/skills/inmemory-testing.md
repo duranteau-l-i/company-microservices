@@ -26,7 +26,7 @@ test/
 
 ### Repository Adapter
 
-- Implements the `out/` port interface
+- Implements the `infrastructure/` port interface
 - Backed by `HashMap<UUID, DomainEntity>` or `HashMap<UserId, User>`
 - All CRUD operations work on the map
 - Query methods (findByEmail, search) iterate and filter the map

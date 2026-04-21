@@ -3,8 +3,8 @@ package com.company.userservice.application.query;
 import com.company.userservice.domain.exception.InsufficientPermissionException;
 import com.company.userservice.domain.model.Role;
 import com.company.userservice.domain.model.UserReadModel;
-import com.company.userservice.domain.port.in.ListUsersUseCase;
-import com.company.userservice.domain.port.out.UserQueryRepository;
+import com.company.userservice.domain.port.usecases.ListUsersUseCase;
+import com.company.userservice.domain.port.infrastructure.UserQueryRepository;
 
 import java.util.List;
 

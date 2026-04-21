@@ -6,10 +6,10 @@ import com.company.userservice.domain.exception.InvalidCredentialsException;
 import com.company.userservice.domain.port.usecases.SignInUseCase;
 import com.company.userservice.domain.port.usecases.SignUpUseCase;
 import com.company.userservice.domain.port.infrastructure.TokenProvider.TokenPair;
-import com.company.userservice.unit.application.inmemory.InMemoryPasswordHasher;
-import com.company.userservice.unit.application.inmemory.InMemoryTokenProvider;
-import com.company.userservice.unit.application.inmemory.InMemoryUserCommandRepository;
-import com.company.userservice.unit.application.inmemory.InMemoryUserEventPublisher;
+import com.company.userservice.unit.application.stubs.InMemoryPasswordHasher;
+import com.company.userservice.unit.application.stubs.InMemoryTokenProvider;
+import com.company.userservice.unit.application.stubs.InMemoryUserCommandRepository;
+import com.company.userservice.unit.application.stubs.InMemoryUserEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

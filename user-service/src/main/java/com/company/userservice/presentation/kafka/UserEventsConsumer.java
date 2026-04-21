@@ -77,11 +77,13 @@ public class UserEventsConsumer {
                 true,
                 event.timestamp(),
                 event.timestamp());
+
         queryRepository.save(model);
     }
 
     private void handleUpdated(UserUpdatedEvent event) {
         Optional<UserReadModel> existing = queryRepository.findById(UserId.of(event.aggregateId()));
+
         Instant createdAt = existing.map(UserReadModel::createdAt).orElse(event.timestamp());
         boolean active = existing.map(UserReadModel::active).orElse(true);
 
@@ -94,6 +96,7 @@ public class UserEventsConsumer {
                 active,
                 createdAt,
                 event.timestamp());
+
         queryRepository.save(updated);
     }
 

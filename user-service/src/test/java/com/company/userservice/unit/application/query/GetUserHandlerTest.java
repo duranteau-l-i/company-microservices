@@ -8,7 +8,7 @@ import com.company.userservice.domain.model.User;
 import com.company.userservice.domain.model.UserId;
 import com.company.userservice.domain.model.UserReadModel;
 import com.company.userservice.domain.port.usecases.GetUserUseCase;
-import com.company.userservice.unit.application.inmemory.InMemoryUserQueryRepository;
+import com.company.userservice.unit.application.stubs.InMemoryUserQueryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +25,7 @@ class GetUserHandlerTest {
     void setUp() {
         repo = new InMemoryUserQueryRepository();
         handler = new GetUserHandler(repo);
-        user = User.create(EmailAddress.of("u@co.com"), "h", "U", "User", Role.USER).user();
+        user = User.create(EmailAddress.of("u@test.com"), "h", "U", "User", Role.USER).user();
         repo.save(UserReadModel.from(user));
     }
 
@@ -33,7 +33,7 @@ class GetUserHandlerTest {
     void returnsUser() {
         UserReadModel result = handler.get(new GetUserUseCase.Query(user.id(), Role.USER, user.id()));
 
-        assertThat(result.email().value()).isEqualTo("u@co.com");
+        assertThat(result.email().value()).isEqualTo("u@test.com");
     }
 
     @Test

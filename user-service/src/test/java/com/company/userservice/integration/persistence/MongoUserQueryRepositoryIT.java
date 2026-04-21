@@ -59,17 +59,17 @@ class MongoUserQueryRepositoryIT {
 
     @Test
     void saveAndFindById() {
-        UserReadModel m = model("a@co.com", "A", "L");
+        UserReadModel m = model("alice@test.com", "A", "L");
         repository.save(m);
 
         assertThat(repository.findById(m.id())).isPresent();
-        assertThat(repository.findById(m.id()).get().email().value()).isEqualTo("a@co.com");
+        assertThat(repository.findById(m.id()).get().email().value()).isEqualTo("alice@test.com");
     }
 
     @Test
     void findAllReturnsEveryone() {
-        repository.save(model("a@co.com", "A", "L"));
-        repository.save(model("b@co.com", "B", "L"));
+        repository.save(model("alice@test.com", "A", "L"));
+        repository.save(model("bob@test.com", "B", "L"));
 
         assertThat(repository.findAll()).hasSize(2);
     }
@@ -77,7 +77,7 @@ class MongoUserQueryRepositoryIT {
     @Test
     void searchByEmail() {
         repository.save(model("alice@co.com", "Alice", "Smith"));
-        repository.save(model("bob@co.com", "Bob", "Jones"));
+        repository.save(model("bob@test.com", "Bob", "Jones"));
 
         List<UserReadModel> result = repository.search("alice");
 
@@ -87,22 +87,22 @@ class MongoUserQueryRepositoryIT {
 
     @Test
     void searchByLastName() {
-        repository.save(model("a@co.com", "Alice", "Smith"));
-        repository.save(model("b@co.com", "Bob", "Jones"));
+        repository.save(model("alice@test.com", "Alice", "Smith"));
+        repository.save(model("bob@test.com", "Bob", "Jones"));
 
         assertThat(repository.search("smith")).hasSize(1);
     }
 
     @Test
     void emptySearchReturnsAll() {
-        repository.save(model("a@co.com", "A", "L"));
+        repository.save(model("alice@test.com", "A", "L"));
 
         assertThat(repository.search("")).hasSize(1);
     }
 
     @Test
     void deleteRemovesDocument() {
-        UserReadModel m = model("a@co.com", "A", "L");
+        UserReadModel m = model("alice@test.com", "A", "L");
         repository.save(m);
 
         repository.deleteById(m.id());

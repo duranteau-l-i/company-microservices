@@ -10,13 +10,13 @@ Instead of mocking repository interfaces, create concrete in-memory implementati
 
 ## InMemory Adapter Structure
 
-Place in-memory adapters under `src/test/java/.../unit/application/inmemory/`:
+Place in-memory adapters under `src/test/java/.../unit/application/stubs/`:
 
 ```
 test/
 └── unit/
     └── application/
-        └── inmemory/
+        └── stubs/
             ├── InMemoryUserCommandRepository.java
             ├── InMemoryUserQueryRepository.java
             └── InMemoryEventPublisher.java

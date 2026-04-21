@@ -1,4 +1,4 @@
-package com.company.userservice.unit.application.inmemory;
+package com.company.userservice.unit.application.stubs;
 
 import com.company.userservice.domain.model.EmailAddress;
 import com.company.userservice.domain.model.User;

@@ -64,6 +64,7 @@ public class UserController {
                 req.firstName(),
                 req.lastName(),
                 req.role())));
+
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

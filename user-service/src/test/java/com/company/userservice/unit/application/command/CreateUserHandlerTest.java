@@ -7,9 +7,9 @@ import com.company.userservice.domain.model.Role;
 import com.company.userservice.domain.model.UserId;
 import com.company.userservice.domain.model.UserReadModel;
 import com.company.userservice.domain.port.usecases.CreateUserUseCase;
-import com.company.userservice.unit.application.inmemory.InMemoryPasswordHasher;
-import com.company.userservice.unit.application.inmemory.InMemoryUserCommandRepository;
-import com.company.userservice.unit.application.inmemory.InMemoryUserEventPublisher;
+import com.company.userservice.unit.application.stubs.InMemoryPasswordHasher;
+import com.company.userservice.unit.application.stubs.InMemoryUserCommandRepository;
+import com.company.userservice.unit.application.stubs.InMemoryUserEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +33,7 @@ class CreateUserHandlerTest {
     @Test
     void adminCreatesManager() {
         UserReadModel result = handler.create(new CreateUserUseCase.Command(
-                caller, Role.ADMIN, "m@co.com", "pw123456", "Mary", "Manager", Role.MANAGER));
+                caller, Role.ADMIN, "mary@test.com", "pw123456", "Mary", "Manager", Role.MANAGER));
 
         assertThat(result.role()).isEqualTo(Role.MANAGER);
         assertThat(repo.size()).isEqualTo(1);
@@ -42,7 +42,7 @@ class CreateUserHandlerTest {
     @Test
     void managerCreatesUser() {
         UserReadModel result = handler.create(new CreateUserUseCase.Command(
-                caller, Role.MANAGER, "u@co.com", "pw123456", "Una", "User", Role.USER));
+                caller, Role.MANAGER, "una@test.com", "pw123456", "Una", "User", Role.USER));
 
         assertThat(result.role()).isEqualTo(Role.USER);
     }
@@ -50,24 +50,24 @@ class CreateUserHandlerTest {
     @Test
     void managerCannotCreateManager() {
         assertThatThrownBy(() -> handler.create(new CreateUserUseCase.Command(
-                caller, Role.MANAGER, "m@co.com", "pw123456", "Mary", "Manager", Role.MANAGER)))
+                caller, Role.MANAGER, "mary@test.com", "pw123456", "Mary", "Manager", Role.MANAGER)))
                 .isInstanceOf(InsufficientPermissionException.class);
     }
 
     @Test
     void userCannotCreateUser() {
         assertThatThrownBy(() -> handler.create(new CreateUserUseCase.Command(
-                caller, Role.USER, "u@co.com", "pw123456", "Una", "User", Role.USER)))
+                caller, Role.USER, "una@test.com", "pw123456", "Una", "User", Role.USER)))
                 .isInstanceOf(InsufficientPermissionException.class);
     }
 
     @Test
     void rejectsDuplicateEmail() {
         handler.create(new CreateUserUseCase.Command(
-                caller, Role.ADMIN, "dup@co.com", "pw123456", "A", "B", Role.MANAGER));
+                caller, Role.ADMIN, "duplicate@test.com", "pw123456", "A", "B", Role.MANAGER));
 
         assertThatThrownBy(() -> handler.create(new CreateUserUseCase.Command(
-                caller, Role.ADMIN, "dup@co.com", "pw123456", "C", "D", Role.USER)))
+                caller, Role.ADMIN, "duplicate@test.com", "pw123456", "C", "D", Role.USER)))
                 .isInstanceOf(DuplicateEmailException.class);
     }
 }

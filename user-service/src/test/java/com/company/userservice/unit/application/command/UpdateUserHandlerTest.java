@@ -8,8 +8,8 @@ import com.company.userservice.domain.model.Role;
 import com.company.userservice.domain.model.User;
 import com.company.userservice.domain.model.UserReadModel;
 import com.company.userservice.domain.port.usecases.UpdateUserUseCase;
-import com.company.userservice.unit.application.inmemory.InMemoryUserCommandRepository;
-import com.company.userservice.unit.application.inmemory.InMemoryUserEventPublisher;
+import com.company.userservice.unit.application.stubs.InMemoryUserCommandRepository;
+import com.company.userservice.unit.application.stubs.InMemoryUserEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +28,7 @@ class UpdateUserHandlerTest {
         repo = new InMemoryUserCommandRepository();
         publisher = new InMemoryUserEventPublisher();
         handler = new UpdateUserHandler(repo, publisher);
-        existing = User.create(EmailAddress.of("u@co.com"), "h", "Una", "User", Role.USER).user();
+        existing = User.create(EmailAddress.of("una@test.com"), "h", "Una", "User", Role.USER).user();
         repo.save(existing);
     }
 
@@ -44,7 +44,7 @@ class UpdateUserHandlerTest {
 
     @Test
     void userCannotUpdateAnother() {
-        User other = User.create(EmailAddress.of("o@co.com"), "h", "Other", "User", Role.USER).user();
+        User other = User.create(EmailAddress.of("other@test.com"), "h", "Other", "User", Role.USER).user();
         repo.save(other);
 
         assertThatThrownBy(() -> handler.update(new UpdateUserUseCase.Command(
@@ -54,9 +54,9 @@ class UpdateUserHandlerTest {
 
     @Test
     void adminUpdatesAnyone() {
-        User other = User.create(EmailAddress.of("o@co.com"), "h", "Other", "User", Role.USER).user();
+        User other = User.create(EmailAddress.of("other@test.com"), "h", "Other", "User", Role.USER).user();
         repo.save(other);
-        User admin = User.create(EmailAddress.of("a@co.com"), "h", "A", "A", Role.ADMIN).user();
+        User admin = User.create(EmailAddress.of("admin@test.com"), "h", "A", "A", Role.ADMIN).user();
         repo.save(admin);
 
         UserReadModel result = handler.update(new UpdateUserUseCase.Command(

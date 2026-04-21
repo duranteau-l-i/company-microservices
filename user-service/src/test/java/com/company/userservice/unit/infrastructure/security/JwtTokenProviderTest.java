@@ -20,7 +20,7 @@ class JwtTokenProviderTest {
     @Test
     void issueAndParseAccessToken() {
         UserId id = UserId.generate();
-        TokenPair pair = provider.issueTokens(id, "a@co.com", Role.USER);
+        TokenPair pair = provider.issueTokens(id, "alice@test.com", Role.USER);
 
         assertThat(pair.accessToken()).isNotBlank();
         assertThat(pair.refreshToken()).isNotBlank();
@@ -29,14 +29,14 @@ class JwtTokenProviderTest {
         Claims claims = provider.parseClaims(pair.accessToken());
 
         assertThat(claims.getSubject()).isEqualTo(id.value().toString());
-        assertThat(claims.get("email", String.class)).isEqualTo("a@co.com");
+        assertThat(claims.get("email", String.class)).isEqualTo("alice@test.com");
         assertThat(claims.get("role", String.class)).isEqualTo("USER");
         assertThat(claims.get("type", String.class)).isEqualTo("access");
     }
 
     @Test
     void isAccessTokenDistinguishesTypes() {
-        TokenPair pair = provider.issueTokens(UserId.generate(), "a@co.com", Role.USER);
+        TokenPair pair = provider.issueTokens(UserId.generate(), "alice@test.com", Role.USER);
 
         assertThat(provider.isAccessToken(pair.accessToken())).isTrue();
         assertThat(provider.isAccessToken(pair.refreshToken())).isFalse();
@@ -44,7 +44,7 @@ class JwtTokenProviderTest {
 
     @Test
     void refreshRotatesTokens() {
-        TokenPair original = provider.issueTokens(UserId.generate(), "a@co.com", Role.MANAGER);
+        TokenPair original = provider.issueTokens(UserId.generate(), "alice@test.com", Role.MANAGER);
         TokenPair refreshed = provider.refresh(original.refreshToken());
 
         assertThat(refreshed.accessToken()).isNotBlank();
@@ -56,7 +56,7 @@ class JwtTokenProviderTest {
 
     @Test
     void refreshRejectsAccessToken() {
-        TokenPair pair = provider.issueTokens(UserId.generate(), "a@co.com", Role.USER);
+        TokenPair pair = provider.issueTokens(UserId.generate(), "alice@test.com", Role.USER);
         assertThatThrownBy(() -> provider.refresh(pair.accessToken()))
                 .isInstanceOf(InvalidCredentialsException.class);
     }
@@ -69,7 +69,7 @@ class JwtTokenProviderTest {
 
     @Test
     void tamperedTokenRejected() {
-        TokenPair pair = provider.issueTokens(UserId.generate(), "a@co.com", Role.USER);
+        TokenPair pair = provider.issueTokens(UserId.generate(), "alice@test.com", Role.USER);
         String tampered = pair.accessToken().substring(0, pair.accessToken().length() - 5) + "xxxxx";
 
         assertThat(provider.isAccessToken(tampered)).isFalse();

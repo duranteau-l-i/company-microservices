@@ -59,7 +59,7 @@ class KafkaUserEventPublisherIT {
         UUID userId = UUID.randomUUID();
         UserCreatedEvent event = UserCreatedEvent.of(
                 UserId.of(userId),
-                EmailAddress.of("p@co.com"),
+                EmailAddress.of("user@test.com"),
                 Role.USER,
                 Instant.now());
 
@@ -80,7 +80,7 @@ class KafkaUserEventPublisherIT {
             assertThat(envelope.get("eventType").asText()).isEqualTo("UserCreatedEvent");
             assertThat(envelope.get("aggregateType").asText()).isEqualTo("User");
             assertThat(envelope.get("aggregateId").asText()).isEqualTo(userId.toString());
-            assertThat(envelope.get("payload").get("email").asText()).isEqualTo("p@co.com");
+            assertThat(envelope.get("payload").get("email").asText()).isEqualTo("user@test.com");
         }
     }
 

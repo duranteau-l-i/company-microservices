@@ -6,9 +6,9 @@ import com.company.userservice.domain.exception.DuplicateEmailException;
 import com.company.userservice.domain.model.Role;
 import com.company.userservice.domain.model.UserReadModel;
 import com.company.userservice.domain.port.usecases.SignUpUseCase;
-import com.company.userservice.unit.application.inmemory.InMemoryPasswordHasher;
-import com.company.userservice.unit.application.inmemory.InMemoryUserCommandRepository;
-import com.company.userservice.unit.application.inmemory.InMemoryUserEventPublisher;
+import com.company.userservice.unit.application.stubs.InMemoryPasswordHasher;
+import com.company.userservice.unit.application.stubs.InMemoryUserCommandRepository;
+import com.company.userservice.unit.application.stubs.InMemoryUserEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

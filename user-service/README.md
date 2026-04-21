@@ -15,7 +15,7 @@ User management, authentication, and JWT issuance for the company microservices 
 
 - **DDD + Hexagonal** — the domain layer has zero framework imports.
 - **CQRS** — PostgreSQL is the write store, MongoDB is the query store, Kafka synchronizes them.
-- **Ports & Adapters** — driving ports under `domain/port/in/`, driven ports under `domain/port/out/`, adapters under `infrastructure/adapter/`.
+- **Ports & Adapters** — driving ports under `domain/port/usecases/`, driven ports under `domain/port/infrastructure/`, adapters under `infrastructure/`.
 
 ### Tech stack
 
@@ -114,7 +114,7 @@ From `user-service/`:
 
 ### Unit tests
 
-Pure Java, no Spring, no Mockito — use the InMemory adapters under `src/test/java/.../unit/application/inmemory/`.
+Pure Java, no Spring, no Mockito — use the InMemory stubs under `src/test/java/.../stubs/`.
 
 ```bash
 mvn test

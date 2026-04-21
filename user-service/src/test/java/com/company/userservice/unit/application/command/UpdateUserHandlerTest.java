@@ -8,8 +8,8 @@ import com.company.userservice.domain.model.Role;
 import com.company.userservice.domain.model.User;
 import com.company.userservice.domain.model.UserReadModel;
 import com.company.userservice.domain.port.usecases.UpdateUserUseCase;
-import com.company.userservice.unit.application.stubs.InMemoryUserCommandRepository;
-import com.company.userservice.unit.application.stubs.InMemoryUserEventPublisher;
+import com.company.userservice.stubs.InMemoryUserCommandRepository;
+import com.company.userservice.stubs.InMemoryUserEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

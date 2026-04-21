@@ -8,7 +8,7 @@ import com.company.userservice.domain.model.User;
 import com.company.userservice.domain.model.UserId;
 import com.company.userservice.domain.model.UserReadModel;
 import com.company.userservice.domain.port.usecases.GetUserUseCase;
-import com.company.userservice.unit.application.stubs.InMemoryUserQueryRepository;
+import com.company.userservice.stubs.InMemoryUserQueryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

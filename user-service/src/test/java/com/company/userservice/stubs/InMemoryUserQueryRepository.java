@@ -1,4 +1,4 @@
-package com.company.userservice.unit.application.stubs;
+package com.company.userservice.stubs;
 
 import com.company.userservice.domain.model.UserId;
 import com.company.userservice.domain.model.UserReadModel;

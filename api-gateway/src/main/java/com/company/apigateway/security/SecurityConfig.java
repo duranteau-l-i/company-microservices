@@ -1,5 +1,6 @@
 package com.company.apigateway.security;
 
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -8,6 +9,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Configuration
 @EnableWebFluxSecurity
+@EnableConfigurationProperties(SecurityProperties.class)
 public class SecurityConfig {
 
     @Bean

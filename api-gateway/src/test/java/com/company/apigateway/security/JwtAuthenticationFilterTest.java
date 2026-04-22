@@ -13,17 +13,20 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class JwtAuthenticationFilterTest {
 
     private static final String JWT_SECRET =
             "local-dev-secret-change-me-to-a-long-random-string-at-least-256-bits-long";
+    private static final SecretKey TEST_KEY =
+            Keys.hmacShaKeyFor(JWT_SECRET.getBytes(StandardCharsets.UTF_8));
 
     @Autowired
     private WebTestClient webTestClient;
 
     private String generateAccessToken() {
-        SecretKey key = Keys.hmacShaKeyFor(JWT_SECRET.getBytes(StandardCharsets.UTF_8));
         Instant now = Instant.now();
         return Jwts.builder()
                 .subject(UUID.randomUUID().toString())
@@ -32,12 +35,11 @@ class JwtAuthenticationFilterTest {
                 .claim("type", "access")
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plusSeconds(1800)))
-                .signWith(key)
+                .signWith(TEST_KEY)
                 .compact();
     }
 
     private String generateRefreshToken() {
-        SecretKey key = Keys.hmacShaKeyFor(JWT_SECRET.getBytes(StandardCharsets.UTF_8));
         Instant now = Instant.now();
         return Jwts.builder()
                 .subject(UUID.randomUUID().toString())
@@ -47,7 +49,7 @@ class JwtAuthenticationFilterTest {
                 .id(UUID.randomUUID().toString())
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plusSeconds(604800)))
-                .signWith(key)
+                .signWith(TEST_KEY)
                 .compact();
     }
 
@@ -61,7 +63,7 @@ class JwtAuthenticationFilterTest {
                 .exchange()
                 .expectStatus().value(status -> {
                     // Anything except 401 is acceptable — the filter let the request through
-                    assert status != 401 : "Expected request to pass the filter, but got 401";
+                    assertThat(status).as("Expected request to pass the filter, but got 401").isNotEqualTo(401);
                 });
     }
 
@@ -103,7 +105,7 @@ class JwtAuthenticationFilterTest {
                 .header("Authorization", "Bearer " + accessToken)
                 .exchange()
                 .expectStatus().value(status -> {
-                    assert status != 401 : "Expected request to pass the filter, but got 401";
+                    assertThat(status).as("Expected request to pass the filter, but got 401").isNotEqualTo(401);
                 });
     }
 
@@ -124,7 +126,7 @@ class JwtAuthenticationFilterTest {
                 .uri("/actuator/health")
                 .exchange()
                 .expectStatus().value(status -> {
-                    assert status != 401 : "Expected actuator/health to be public, but got 401";
+                    assertThat(status).as("Expected actuator/health to be public, but got 401").isNotEqualTo(401);
                 });
     }
 }

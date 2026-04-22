@@ -60,16 +60,23 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
             return unauthorized(exchange);
         }
 
+        String role = claims.get("role", String.class);
+        if (role == null) {
+            log.debug("Token is missing role claim");
+            return unauthorized(exchange);
+        }
+
         ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
                 .header("X-User-Id", claims.getSubject())
-                .header("X-User-Role", claims.get("role", String.class))
+                .header("X-User-Role", role)
                 .build();
 
         return chain.filter(exchange.mutate().request(mutatedRequest).build());
     }
 
     private boolean isPublicPath(String path) {
-        return securityProperties.getPublicPaths().stream().anyMatch(path::startsWith);
+        return securityProperties.getPublicPaths().stream()
+                .anyMatch(p -> path.equals(p) || path.startsWith(p + "/"));
     }
 
     private Mono<Void> unauthorized(ServerWebExchange exchange) {

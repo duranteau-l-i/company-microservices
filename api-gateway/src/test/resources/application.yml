@@ -1,0 +1,35 @@
+spring:
+  cloud:
+    config:
+      enabled: false
+    gateway:
+      routes:
+        - id: test-protected
+          uri: http://localhost:9999
+          predicates:
+            - Path=/api/companies/**
+        - id: test-public-users
+          uri: http://localhost:9999
+          predicates:
+            - Path=/api/users/**
+
+eureka:
+  client:
+    enabled: false
+
+app:
+  security:
+    jwt:
+      secret: local-dev-secret-change-me-to-a-long-random-string-at-least-256-bits-long
+    public-paths:
+      - /api/users/signup
+      - /api/users/signin
+      - /api/users/auth/refresh
+      - /actuator/health
+      - /actuator/info
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

@@ -41,6 +41,7 @@ These skills define how to implement specific patterns in this project. Use them
 @.claude/skills/feign-resilience.md
 @.claude/skills/docker-service.md
 @.claude/skills/service-documentation.md
+@.claude/skills/postman.md
 
 ## Key References
 

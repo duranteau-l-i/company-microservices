@@ -98,3 +98,4 @@ A service is not done until:
 - Swagger UI loads, lists every endpoint, and tags are grouped.
 - The OpenAPI JSON validates (no springdoc warnings in the startup log).
 - `docker compose up` brings the service up and Swagger UI is reachable at the mapped port.
+- A Postman collection exists under `postman/collections/<service-name>/` with one request file per endpoint, and `postman/environments/local.yaml` has the `<service>BaseUrl` entry. See the `postman` skill for details.

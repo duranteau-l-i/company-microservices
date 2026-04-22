@@ -92,3 +92,13 @@ ADMIN_PASSWORD=<change-me>
 ## Networking
 
 All services share a single Docker network. Service names in Docker Compose match Spring application names so Eureka registration works transparently.
+
+## Dev Mode — Kafka Host Port
+
+In dev mode (infra in Docker, service on the host), the service must reach Kafka via the exposed host port, not the internal Docker hostname:
+
+```bash
+KAFKA_BOOTSTRAP_SERVERS=localhost:29092 mvn spring-boot:run
+```
+
+The config server provides `kafka:9092`, which only resolves inside Docker. Override it with `localhost:29092` (the `PLAINTEXT_HOST` listener) when running the service on the host. The `docker-compose.infra.yml` exposes `29092` specifically for this.

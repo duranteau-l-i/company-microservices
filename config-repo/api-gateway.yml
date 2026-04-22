@@ -43,3 +43,13 @@ app:
       - /api/users/auth/refresh
       - /actuator/health
       - /actuator/info
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+
+# Docker profile: routes and CORS configuration remain unchanged from default profile.
+# No database or Kafka dependencies for API Gateway.
+# Placeholder for future docker-specific overrides if needed.

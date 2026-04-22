@@ -4,54 +4,56 @@ server:
 spring:
   cloud:
     gateway:
-      discovery:
-        locator:
-          enabled: false
-          lower-case-service-id: true
-      routes:
-        - id: user-service
-          uri: lb://user-service
-          predicates:
-            - Path=/api/users/**
-        - id: user-service-docs
-          uri: lb://user-service
-          predicates:
-            - Path=/user-service/v3/api-docs/**
-          filters:
-            - RewritePath=/user-service/v3/api-docs(?<segment>.*), /v3/api-docs${segment}
-        - id: company-service
-          uri: lb://company-service
-          predicates:
-            - Path=/api/companies/**
-        - id: company-service-docs
-          uri: lb://company-service
-          predicates:
-            - Path=/company-service/v3/api-docs/**
-          filters:
-            - RewritePath=/company-service/v3/api-docs(?<segment>.*), /v3/api-docs${segment}
-        - id: officer-service
-          uri: lb://officer-service
-          predicates:
-            - Path=/api/officers/**
-        - id: officer-service-docs
-          uri: lb://officer-service
-          predicates:
-            - Path=/officer-service/v3/api-docs/**
-          filters:
-            - RewritePath=/officer-service/v3/api-docs(?<segment>.*), /v3/api-docs${segment}
-      globalcors:
-        corsConfigurations:
-          '[/**]':
-            allowedOriginPatterns: "*"
-            allowedMethods:
-              - GET
-              - POST
-              - PUT
-              - PATCH
-              - DELETE
-              - OPTIONS
-            allowedHeaders: "*"
-            allowCredentials: true
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: false
+              lower-case-service-id: true
+          routes:
+            - id: user-service
+              uri: lb://user-service
+              predicates:
+                - Path=/api/users/**
+            - id: user-service-docs
+              uri: lb://user-service
+              predicates:
+                - Path=/user-service/v3/api-docs/**
+              filters:
+                - RewritePath=/user-service/v3/api-docs(?<segment>.*), /v3/api-docs${segment}
+            - id: company-service
+              uri: lb://company-service
+              predicates:
+                - Path=/api/companies/**
+            - id: company-service-docs
+              uri: lb://company-service
+              predicates:
+                - Path=/company-service/v3/api-docs/**
+              filters:
+                - RewritePath=/company-service/v3/api-docs(?<segment>.*), /v3/api-docs${segment}
+            - id: officer-service
+              uri: lb://officer-service
+              predicates:
+                - Path=/api/officers/**
+            - id: officer-service-docs
+              uri: lb://officer-service
+              predicates:
+                - Path=/officer-service/v3/api-docs/**
+              filters:
+                - RewritePath=/officer-service/v3/api-docs(?<segment>.*), /v3/api-docs${segment}
+          globalcors:
+            cors-configurations:
+              '[/**]':
+                allowedOriginPatterns: "*"
+                allowedMethods:
+                  - GET
+                  - POST
+                  - PUT
+                  - PATCH
+                  - DELETE
+                  - OPTIONS
+                allowedHeaders: "*"
+                allowCredentials: true
 
 app:
   security:

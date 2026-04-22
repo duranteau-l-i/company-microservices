@@ -43,6 +43,24 @@ app:
       - /api/users/auth/refresh
       - /actuator/health
       - /actuator/info
+      - /v3/api-docs/**
+      - /swagger-ui/**
+      - /swagger-ui.html
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    urls:
+      - name: user-service
+        url: http://localhost:8081/v3/api-docs
+      - name: company-service
+        url: http://localhost:8082/v3/api-docs
+      - name: officer-service
+        url: http://localhost:8083/v3/api-docs
 
 ---
 spring:
@@ -50,6 +68,12 @@ spring:
     activate:
       on-profile: docker
 
-# Docker profile: routes and CORS configuration remain unchanged from default profile.
-# No database or Kafka dependencies for API Gateway.
-# Placeholder for future docker-specific overrides if needed.
+springdoc:
+  swagger-ui:
+    urls:
+      - name: user-service
+        url: http://user-service:8081/v3/api-docs
+      - name: company-service
+        url: http://company-service:8082/v3/api-docs
+      - name: officer-service
+        url: http://officer-service:8083/v3/api-docs

@@ -8,17 +8,8 @@ management:
         include: health,info
   endpoint:
     health:
-      show-details: always
-
-springdoc:
-  api-docs:
-    path: /v3/api-docs
-  swagger-ui:
-    path: /swagger-ui.html
-    operations-sorter: method
-    tags-sorter: alpha
+      show-details: when-authorized
 
 logging:
   level:
-    com.company.apigateway: DEBUG
     org.springframework.cloud.gateway: INFO

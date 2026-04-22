@@ -13,14 +13,32 @@ spring:
           uri: lb://user-service
           predicates:
             - Path=/api/users/**
+        - id: user-service-docs
+          uri: lb://user-service
+          predicates:
+            - Path=/user-service/v3/api-docs/**
+          filters:
+            - RewritePath=/user-service/v3/api-docs(?<segment>.*), /v3/api-docs${segment}
         - id: company-service
           uri: lb://company-service
           predicates:
             - Path=/api/companies/**
+        - id: company-service-docs
+          uri: lb://company-service
+          predicates:
+            - Path=/company-service/v3/api-docs/**
+          filters:
+            - RewritePath=/company-service/v3/api-docs(?<segment>.*), /v3/api-docs${segment}
         - id: officer-service
           uri: lb://officer-service
           predicates:
             - Path=/api/officers/**
+        - id: officer-service-docs
+          uri: lb://officer-service
+          predicates:
+            - Path=/officer-service/v3/api-docs/**
+          filters:
+            - RewritePath=/officer-service/v3/api-docs(?<segment>.*), /v3/api-docs${segment}
       globalcors:
         corsConfigurations:
           '[/**]':
@@ -46,6 +64,9 @@ app:
       - /v3/api-docs/**
       - /swagger-ui/**
       - /swagger-ui.html
+      - /user-service/v3/api-docs/**
+      - /company-service/v3/api-docs/**
+      - /officer-service/v3/api-docs/**
 
 springdoc:
   api-docs:
@@ -56,11 +77,11 @@ springdoc:
     tags-sorter: alpha
     urls:
       - name: user-service
-        url: http://localhost:8081/v3/api-docs
+        url: /user-service/v3/api-docs
       - name: company-service
-        url: http://localhost:8082/v3/api-docs
+        url: /company-service/v3/api-docs
       - name: officer-service
-        url: http://localhost:8083/v3/api-docs
+        url: /officer-service/v3/api-docs
 
 ---
 spring:
@@ -72,8 +93,8 @@ springdoc:
   swagger-ui:
     urls:
       - name: user-service
-        url: http://user-service:8081/v3/api-docs
+        url: /user-service/v3/api-docs
       - name: company-service
-        url: http://company-service:8082/v3/api-docs
+        url: /company-service/v3/api-docs
       - name: officer-service
-        url: http://officer-service:8083/v3/api-docs
+        url: /officer-service/v3/api-docs

@@ -1,5 +1,8 @@
 name: 'Local'
 values:
+  - key: apiGatewayBaseUrl
+    value: 'http://localhost:8080'
+    enabled: true
   - key: userServiceBaseUrl
     value: 'http://localhost:8081'
     enabled: true

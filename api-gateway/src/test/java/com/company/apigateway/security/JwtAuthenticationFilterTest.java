@@ -129,4 +129,15 @@ class JwtAuthenticationFilterTest {
                     assertThat(status).as("Expected actuator/health to be public, but got 401").isNotEqualTo(401);
                 });
     }
+
+    @Test
+    void swaggerSubPath_noToken_isForwarded() {
+        int status = webTestClient.get()
+                .uri("/v3/api-docs/swagger-config")
+                .exchange()
+                .returnResult(String.class)
+                .getStatus()
+                .value();
+        assertThat(status).as("swagger sub-path should pass filter without token").isNotEqualTo(401);
+    }
 }

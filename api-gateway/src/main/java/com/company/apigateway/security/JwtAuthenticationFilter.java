@@ -76,7 +76,10 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
 
     private boolean isPublicPath(String path) {
         return securityProperties.getPublicPaths().stream()
-                .anyMatch(p -> path.equals(p) || path.startsWith(p + "/"));
+                .anyMatch(p -> {
+                    String base = p.endsWith("/**") ? p.substring(0, p.length() - 3) : p;
+                    return path.equals(base) || path.startsWith(base + "/");
+                });
     }
 
     private Mono<Void> unauthorized(ServerWebExchange exchange) {

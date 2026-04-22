@@ -8,7 +8,7 @@ When implementing synchronous inter-service communication with fault tolerance.
 
 ### Where They Live
 
-`infrastructure/adapter/out/feign/` in the calling service.
+`infrastructure/feign/` in the calling service.
 
 ### Service Discovery
 

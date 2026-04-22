@@ -7,8 +7,8 @@ import com.company.userservice.domain.model.Role;
 import com.company.userservice.domain.model.User;
 import com.company.userservice.domain.model.UserId;
 import com.company.userservice.domain.model.UserReadModel;
-import com.company.userservice.domain.port.in.ListUsersUseCase;
-import com.company.userservice.unit.application.inmemory.InMemoryUserQueryRepository;
+import com.company.userservice.domain.port.usecases.ListUsersUseCase;
+import com.company.userservice.stubs.InMemoryUserQueryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,8 +26,8 @@ class ListUsersHandlerTest {
     void setUp() {
         repo = new InMemoryUserQueryRepository();
         handler = new ListUsersHandler(repo);
-        repo.save(UserReadModel.from(User.create(EmailAddress.of("jane@co.com"), "h", "Jane", "Doe", Role.USER).user()));
-        repo.save(UserReadModel.from(User.create(EmailAddress.of("bob@co.com"), "h", "Bob", "Smith", Role.MANAGER).user()));
+        repo.save(UserReadModel.from(User.create(EmailAddress.of("jane@test.com"), "h", "Jane", "Doe", Role.USER).user()));
+        repo.save(UserReadModel.from(User.create(EmailAddress.of("bob@test.com"), "h", "Bob", "Smith", Role.MANAGER).user()));
     }
 
     @Test
@@ -55,6 +55,6 @@ class ListUsersHandlerTest {
         List<UserReadModel> result = handler.list(new ListUsersUseCase.Query(UserId.generate(), Role.ADMIN, "Jane"));
 
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).email().value()).isEqualTo("jane@co.com");
+        assertThat(result.get(0).email().value()).isEqualTo("jane@test.com");
     }
 }

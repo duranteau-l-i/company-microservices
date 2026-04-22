@@ -41,7 +41,9 @@
       "mcp__plugin_context7_context7__resolve-library-id",
       "Read(//tmp/**)",
       "Bash(rtk grep *)",
-      "Bash(rtk wc *)"
+      "Bash(rtk wc *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }

@@ -1,0 +1,11 @@
+$kind: collection
+name: 'User Service API'
+variables:
+  - key: baseUrl
+    value: 'http://localhost:8081'
+  - key: accessToken
+    value: ''
+  - key: refreshToken
+    value: ''
+  - key: userId
+    value: ''

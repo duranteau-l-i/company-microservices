@@ -1,8 +1,8 @@
 package com.company.userservice.application.command;
 
-import com.company.userservice.domain.port.in.RefreshTokenUseCase;
-import com.company.userservice.domain.port.out.TokenProvider;
-import com.company.userservice.domain.port.out.TokenProvider.TokenPair;
+import com.company.userservice.domain.port.usecases.RefreshTokenUseCase;
+import com.company.userservice.domain.port.infrastructure.TokenProvider;
+import com.company.userservice.domain.port.infrastructure.TokenProvider.TokenPair;
 
 public class RefreshTokenHandler implements RefreshTokenUseCase {
 

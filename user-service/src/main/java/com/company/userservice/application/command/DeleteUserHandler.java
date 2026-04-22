@@ -5,9 +5,9 @@ import com.company.userservice.domain.exception.InsufficientPermissionException;
 import com.company.userservice.domain.exception.UserNotFoundException;
 import com.company.userservice.domain.model.Role;
 import com.company.userservice.domain.model.User;
-import com.company.userservice.domain.port.in.DeleteUserUseCase;
-import com.company.userservice.domain.port.out.UserCommandRepository;
-import com.company.userservice.domain.port.out.UserEventPublisher;
+import com.company.userservice.domain.port.usecases.DeleteUserUseCase;
+import com.company.userservice.domain.port.infrastructure.UserCommandRepository;
+import com.company.userservice.domain.port.infrastructure.UserEventPublisher;
 
 public class DeleteUserHandler implements DeleteUserUseCase {
 

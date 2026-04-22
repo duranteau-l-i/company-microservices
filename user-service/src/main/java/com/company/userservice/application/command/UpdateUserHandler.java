@@ -7,9 +7,9 @@ import com.company.userservice.domain.model.Role;
 import com.company.userservice.domain.model.User;
 import com.company.userservice.domain.model.UserId;
 import com.company.userservice.domain.model.UserReadModel;
-import com.company.userservice.domain.port.in.UpdateUserUseCase;
-import com.company.userservice.domain.port.out.UserCommandRepository;
-import com.company.userservice.domain.port.out.UserEventPublisher;
+import com.company.userservice.domain.port.usecases.UpdateUserUseCase;
+import com.company.userservice.domain.port.infrastructure.UserCommandRepository;
+import com.company.userservice.domain.port.infrastructure.UserEventPublisher;
 
 public class UpdateUserHandler implements UpdateUserUseCase {
 

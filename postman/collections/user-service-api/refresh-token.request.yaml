@@ -1,0 +1,24 @@
+$kind: http-request
+name: Refresh Token
+method: POST
+url: "{{userServiceBaseUrl}}/api/users/refresh"
+scripts:
+  - type: beforeRequest
+    code: |-
+      // if (pm.response.code === 201) {
+      //     const body = JSON.parse(pm.response.body);
+
+      //     pm.environment.accessToken = body.accessToken;
+      //     pm.environment.refreshToken = body.refreshToken;
+      //     pm.environment.expiresIn = body.expiresIn;
+      // }
+    language: text/javascript
+order: 3000
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "refreshToken": "{{refreshToken}}"
+    }

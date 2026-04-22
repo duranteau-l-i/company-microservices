@@ -1,0 +1,5 @@
+name: 'Local'
+values:
+  - key: userServiceBaseUrl
+    value: 'http://localhost:8081'
+    enabled: true

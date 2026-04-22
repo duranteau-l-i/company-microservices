@@ -1,0 +1,18 @@
+$kind: collection
+name: user-service-api
+variables:
+  - key: userServiceBaseUrl
+    value: ""
+    secret: false
+  - key: userId
+    value: ""
+    secret: false
+  - key: ""
+    value: ""
+    secret: false
+  - key: ""
+    value: ""
+    secret: false
+  - key: ""
+    value: ""
+    secret: false

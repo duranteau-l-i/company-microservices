@@ -64,6 +64,7 @@ Use this loop when iterating on service code. Spring Boot DevTools / your IDE wi
 docker compose -f docker-compose.infra.yml up -d
 
 # From user-service/
+KAFKA_BOOTSTRAP_SERVERS=localhost:29092 
 mvn spring-boot:run
 ```
 

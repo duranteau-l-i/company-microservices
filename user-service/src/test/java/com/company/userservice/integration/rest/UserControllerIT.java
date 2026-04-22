@@ -140,7 +140,7 @@ class UserControllerIT extends BaseRestIT {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(Map.of(
                         "email", "blocked-" + UUID.randomUUID() + "@test.com",
-                        "password", "password123", "firstName", "A", "lastName", "B", "role", "USER"))))
+                        "password", "password123", "firstName", "Alice", "lastName", "Smith", "role", "USER"))))
                 .andExpect(status().isForbidden());
     }
 
@@ -163,7 +163,33 @@ class UserControllerIT extends BaseRestIT {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(Map.of(
                         "email", "norole-" + UUID.randomUUID() + "@test.com",
-                        "password", "password123", "firstName", "A", "lastName", "B"))))
+                        "password", "password123", "firstName", "Alice", "lastName", "Smith"))))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void create_withShortFirstName_returnsBadRequest() throws Exception {
+        UserId adminId = UserId.generate();
+
+        mockMvc.perform(post("/api/users")
+                .header("Authorization", token(adminId, "admin@test.com", Role.ADMIN))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(Map.of(
+                        "email", "short-fn-" + UUID.randomUUID() + "@test.com",
+                        "password", "password123", "firstName", "Al", "lastName", "Smith", "role", "USER"))))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void create_withShortLastName_returnsBadRequest() throws Exception {
+        UserId adminId = UserId.generate();
+
+        mockMvc.perform(post("/api/users")
+                .header("Authorization", token(adminId, "admin@test.com", Role.ADMIN))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(Map.of(
+                        "email", "short-ln-" + UUID.randomUUID() + "@test.com",
+                        "password", "password123", "firstName", "Alice", "lastName", "Li", "role", "USER"))))
                 .andExpect(status().isBadRequest());
     }
 

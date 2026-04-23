@@ -81,7 +81,10 @@ class MongoCompanyQueryRepositoryIT {
                 List.of(officer)
         );
 
-        repository.save(view);
+        CompanyFullView saved = repository.save(view);
+        assertThat(saved.id()).isEqualTo(view.id());
+        assertThat(saved.officers()).hasSize(1);
+        assertThat(saved.officers().get(0).firstName()).isEqualTo("Alice");
 
         Optional<CompanyFullView> found = repository.findFullById(view.id());
         assertThat(found).isPresent();
@@ -100,8 +103,11 @@ class MongoCompanyQueryRepositoryIT {
 
         Optional<CompanyRestrictedView> found = repository.findRestrictedById(view.id());
         assertThat(found).isPresent();
+        assertThat(found.get().id()).isEqualTo(view.id());
         assertThat(found.get().name()).isEqualTo("Beta Ltd");
+        assertThat(found.get().registrationNumber()).isNotBlank();
         assertThat(found.get().ownerId()).isEqualTo(ownerId);
+        assertThat(found.get().ownerDisplayName()).isEqualTo("John Doe");
         assertThat(found.get().status()).isEqualTo(CompanyStatus.ACTIVE);
     }
 
@@ -146,6 +152,15 @@ class MongoCompanyQueryRepositoryIT {
         List<CompanyRestrictedView> result = repository.search("zzz");
 
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    void searchBlankReturnsAll() {
+        repository.save(buildView("Alpha Inc", UUID.randomUUID()));
+        repository.save(buildView("Beta Ltd", UUID.randomUUID()));
+
+        assertThat(repository.search("")).hasSize(2);
+        assertThat(repository.search(null)).hasSize(2);
     }
 
     @Test

@@ -3,6 +3,9 @@ spring:
     name: company-service
   profiles:
     default: dev
+  data:
+    mongodb:
+      auto-index-creation: true
 
 springdoc:
   api-docs:

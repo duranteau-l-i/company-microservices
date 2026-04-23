@@ -1,0 +1,23 @@
+$kind: http-request
+name: Refresh Token (via Gateway)
+method: POST
+url: "{{apiGatewayBaseUrl}}/api/users/auth/refresh"
+order: 4000
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "refreshToken": "{{refreshToken}}"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      if (pm.response.code === 200) {
+          const body = JSON.parse(pm.response.body);
+          pm.environment.accessToken = body.accessToken;
+          pm.environment.refreshToken = body.refreshToken;
+          pm.environment.expiresIn = body.expiresIn;
+      }
+    language: text/javascript

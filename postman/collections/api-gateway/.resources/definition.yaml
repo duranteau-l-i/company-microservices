@@ -1,0 +1,4 @@
+$kind: collection
+name: api-gateway
+variables:
+  apiGatewayBaseUrl: ""

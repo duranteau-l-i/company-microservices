@@ -10,6 +10,7 @@ public record CompanyFullView(
         String registrationNumber,
         Address address,
         UUID ownerId,
+        String ownerDisplayName,
         CompanyStatus status,
         Instant createdAt,
         Instant updatedAt,

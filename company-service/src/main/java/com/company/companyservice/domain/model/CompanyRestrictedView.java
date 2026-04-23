@@ -7,6 +7,7 @@ public record CompanyRestrictedView(
         String name,
         String registrationNumber,
         UUID ownerId,
+        String ownerDisplayName,
         CompanyStatus status
 ) implements CompanyView {
 }

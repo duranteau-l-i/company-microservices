@@ -11,6 +11,7 @@ public interface CreateCompanyUseCase {
     record Command(
             UUID callerId,
             Role callerRole,
+            String ownerDisplayName,
             String name,
             String registrationNumber,
             String street,

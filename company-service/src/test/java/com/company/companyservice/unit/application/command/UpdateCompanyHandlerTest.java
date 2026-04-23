@@ -77,6 +77,8 @@ class UpdateCompanyHandlerTest {
 
         assertThat(result.name()).isEqualTo("Updated Corp");
         assertThat(result.address().city()).isEqualTo("Lyon");
+        assertThat(result.ownerDisplayName()).isEqualTo("Owner Name");
+        assertThat(result.officers()).isEmpty();
         assertThat(publisher.publishedEvents()).hasSize(1);
         assertThat(publisher.lastEvent()).isInstanceOf(CompanyUpdatedEvent.class);
     }

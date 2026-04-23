@@ -43,9 +43,9 @@ public class DeleteCompanyHandler implements DeleteCompanyUseCase {
         }
 
         CompanyDeletedEvent event = CompanyDeletedEvent.of(company.id(), company.ownerId(), Instant.now());
-        publisher.publish(event);
 
         commandRepo.delete(command.companyId());
         queryRepo.deleteById(command.companyId());
+        publisher.publish(event);
     }
 }

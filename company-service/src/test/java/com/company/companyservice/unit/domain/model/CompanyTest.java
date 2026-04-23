@@ -1,6 +1,7 @@
 package com.company.companyservice.unit.domain.model;
 
 import com.company.companyservice.domain.event.CompanyCreatedEvent;
+import com.company.companyservice.domain.event.CompanyUpdatedEvent;
 import com.company.companyservice.domain.model.Address;
 import com.company.companyservice.domain.model.Company;
 import com.company.companyservice.domain.model.CompanyStatus;
@@ -81,20 +82,32 @@ class CompanyTest {
     }
 
     @Test
-    void deactivateChangesStatusToInactive() {
+    void deactivateChangesStatusToInactiveAndEmitsEvent() {
         Company company = Company.create("Acme Corp", "REG-001", VALID_ADDRESS, OWNER_ID).company();
-        company.deactivate();
+        Company.Updated result = company.deactivate();
 
         assertThat(company.status()).isEqualTo(CompanyStatus.INACTIVE);
+        assertThat(result.company()).isSameAs(company);
+        CompanyUpdatedEvent event = result.event();
+        assertThat(event).isNotNull();
+        assertThat(event.aggregateId()).isEqualTo(company.id().value());
+        assertThat(event.eventType()).isEqualTo("CompanyUpdatedEvent");
+        assertThat(event.eventId()).isNotNull();
     }
 
     @Test
-    void activateChangesStatusToActive() {
+    void activateChangesStatusToActiveAndEmitsEvent() {
         Company company = Company.create("Acme Corp", "REG-001", VALID_ADDRESS, OWNER_ID).company();
         company.deactivate();
-        company.activate();
+        Company.Updated result = company.activate();
 
         assertThat(company.status()).isEqualTo(CompanyStatus.ACTIVE);
+        assertThat(result.company()).isSameAs(company);
+        CompanyUpdatedEvent event = result.event();
+        assertThat(event).isNotNull();
+        assertThat(event.aggregateId()).isEqualTo(company.id().value());
+        assertThat(event.eventType()).isEqualTo("CompanyUpdatedEvent");
+        assertThat(event.eventId()).isNotNull();
     }
 
     @Test
@@ -120,6 +133,7 @@ class CompanyTest {
         assertThat(company.registrationNumber()).isEqualTo("REG-002");
         assertThat(company.address()).isEqualTo(newAddress);
         assertThat(company.updatedAt()).isAfter(before);
+        assertThat(result.company()).isSameAs(company);
         assertThat(result.event()).isNotNull();
         assertThat(result.event().aggregateId()).isEqualTo(company.id().value());
     }

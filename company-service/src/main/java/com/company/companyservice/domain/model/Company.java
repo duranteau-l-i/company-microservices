@@ -58,17 +58,21 @@ public final class Company {
         this.address = Objects.requireNonNull(address, "address");
         this.updatedAt = Instant.now();
         CompanyUpdatedEvent event = CompanyUpdatedEvent.of(this.id, this.name, this.registrationNumber, this.updatedAt);
-        return new Updated(event);
+        return new Updated(this, event);
     }
 
-    public void activate() {
+    public Updated activate() {
         this.status = CompanyStatus.ACTIVE;
         this.updatedAt = Instant.now();
+        CompanyUpdatedEvent event = CompanyUpdatedEvent.of(this.id, this.name, this.registrationNumber, this.updatedAt);
+        return new Updated(this, event);
     }
 
-    public void deactivate() {
+    public Updated deactivate() {
         this.status = CompanyStatus.INACTIVE;
         this.updatedAt = Instant.now();
+        CompanyUpdatedEvent event = CompanyUpdatedEvent.of(this.id, this.name, this.registrationNumber, this.updatedAt);
+        return new Updated(this, event);
     }
 
     public CompanyId id() { return id; }
@@ -96,5 +100,5 @@ public final class Company {
 
     public record Created(Company company, CompanyCreatedEvent event) {}
 
-    public record Updated(CompanyUpdatedEvent event) {}
+    public record Updated(Company company, CompanyUpdatedEvent event) {}
 }

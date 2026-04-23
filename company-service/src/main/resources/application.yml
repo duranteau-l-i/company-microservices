@@ -7,15 +7,9 @@ spring:
     mongodb:
       auto-index-creation: true
   kafka:
+    # KafkaConfig.java defines explicit beans that override Spring Boot auto-config.
+    # Only bootstrap-servers is read here (via @Value); serializer settings are in KafkaConfig.
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    consumer:
-      group-id: company-service-group
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      auto-offset-reset: earliest
 
 springdoc:
   api-docs:

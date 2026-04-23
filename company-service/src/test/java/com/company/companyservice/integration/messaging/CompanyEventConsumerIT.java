@@ -5,6 +5,7 @@ import com.company.companyservice.domain.model.Address;
 import com.company.companyservice.domain.model.CompanyFullView;
 import com.company.companyservice.domain.model.CompanyId;
 import com.company.companyservice.domain.model.CompanyStatus;
+import com.company.companyservice.domain.model.OfficerSummary;
 import com.company.companyservice.infrastructure.persistence.query.CompanyDocumentMapper;
 import com.company.companyservice.infrastructure.persistence.query.CompanyMongoRepository;
 import com.company.companyservice.infrastructure.persistence.query.MongoCompanyQueryRepository;
@@ -151,6 +152,36 @@ class CompanyEventConsumerIT {
     }
 
     @Test
+    void companyUpdatedEvent_preservesOfficers() throws Exception {
+        UUID companyId = UUID.randomUUID();
+        UUID ownerId = UUID.randomUUID();
+        UUID officerId = UUID.randomUUID();
+        Instant now = Instant.now();
+
+        OfficerSummary officer = new OfficerSummary(officerId, "Alice", "Smith", "CEO");
+        CompanyFullView existing = new CompanyFullView(
+                CompanyId.of(companyId), "Original Corp", "REG-001",
+                new Address("1 Main St", "Paris", "75001", "France"),
+                ownerId, "John Doe", CompanyStatus.ACTIVE,
+                now, now, List.of(officer));
+        companyMongoRepository.save(CompanyDocumentMapper.toDocument(existing));
+
+        UUID eventId = UUID.randomUUID();
+        String envelope = buildEnvelope(eventId, "CompanyUpdatedEvent", companyId,
+                buildUpdatedPayload(companyId, now));
+
+        testProducer.send("company-events-consumer-it", companyId.toString(), envelope);
+
+        await().atMost(15, TimeUnit.SECONDS).untilAsserted(() -> {
+            Optional<CompanyFullView> found = findById(companyId);
+            assertThat(found).isPresent();
+            assertThat(found.get().name()).isEqualTo("Updated Corp");
+            assertThat(found.get().officers()).hasSize(1);
+            assertThat(found.get().officers().get(0).officerId()).isEqualTo(officerId);
+        });
+    }
+
+    @Test
     void companyDeletedEvent_removesMongoDocument() throws Exception {
         UUID companyId = UUID.randomUUID();
         UUID ownerId = UUID.randomUUID();
@@ -189,12 +220,13 @@ class CompanyEventConsumerIT {
         await().atMost(15, TimeUnit.SECONDS).untilAsserted(() ->
                 assertThat(processedEventMongoRepository.existsById(eventId)).isTrue());
 
-        TimeUnit.SECONDS.sleep(2);
-
-        List<ProcessedEventDocument> entries = processedEventMongoRepository.findAll().stream()
-                .filter(e -> e.getEventId().equals(eventId))
-                .toList();
-        assertThat(entries).hasSize(1);
+        // Wait briefly then assert no second entry was written for the duplicate event
+        await().during(2, TimeUnit.SECONDS).atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
+            List<ProcessedEventDocument> entries = processedEventMongoRepository.findAll().stream()
+                    .filter(e -> e.getEventId().equals(eventId))
+                    .toList();
+            assertThat(entries).hasSize(1);
+        });
     }
 
     // ---- helpers ----

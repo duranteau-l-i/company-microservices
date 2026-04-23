@@ -73,6 +73,7 @@ class KafkaEventPublisherIT {
             assertThat(record).isNotNull();
 
             JsonNode envelope = MAPPER.readTree(record.value());
+            assertThat(envelope.get("eventId").asText()).matches("[0-9a-f-]{36}");
             assertThat(envelope.get("eventType").asText()).isEqualTo("CompanyCreatedEvent");
             assertThat(envelope.get("aggregateType").asText()).isEqualTo("Company");
             assertThat(envelope.get("aggregateId").asText()).isEqualTo(companyId.toString());
@@ -98,6 +99,7 @@ class KafkaEventPublisherIT {
             assertThat(record).isNotNull();
 
             JsonNode envelope = MAPPER.readTree(record.value());
+            assertThat(envelope.get("eventId").asText()).matches("[0-9a-f-]{36}");
             assertThat(envelope.get("eventType").asText()).isEqualTo("CompanyUpdatedEvent");
             assertThat(envelope.get("aggregateId").asText()).isEqualTo(companyId.toString());
 
@@ -121,6 +123,7 @@ class KafkaEventPublisherIT {
             assertThat(record).isNotNull();
 
             JsonNode envelope = MAPPER.readTree(record.value());
+            assertThat(envelope.get("eventId").asText()).matches("[0-9a-f-]{36}");
             assertThat(envelope.get("eventType").asText()).isEqualTo("CompanyDeletedEvent");
             assertThat(envelope.get("aggregateId").asText()).isEqualTo(companyId.toString());
         }

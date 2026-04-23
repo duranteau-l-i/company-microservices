@@ -74,13 +74,8 @@ public class CompanyEventConsumer {
     }
 
     private void handleCreated(CompanyCreatedEvent event) {
-        // ownerDisplayName and address are not in the event — use empty defaults.
-        // The command handler already saves the authoritative version directly to MongoDB.
-        // This handler enables read-model rebuild from the event log.
-        // ownerDisplayName and address are not in the event.
-        // The command handler already saves the authoritative version directly to MongoDB.
-        // This handler enables read-model rebuild from the event log.
-        // Use placeholder address fields if not already present.
+        // Address and ownerDisplayName are not in the event; use defaults for read-model rebuild.
+        // In steady-state the command handler already upserted the authoritative view.
         CompanyId id = CompanyId.of(event.aggregateId());
         Optional<CompanyFullView> existing = queryRepository.findFullById(id);
         Address address = existing.map(CompanyFullView::address)

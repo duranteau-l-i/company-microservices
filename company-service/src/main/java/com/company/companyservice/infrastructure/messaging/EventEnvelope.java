@@ -12,7 +12,7 @@ public record EventEnvelope(
         String aggregateType,
         Instant timestamp,
         int version,
-        DomainEvent payload
+        Object payload
 ) {
     public static EventEnvelope wrap(DomainEvent event) {
         return new EventEnvelope(

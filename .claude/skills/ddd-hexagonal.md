@@ -23,12 +23,12 @@ The domain layer (`domain/`) is the core of each service. It must:
 
 ### Port Interfaces
 
-**Driving ports (`port/in/`)** — define use cases the outside world can invoke:
+**Driving ports (`port/usecases/`)** — define use cases the outside world can invoke:
 - One interface per use case: `CreateUserUseCase`, `SignInUseCase`
 - Input is a command/query record, output is a domain object or projection
 - No framework types in signatures (no `ResponseEntity`, no `Page`)
 
-**Driven ports (`port/out/`)** — define what the domain needs from infrastructure:
+**Driven ports (`port/infrastructure/`)** — define what the domain needs from infrastructure:
 - `UserCommandRepository` — save, findById, existsByEmail (write store)
 - `UserQueryRepository` — search, list, findByFilters (read store)
 - `EventPublisher` — publish domain events
@@ -53,7 +53,7 @@ The infrastructure layer (`infrastructure/`) implements the driven ports:
 
 ## Mapping Between Layers
 
-- Domain model <-> JPA entity: mapper in `infrastructure/adapter/out/persistence/command/`
-- Domain model <-> MongoDB document: mapper in `infrastructure/adapter/out/persistence/query/`
-- Domain model <-> REST DTO: mapper in `infrastructure/adapter/in/rest/`
+- Domain model <-> JPA entity: mapper in `infrastructure/persistence/command/`
+- Domain model <-> MongoDB document: mapper in `infrastructure/persistence/query/`
+- Domain model <-> REST DTO: mapper in `presentation/rest/`
 - Never expose domain objects in REST responses — always map to DTOs

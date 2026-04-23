@@ -4,8 +4,8 @@ import com.company.userservice.domain.event.UserCreatedEvent;
 import com.company.userservice.domain.model.EmailAddress;
 import com.company.userservice.domain.model.Role;
 import com.company.userservice.domain.model.UserId;
-import com.company.userservice.infrastructure.adapter.out.messaging.KafkaUserEventPublisher;
-import com.company.userservice.infrastructure.config.KafkaConfig;
+import com.company.userservice.infrastructure.messaging.KafkaUserEventPublisher;
+import com.company.userservice.config.KafkaConfig;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -59,7 +59,7 @@ class KafkaUserEventPublisherIT {
         UUID userId = UUID.randomUUID();
         UserCreatedEvent event = UserCreatedEvent.of(
                 UserId.of(userId),
-                EmailAddress.of("p@co.com"),
+                EmailAddress.of("user@test.com"),
                 Role.USER,
                 Instant.now());
 
@@ -80,7 +80,7 @@ class KafkaUserEventPublisherIT {
             assertThat(envelope.get("eventType").asText()).isEqualTo("UserCreatedEvent");
             assertThat(envelope.get("aggregateType").asText()).isEqualTo("User");
             assertThat(envelope.get("aggregateId").asText()).isEqualTo(userId.toString());
-            assertThat(envelope.get("payload").get("email").asText()).isEqualTo("p@co.com");
+            assertThat(envelope.get("payload").get("email").asText()).isEqualTo("user@test.com");
         }
     }
 

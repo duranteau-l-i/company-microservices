@@ -10,13 +10,13 @@ Instead of mocking repository interfaces, create concrete in-memory implementati
 
 ## InMemory Adapter Structure
 
-Place in-memory adapters under `src/test/java/.../unit/application/inmemory/`:
+Place in-memory adapters under `src/test/java/.../unit/application/stubs/`:
 
 ```
 test/
 └── unit/
     └── application/
-        └── inmemory/
+        └── stubs/
             ├── InMemoryUserCommandRepository.java
             ├── InMemoryUserQueryRepository.java
             └── InMemoryEventPublisher.java
@@ -26,7 +26,7 @@ test/
 
 ### Repository Adapter
 
-- Implements the `out/` port interface
+- Implements the `infrastructure/` port interface
 - Backed by `HashMap<UUID, DomainEntity>` or `HashMap<UserId, User>`
 - All CRUD operations work on the map
 - Query methods (findByEmail, search) iterate and filter the map

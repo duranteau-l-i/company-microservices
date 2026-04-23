@@ -1,0 +1,26 @@
+$kind: http-request
+name: Sign Up (via Gateway)
+method: POST
+url: "{{apiGatewayBaseUrl}}/api/users/signup"
+order: 2000
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "email": "alice@example.com",
+      "password": "password123",
+      "firstName": "Alice",
+      "lastName": "Smith"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      if (pm.response.code === 201) {
+          const body = JSON.parse(pm.response.body);
+          pm.environment.accessToken = body.accessToken;
+          pm.environment.refreshToken = body.refreshToken;
+          pm.environment.expiresIn = body.expiresIn;
+      }
+    language: text/javascript

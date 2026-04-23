@@ -63,24 +63,22 @@ Each business service follows this internal structure:
     │   │   ├── event/          # Domain events
     │   │   ├── exception/      # Domain exceptions
     │   │   └── port/
-    │   │       ├── in/         # Driving ports (use cases)
-    │   │       └── out/        # Driven ports (repository, messaging)
+    │   │       ├── usecases/   # Driving ports (use cases)
+    │   │       └── infrastructure/ # Driven ports (repository, messaging)
     │   ├── application/
     │   │   ├── command/        # Write side — command handlers
     │   │   └── query/          # Read side — query handlers
     │   ├── infrastructure/
-    │   │   ├── adapter/
-    │   │   │   ├── in/
-    │   │   │   │   ├── rest/   # Controllers
-    │   │   │   │   └── kafka/  # Kafka consumers
-    │   │   │   └── out/
-    │   │   │       ├── persistence/
-    │   │   │       │   ├── command/  # PostgreSQL (JPA)
-    │   │   │       │   └── query/    # MongoDB
-    │   │   │       ├── messaging/    # Kafka producers
-    │   │   │       └── feign/        # OpenFeign clients
-    │   │   ├── config/
-    │   │   └── security/
+    │   │   ├── messaging/        # Kafka producers
+    │   │   ├── persistence/
+    │   │   │   ├── command/      # PostgreSQL (JPA)
+    │   │   │   └── query/        # MongoDB
+    │   │   └── feign/            # OpenFeign clients
+    │   ├── presentation/
+    │   │   ├── rest/             # Controllers
+    │   │   └── kafka/            # Kafka consumers
+    │   ├── config/
+    │   └── security/
     │   └── shared/             # DTOs, mappers (service-local)
     ├── main/resources/
     │   ├── application.yml
@@ -93,14 +91,14 @@ Each business service follows this internal structure:
         ├── unit/
         │   ├── domain/
         │   └── application/
-        │       └── inmemory/   # InMemory adapter implementations
+        └── stubs/              # InMemory stub implementations
         ├── integration/        # Testcontainers
         └── e2e/                # Full service HTTP tests
 ```
 
 **Key rules:**
 - Domain layer has zero framework imports — pure Java
-- Ports define contracts: `in/` = use case interfaces, `out/` = repository/messaging interfaces
+- Ports define contracts: `usecases/` = use case interfaces, `infrastructure/` = repository/messaging interfaces
 - Commands write to PostgreSQL, queries read from MongoDB
 - CQRS sync: command persisted → domain event to Kafka → internal consumer updates MongoDB read model
 
@@ -388,7 +386,7 @@ For eventual consistency: read model sync, cross-service state reactions.
 
 ### Unit Tests
 - **Scope:** domain logic + use case handlers
-- **Pattern:** InMemory adapters (`HashMap`-backed) implementing `out/` ports
+- **Pattern:** InMemory stubs (`HashMap`-backed) implementing `infrastructure/` ports
 - **Framework:** JUnit 5 + AssertJ
 - **No Spring context** — pure Java, fast
 

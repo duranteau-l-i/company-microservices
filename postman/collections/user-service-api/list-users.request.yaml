@@ -1,0 +1,11 @@
+$kind: http-request
+name: List Users
+method: GET
+url: "{{userServiceBaseUrl}}/api/users?search=alice"
+queryParams:
+  search: alice
+order: 6000
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"

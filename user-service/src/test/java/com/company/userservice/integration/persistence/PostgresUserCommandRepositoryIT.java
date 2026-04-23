@@ -4,7 +4,7 @@ import com.company.userservice.domain.model.EmailAddress;
 import com.company.userservice.domain.model.Role;
 import com.company.userservice.domain.model.User;
 import com.company.userservice.domain.model.UserId;
-import com.company.userservice.infrastructure.adapter.out.persistence.command.PostgresUserCommandRepository;
+import com.company.userservice.infrastructure.persistence.command.PostgresUserCommandRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -47,28 +47,28 @@ class PostgresUserCommandRepositoryIT {
 
     @Test
     void saveAndFindById() {
-        User user = User.create(EmailAddress.of("ita@co.com"), "h", "Ita", "Test", Role.USER).user();
+        User user = User.create(EmailAddress.of("ita@test.com"), "h", "Ita", "Test", Role.USER).user();
         repository.save(user);
 
         Optional<User> found = repository.findById(user.id());
 
         assertThat(found).isPresent();
-        assertThat(found.get().email().value()).isEqualTo("ita@co.com");
+        assertThat(found.get().email().value()).isEqualTo("ita@test.com");
     }
 
     @Test
     void findByEmail() {
-        User user = User.create(EmailAddress.of("find@co.com"), "h", "F", "T", Role.USER).user();
+        User user = User.create(EmailAddress.of("find@test.com"), "h", "F", "T", Role.USER).user();
         repository.save(user);
 
-        assertThat(repository.findByEmail(EmailAddress.of("find@co.com"))).isPresent();
-        assertThat(repository.existsByEmail(EmailAddress.of("find@co.com"))).isTrue();
-        assertThat(repository.existsByEmail(EmailAddress.of("none@co.com"))).isFalse();
+        assertThat(repository.findByEmail(EmailAddress.of("find@test.com"))).isPresent();
+        assertThat(repository.existsByEmail(EmailAddress.of("find@test.com"))).isTrue();
+        assertThat(repository.existsByEmail(EmailAddress.of("none@test.com"))).isFalse();
     }
 
     @Test
     void deleteRemovesUser() {
-        User user = User.create(EmailAddress.of("del@co.com"), "h", "D", "T", Role.USER).user();
+        User user = User.create(EmailAddress.of("del@test.com"), "h", "D", "T", Role.USER).user();
         repository.save(user);
 
         repository.delete(user.id());

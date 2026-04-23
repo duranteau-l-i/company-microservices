@@ -38,11 +38,11 @@ Every event follows this standard structure:
 
 The domain layer defines event classes in `domain/event/`. These are plain Java records — no Kafka dependencies.
 
-The `EventPublisher` port interface is in `domain/port/out/`.
+The `EventPublisher` port interface is in `domain/port/infrastructure/`.
 
 ### Infrastructure Side
 
-The Kafka producer adapter in `infrastructure/adapter/out/messaging/`:
+The Kafka producer adapter in `infrastructure/messaging/`:
 - Implements the `EventPublisher` port
 - Wraps domain events in the envelope structure
 - Serializes to JSON (Jackson)
@@ -53,7 +53,7 @@ The Kafka producer adapter in `infrastructure/adapter/out/messaging/`:
 
 ### Internal Consumers (CQRS sync)
 
-In `infrastructure/adapter/in/kafka/`:
+In `presentation/kafka/`:
 - Listen to the service's own topic for read model sync
 - Update MongoDB documents based on event type
 - Check `eventId` against `processed_events` collection before processing (idempotency)

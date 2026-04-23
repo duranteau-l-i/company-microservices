@@ -6,9 +6,9 @@ import com.company.userservice.domain.exception.InsufficientPermissionException;
 import com.company.userservice.domain.model.EmailAddress;
 import com.company.userservice.domain.model.Role;
 import com.company.userservice.domain.model.User;
-import com.company.userservice.domain.port.in.DeleteUserUseCase;
-import com.company.userservice.unit.application.inmemory.InMemoryUserCommandRepository;
-import com.company.userservice.unit.application.inmemory.InMemoryUserEventPublisher;
+import com.company.userservice.domain.port.usecases.DeleteUserUseCase;
+import com.company.userservice.stubs.InMemoryUserCommandRepository;
+import com.company.userservice.stubs.InMemoryUserEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +27,7 @@ class DeleteUserHandlerTest {
         repo = new InMemoryUserCommandRepository();
         publisher = new InMemoryUserEventPublisher();
         handler = new DeleteUserHandler(repo, publisher);
-        target = User.create(EmailAddress.of("t@co.com"), "h", "T", "Target", Role.USER).user();
+        target = User.create(EmailAddress.of("terry@test.com"), "h", "T", "Target", Role.USER).user();
         repo.save(target);
     }
 

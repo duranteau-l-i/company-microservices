@@ -43,7 +43,10 @@
       "Bash(rtk grep *)",
       "Bash(rtk wc *)",
       "Bash(git add *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(mvn -f api-gateway/pom.xml test)",
+      "Bash(mvn -f /Users/ludovicduranteau/Documents/personal/company-microservices/.worktrees/feat/api-gateway/api-gateway/pom.xml test -q)",
+      "Bash(mvn -f /Users/ludovicduranteau/Documents/personal/company-microservices/.worktrees/feat/api-gateway/api-gateway/pom.xml test)"
     ]
   }
 }

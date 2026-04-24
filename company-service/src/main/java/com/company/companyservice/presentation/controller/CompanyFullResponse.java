@@ -12,6 +12,7 @@ public record CompanyFullResponse(
         String status,
         String createdAt,
         String updatedAt,
-        List<OfficerSummaryResponse> officers
+        List<OfficerSummaryResponse> officers,
+        List<String> warnings
 ) {
 }

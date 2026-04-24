@@ -19,6 +19,19 @@ springdoc:
     operations-sorter: method
     tags-sorter: alpha
 
+feign:
+  circuitbreaker:
+    enabled: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      officer-service:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 3
+
 ---
 spring:
   config:

@@ -9,6 +9,7 @@ import com.company.companyservice.application.query.SearchCompaniesHandler;
 import com.company.companyservice.domain.port.infrastructure.CompanyCommandRepository;
 import com.company.companyservice.domain.port.infrastructure.CompanyEventPublisher;
 import com.company.companyservice.domain.port.infrastructure.CompanyQueryRepository;
+import com.company.companyservice.domain.port.infrastructure.OfficerQueryPort;
 import com.company.companyservice.domain.port.usecases.CreateCompanyUseCase;
 import com.company.companyservice.domain.port.usecases.DeleteCompanyUseCase;
 import com.company.companyservice.domain.port.usecases.GetCompanyUseCase;
@@ -46,8 +47,9 @@ public class UseCaseConfig {
     }
 
     @Bean
-    public GetCompanyUseCase getCompanyUseCase(CompanyQueryRepository queryRepository) {
-        return new GetCompanyHandler(queryRepository);
+    public GetCompanyUseCase getCompanyUseCase(CompanyQueryRepository queryRepository,
+                                               OfficerQueryPort officerQueryPort) {
+        return new GetCompanyHandler(queryRepository, officerQueryPort);
     }
 
     @Bean

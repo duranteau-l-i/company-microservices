@@ -138,7 +138,7 @@ Individual IT classes:
 - `KafkaEventPublisherIT` — producer/consumer round-trip against `confluentinc/cp-kafka`
 - `CompanyEventConsumerIT` — CQRS sync (internal Kafka consumer)
 - `OfficerEventConsumerIT` — cross-service event handling
-- `CompanyControllerIT` — REST layer with `@WebMvcTest`
+- `CompanyControllerIT` — REST controller with `@WebMvcTest`
 
 Run just one:
 
@@ -178,8 +178,8 @@ company-service/
     │   │       ├── command/       # JPA entity, mapper, PostgresCompanyCommandRepository
     │   │       └── query/         # MongoDB document, mapper, MongoCompanyQueryRepository, processed events
     │   ├── presentation/
-    │   │   ├── kafka/             # CompanyEventConsumer, OfficerEventConsumer
-    │   │   └── rest/              # CompanyController, RestExceptionHandler, DTOs
+    │   │   ├── consumer/          # CompanyEventConsumer, OfficerEventConsumer
+    │   │   └── controller/        # CompanyController, RestExceptionHandler, DTOs
     │   ├── config/                # KafkaConfig, UseCaseConfig, OpenApiConfig
     │   └── security/              # JwtTokenValidator, JwtAuthenticationFilter, SecurityConfig
     ├── main/resources/

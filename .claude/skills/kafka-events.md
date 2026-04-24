@@ -53,7 +53,7 @@ The Kafka producer adapter in `infrastructure/messaging/`:
 
 ### Internal Consumers (CQRS sync)
 
-In `presentation/kafka/`:
+In `presentation/consumer/`:
 - Listen to the service's own topic for read model sync
 - Update MongoDB documents based on event type
 - Check `eventId` against `processed_events` collection before processing (idempotency)

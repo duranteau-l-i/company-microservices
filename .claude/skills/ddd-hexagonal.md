@@ -55,5 +55,5 @@ The infrastructure layer (`infrastructure/`) implements the driven ports:
 
 - Domain model <-> JPA entity: mapper in `infrastructure/persistence/command/`
 - Domain model <-> MongoDB document: mapper in `infrastructure/persistence/query/`
-- Domain model <-> REST DTO: mapper in `presentation/rest/`
+- Domain model <-> REST DTO: mapper in `presentation/controller/`
 - Never expose domain objects in REST responses — always map to DTOs

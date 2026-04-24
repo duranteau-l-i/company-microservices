@@ -93,8 +93,8 @@ These skills define how to implement specific patterns in this project. Use them
     │   │       ├── command/  # JPA entities, repos, mappers
     │   │       └── query/    # MongoDB documents, repos, mappers
     │   ├── presentation/     # Inbound adapters
-    │   │   ├── kafka/        # Kafka consumers
-    │   │   └── rest/         # REST controllers, DTOs
+    │   │   ├── consumer/     # Kafka consumers
+    │   │   └── controller/   # REST controllers, DTOs
     │   ├── config/           # Spring beans, config
     │   └── security/         # JWT filter, auth
     ├── main/resources/

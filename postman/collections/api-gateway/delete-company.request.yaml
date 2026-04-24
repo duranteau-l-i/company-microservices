@@ -1,0 +1,9 @@
+$kind: http-request
+name: Delete Company (via Gateway)
+method: DELETE
+url: "{{apiGatewayBaseUrl}}/api/companies/{{companyId}}"
+order: 11000
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"

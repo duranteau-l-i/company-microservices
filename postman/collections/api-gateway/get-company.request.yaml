@@ -1,0 +1,9 @@
+$kind: http-request
+name: Get Company (via Gateway)
+method: GET
+url: "{{apiGatewayBaseUrl}}/api/companies/{{companyId}}"
+order: 7000
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"

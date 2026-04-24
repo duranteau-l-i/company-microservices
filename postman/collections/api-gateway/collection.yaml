@@ -7,3 +7,5 @@ variables:
     value: ''
   - key: refreshToken
     value: ''
+  - key: companyId
+    value: ''

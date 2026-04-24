@@ -1,0 +1,9 @@
+$kind: http-request
+name: Search Companies (via Gateway)
+method: GET
+url: "{{apiGatewayBaseUrl}}/api/companies/search?term=acme"
+order: 10000
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"

@@ -154,7 +154,13 @@ public class CompanyController {
     private Role currentRole() {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
                 .findFirst()
-                .map(a -> Role.valueOf(a.getAuthority().replace("ROLE_", "")))
-                .orElseThrow();
+                .map(a -> {
+                    try {
+                        return Role.valueOf(a.getAuthority().replace("ROLE_", ""));
+                    } catch (IllegalArgumentException e) {
+                        throw new IllegalStateException("Unknown role in token: " + a.getAuthority());
+                    }
+                })
+                .orElseThrow(() -> new IllegalStateException("No role authority in security context"));
     }
 }

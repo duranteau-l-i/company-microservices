@@ -5,10 +5,13 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -17,6 +20,8 @@ import java.util.List;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     private final JwtTokenValidator tokenValidator;
 
@@ -33,23 +38,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
             try {
-                if (tokenValidator.isAccessToken(token)) {
-                    Claims claims = tokenValidator.parseClaims(token);
-
+                Claims claims = tokenValidator.parseClaims(token);
+                if ("access".equals(claims.get("type", String.class))) {
                     String userId = claims.getSubject();
                     String email = claims.get("email", String.class);
                     String role = claims.get("role", String.class);
 
-                    CompanyUserDetails principal = new CompanyUserDetails(userId, email);
-
+                    CompanyUserDetails userDetails = new CompanyUserDetails(userId, email);
                     UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                            principal,
-                            null,
+                            userDetails, null,
                             List.of(new SimpleGrantedAuthority("ROLE_" + role)));
-
+                    auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
-            } catch (RuntimeException ignored) {
+            } catch (RuntimeException e) {
+                log.warn("JWT validation failed: {}", e.getMessage());
                 SecurityContextHolder.clearContext();
             }
         }

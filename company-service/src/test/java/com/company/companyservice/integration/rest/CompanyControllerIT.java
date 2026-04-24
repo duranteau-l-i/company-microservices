@@ -134,6 +134,7 @@ class CompanyControllerIT {
                 .andExpect(status().isUnauthorized());
     }
 
+    // MANAGER role cannot create companies (spec rule, enforced in CreateCompanyHandler)
     @Test
     void create_withManagerToken_returns403() throws Exception {
         UUID userId = UUID.randomUUID();
@@ -248,6 +249,23 @@ class CompanyControllerIT {
                 .andExpect(status().isUnauthorized());
     }
 
+    @Test
+    void update_byNonOwnerUser_returns403() throws Exception {
+        UUID ownerId = UUID.randomUUID();
+        UUID callerId = UUID.randomUUID(); // different user — not the owner
+        CompanyFullView company = seedCompany(ownerId, "Protected Corp", "REG-NONOWN-UPD");
+        String token = TestJwtHelper.accessToken(callerId, "other@test.com", Role.USER);
+
+        mockMvc.perform(put("/api/companies/" + company.id().value())
+                        .header("Authorization", token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of(
+                                "name", "Hacked Name", "registrationNumber", "REG-NONOWN-UPD",
+                                "street", "1 Main", "city", "Paris",
+                                "postalCode", "75001", "country", "France"))))
+                .andExpect(status().isForbidden());
+    }
+
     // -- DELETE /api/companies/{id} --
 
     @Test
@@ -265,6 +283,18 @@ class CompanyControllerIT {
     void delete_withoutToken_returns401() throws Exception {
         mockMvc.perform(delete("/api/companies/" + UUID.randomUUID()))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void delete_byNonOwnerUser_returns403() throws Exception {
+        UUID ownerId = UUID.randomUUID();
+        UUID callerId = UUID.randomUUID(); // different user — not the owner
+        CompanyFullView company = seedCompany(ownerId, "Protected Corp", "REG-NONOWN-DEL");
+        String token = TestJwtHelper.accessToken(callerId, "other@test.com", Role.USER);
+
+        mockMvc.perform(delete("/api/companies/" + company.id().value())
+                        .header("Authorization", token))
+                .andExpect(status().isForbidden());
     }
 
     // -- GET /api/companies --

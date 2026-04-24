@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class OfficerTest {
@@ -163,5 +164,17 @@ class OfficerTest {
 
         assertThatThrownBy(() -> officer.unlinkFromCompany(unknownCompanyId))
                 .isInstanceOf(OfficerNotFoundException.class);
+    }
+
+    @Test
+    void relinksToCompanyAfterResignation() {
+        Officer officer = createValidOfficer().officer();
+        UUID companyId = UUID.randomUUID();
+        CompanyLink link = CompanyLink.create(companyId, "Director", LocalDate.now());
+        officer.linkToCompany(link);
+        officer.unlinkFromCompany(companyId);
+        // Should succeed — linking again after resignation is allowed
+        CompanyLink link2 = CompanyLink.create(companyId, "Director", LocalDate.now());
+        assertThatCode(() -> officer.linkToCompany(link2)).doesNotThrowAnyException();
     }
 }

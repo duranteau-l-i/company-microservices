@@ -15,7 +15,7 @@ public final class CompanyLink {
     public CompanyLink(UUID companyId, String title, LocalDate appointmentDate, LocalDate resignationDate, boolean active) {
         this.companyId = Objects.requireNonNull(companyId, "companyId must not be null");
         this.title = requireNonBlank(title, "title");
-        this.appointmentDate = appointmentDate;
+        this.appointmentDate = Objects.requireNonNull(appointmentDate, "appointmentDate must not be null");
         this.resignationDate = resignationDate;
         this.active = active;
     }

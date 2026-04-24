@@ -74,14 +74,7 @@ public final class Officer {
                 now,
                 now
         );
-        OfficerCreatedEvent event = new OfficerCreatedEvent(
-                UUID.randomUUID(),
-                officer.id.value(),
-                officer.firstName,
-                officer.lastName,
-                now,
-                1
-        );
+        OfficerCreatedEvent event = OfficerCreatedEvent.of(officer);
         return new Created(officer, event);
     }
 
@@ -98,14 +91,7 @@ public final class Officer {
         this.email = requireNonBlank(email, "email");
         this.phone = phone;
         this.updatedAt = Instant.now();
-        OfficerUpdatedEvent event = new OfficerUpdatedEvent(
-                UUID.randomUUID(),
-                this.id.value(),
-                this.firstName,
-                this.lastName,
-                this.updatedAt,
-                1
-        );
+        OfficerUpdatedEvent event = OfficerUpdatedEvent.of(this);
         return new Updated(this, event);
     }
 
@@ -118,16 +104,7 @@ public final class Officer {
         }
         companyLinks.add(link);
         this.updatedAt = Instant.now();
-        OfficerLinkedToCompanyEvent event = new OfficerLinkedToCompanyEvent(
-                UUID.randomUUID(),
-                this.id.value(),
-                link.companyId(),
-                link.title(),
-                this.firstName,
-                this.lastName,
-                this.updatedAt,
-                1
-        );
+        OfficerLinkedToCompanyEvent event = OfficerLinkedToCompanyEvent.of(this, link.companyId(), link.title());
         return new Linked(this, event);
     }
 
@@ -136,16 +113,10 @@ public final class Officer {
                 .filter(CompanyLink::active)
                 .filter(l -> l.companyId().equals(companyId))
                 .findFirst()
-                .orElseThrow(() -> new OfficerNotFoundException(companyId.toString()));
+                .orElseThrow(() -> new OfficerNotFoundException("No active link found for company: " + companyId));
         link.resign(LocalDate.now());
         this.updatedAt = Instant.now();
-        OfficerUnlinkedFromCompanyEvent event = new OfficerUnlinkedFromCompanyEvent(
-                UUID.randomUUID(),
-                this.id.value(),
-                companyId,
-                this.updatedAt,
-                1
-        );
+        OfficerUnlinkedFromCompanyEvent event = OfficerUnlinkedFromCompanyEvent.of(this, companyId);
         return new Unlinked(this, event);
     }
 

@@ -1,0 +1,9 @@
+$kind: http-request
+name: List Companies by Officer (via Gateway)
+method: GET
+url: "{{apiGatewayBaseUrl}}/api/officers/{{officerId}}/companies"
+order: 17000
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"

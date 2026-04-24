@@ -1,0 +1,9 @@
+$kind: http-request
+name: Delete Officer
+method: DELETE
+url: "{{officerServiceBaseUrl}}/api/officers/{{officerId}}"
+order: 7000
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"

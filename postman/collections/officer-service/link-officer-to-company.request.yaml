@@ -1,0 +1,20 @@
+$kind: http-request
+name: Link Officer to Company
+method: POST
+url: "{{officerServiceBaseUrl}}/api/officers/{{officerId}}/links"
+order: 11000
+headers:
+  Content-Type: application/json
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"
+body:
+  type: json
+  content: |-
+    {
+      "companyId": "{{companyId}}",
+      "companyOwnerId": "{{userId}}",
+      "title": "Secretary",
+      "appointmentDate": "2024-06-01"
+    }

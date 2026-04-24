@@ -1,0 +1,12 @@
+$kind: collection
+name: officer-service
+variables:
+  - key: officerServiceBaseUrl
+    value: ""
+    secret: false
+  - key: officerId
+    value: ""
+    secret: false
+  - key: ""
+    value: ""
+    secret: false

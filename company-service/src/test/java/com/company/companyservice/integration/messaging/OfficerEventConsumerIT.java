@@ -10,7 +10,7 @@ import com.company.companyservice.infrastructure.persistence.query.CompanyDocume
 import com.company.companyservice.infrastructure.persistence.query.CompanyMongoRepository;
 import com.company.companyservice.infrastructure.persistence.query.MongoCompanyQueryRepository;
 import com.company.companyservice.infrastructure.persistence.query.ProcessedEventMongoRepository;
-import com.company.companyservice.presentation.kafka.OfficerEventConsumer;
+import com.company.companyservice.presentation.consumer.OfficerEventConsumer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.kafka.clients.producer.ProducerConfig;

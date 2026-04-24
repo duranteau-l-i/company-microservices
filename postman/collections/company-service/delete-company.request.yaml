@@ -1,0 +1,9 @@
+$kind: http-request
+name: Delete Company
+method: DELETE
+url: "{{companyServiceBaseUrl}}/api/companies/{{companyId}}"
+order: 7000
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"

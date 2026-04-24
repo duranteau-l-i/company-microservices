@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: company-service
+  profiles:
+    default: dev
+  data:
+    mongodb:
+      auto-index-creation: true
+  kafka:
+    # KafkaConfig.java defines explicit beans that override Spring Boot auto-config.
+    # Only bootstrap-servers is read here (via @Value); serializer settings are in KafkaConfig.
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  cloud:
+    config:
+      enabled: false
+    discovery:
+      enabled: false
+eureka:
+  client:
+    enabled: false

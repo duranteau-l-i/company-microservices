@@ -6,3 +6,6 @@ values:
   - key: userServiceBaseUrl
     value: 'http://localhost:8081'
     enabled: true
+  - key: companyServiceBaseUrl
+    value: 'http://localhost:8082'
+    enabled: true

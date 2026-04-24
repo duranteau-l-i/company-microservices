@@ -1,0 +1,18 @@
+$kind: collection
+name: company-service
+variables:
+  - key: companyServiceBaseUrl
+    value: ""
+    secret: false
+  - key: companyId
+    value: ""
+    secret: false
+  - key: ""
+    value: ""
+    secret: false
+  - key: ""
+    value: ""
+    secret: false
+  - key: ""
+    value: ""
+    secret: false

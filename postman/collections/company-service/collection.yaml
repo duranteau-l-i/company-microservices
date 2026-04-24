@@ -1,0 +1,9 @@
+$kind: collection
+name: 'Company Service API'
+variables:
+  - key: companyServiceBaseUrl
+    value: 'http://localhost:8082'
+  - key: accessToken
+    value: ''
+  - key: companyId
+    value: ''

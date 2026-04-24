@@ -1,4 +1,4 @@
-package com.company.officerservice.unit.application.stubs;
+package com.company.officerservice.stubs;
 
 import com.company.officerservice.domain.model.Officer;
 import com.company.officerservice.domain.model.OfficerId;

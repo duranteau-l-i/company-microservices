@@ -7,7 +7,7 @@ import com.company.officerservice.domain.model.OfficerFullView;
 import com.company.officerservice.domain.model.OfficerId;
 import com.company.officerservice.domain.model.Role;
 import com.company.officerservice.domain.port.usecases.ListCompaniesByOfficerUseCase;
-import com.company.officerservice.unit.application.stubs.InMemoryOfficerQueryRepository;
+import com.company.officerservice.stubs.InMemoryOfficerQueryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

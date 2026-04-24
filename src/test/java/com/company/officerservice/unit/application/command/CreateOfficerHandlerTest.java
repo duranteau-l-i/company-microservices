@@ -7,9 +7,9 @@ import com.company.officerservice.domain.exception.OfficerAccessDeniedException;
 import com.company.officerservice.domain.model.OfficerFullView;
 import com.company.officerservice.domain.model.Role;
 import com.company.officerservice.domain.port.usecases.CreateOfficerUseCase;
-import com.company.officerservice.unit.application.stubs.InMemoryOfficerCommandRepository;
-import com.company.officerservice.unit.application.stubs.InMemoryOfficerEventPublisher;
-import com.company.officerservice.unit.application.stubs.InMemoryOfficerQueryRepository;
+import com.company.officerservice.stubs.InMemoryOfficerCommandRepository;
+import com.company.officerservice.stubs.InMemoryOfficerEventPublisher;
+import com.company.officerservice.stubs.InMemoryOfficerQueryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

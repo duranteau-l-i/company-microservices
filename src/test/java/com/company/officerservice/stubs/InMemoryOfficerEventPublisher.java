@@ -1,4 +1,4 @@
-package com.company.officerservice.unit.application.stubs;
+package com.company.officerservice.stubs;
 
 import com.company.officerservice.domain.event.DomainEvent;
 import com.company.officerservice.domain.port.infrastructure.OfficerEventPublisher;

@@ -1,0 +1,11 @@
+$kind: http-request
+name: Search Companies
+method: GET
+url: "{{companyServiceBaseUrl}}/api/companies/search?term=acme"
+queryParams:
+  term: acme
+order: 9000
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"

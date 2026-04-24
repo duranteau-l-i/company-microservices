@@ -1,0 +1,9 @@
+$kind: http-request
+name: List Companies
+method: GET
+url: "{{companyServiceBaseUrl}}/api/companies"
+order: 8000
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"

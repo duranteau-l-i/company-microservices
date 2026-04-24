@@ -9,3 +9,5 @@ variables:
     value: ''
   - key: companyId
     value: ''
+  - key: officerId
+    value: ''

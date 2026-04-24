@@ -111,3 +111,44 @@ services:
       start_period: 60s
     networks:
       - backend
+
+  officer-service:
+    build:
+      context: ./officer-service
+      dockerfile: Dockerfile
+    container_name: officer-service
+    depends_on:
+      config-service:
+        condition: service_healthy
+      registry-service:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      CONFIG_SERVER_URI: http://config-service:8888
+      EUREKA_URI: http://registry-service:8761/eureka
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      MONGO_HOST: mongodb
+      MONGO_PORT: 27017
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      JWT_SECRET: ${JWT_SECRET}
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8083:8083"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--spider", "http://localhost:8083/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+    networks:
+      - backend

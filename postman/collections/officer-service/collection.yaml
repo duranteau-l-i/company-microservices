@@ -1,0 +1,9 @@
+$kind: collection
+name: 'Officer Service API'
+variables:
+  - key: officerServiceBaseUrl
+    value: 'http://localhost:8083'
+  - key: accessToken
+    value: ''
+  - key: officerId
+    value: ''

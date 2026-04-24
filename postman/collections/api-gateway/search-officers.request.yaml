@@ -1,0 +1,9 @@
+$kind: http-request
+name: Search Officers (via Gateway)
+method: GET
+url: "{{apiGatewayBaseUrl}}/api/officers/search?firstName=Alice&lastName=Smith"
+order: 16000
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"

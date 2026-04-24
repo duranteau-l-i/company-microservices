@@ -1,0 +1,9 @@
+$kind: http-request
+name: Get Officer
+method: GET
+url: "{{officerServiceBaseUrl}}/api/officers/{{officerId}}"
+order: 5000
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"

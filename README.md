@@ -195,7 +195,7 @@ mongosh "mongodb://admin:change-me@localhost:27017"
 Via Docker:
 
 ```bash
-docker exec -it mongodb mongosh -u admin -p change-me
+docker exec -it mongodb mongosh -u admin -p local-dev-password
 ```
 
 ### Kafka

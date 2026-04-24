@@ -1,0 +1,13 @@
+$kind: http-request
+name: Search Users
+url: "{{apiGatewayBaseUrl}}/api/users?search=alice"
+method: GET
+queryParams:
+  - key: search
+    value: alice
+auth:
+  credentials:
+    - key: token
+      value: "{{accessToken}}"
+  type: bearer
+order: 5767

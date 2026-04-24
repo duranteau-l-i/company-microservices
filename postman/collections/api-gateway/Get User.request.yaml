@@ -1,9 +1,9 @@
 $kind: http-request
-name: Get User (JWT validation demo)
+name: Get User
 method: GET
-url: "{{apiGatewayBaseUrl}}/api/users/me"
+url: "{{apiGatewayBaseUrl}}/api/users/{{userId}}"
 order: 5000
 auth:
-  type: bearer
   credentials:
     token: "{{accessToken}}"
+  type: bearer

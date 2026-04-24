@@ -2,3 +2,5 @@ $kind: collection
 name: api-gateway
 variables:
   apiGatewayBaseUrl: ""
+  userId: ""
+  companyId: ""

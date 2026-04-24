@@ -10,7 +10,7 @@ scripts:
 
           const userId = body.id;
 
-          pm.variables.userId = userId;
+          pm.variables.set("userId", userId);
       }
     language: text/javascript
 order: 4000

@@ -26,6 +26,7 @@ scripts:
     code: |-
       if (pm.response.code === 201) {
           const body = JSON.parse(pm.response.body);
-          pm.variables.companyId = body.id;
+
+          pm.environment.set("companyId", body.id);
       }
     language: text/javascript

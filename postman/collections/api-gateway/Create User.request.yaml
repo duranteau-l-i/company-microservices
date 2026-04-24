@@ -1,0 +1,32 @@
+$kind: http-request
+name: Create User
+url: "{{apiGatewayBaseUrl}}/api/users"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "email": "bob@example.com",
+      "password": "password123",
+      "firstName": "Bob",
+      "lastName": "Manager",
+      "role": "MANAGER"
+    }
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      if (pm.response.code === 201) {
+          const body = JSON.parse(pm.response.body);
+
+          const userId = body.id;
+
+          pm.environment.set("userId", userId);
+      }
+    language: text/javascript
+order: 4102

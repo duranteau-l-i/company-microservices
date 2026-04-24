@@ -1,9 +1,18 @@
 $kind: http-request
-name: Refresh Token
+name: Sign In (via Gateway - admin)
+url: "{{apiGatewayBaseUrl}}/api/users/signin"
 method: POST
-url: "{{userServiceBaseUrl}}/api/users/refresh"
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "email": "admin@company.com",
+      "password": "admin123"
+    }
 scripts:
-  - type: beforeRequest
+  - type: afterResponse
     code: |-
       if (pm.response.code === 200) {
           const body = JSON.parse(pm.response.body);
@@ -13,12 +22,4 @@ scripts:
           pm.environment.set("expiresIn", body.expiresIn);
       }
     language: text/javascript
-order: 3000
-headers:
-  Content-Type: application/json
-body:
-  type: json
-  content: |-
-    {
-      "refreshToken": "{{refreshToken}}"
-    }
+order: 3416

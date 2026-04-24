@@ -10,7 +10,7 @@ import com.company.companyservice.domain.model.CompanyStatus;
 import com.company.companyservice.domain.model.CompanyView;
 import com.company.companyservice.domain.model.Role;
 import com.company.companyservice.domain.port.usecases.GetCompanyUseCase;
-import com.company.companyservice.unit.application.stubs.InMemoryCompanyQueryRepository;
+import com.company.companyservice.stubs.InMemoryCompanyQueryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

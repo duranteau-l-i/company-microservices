@@ -7,7 +7,7 @@ import com.company.companyservice.domain.model.CompanyId;
 import com.company.companyservice.domain.model.CompanyRestrictedView;
 import com.company.companyservice.domain.model.CompanyStatus;
 import com.company.companyservice.domain.port.usecases.SearchCompaniesUseCase;
-import com.company.companyservice.unit.application.stubs.InMemoryCompanyQueryRepository;
+import com.company.companyservice.stubs.InMemoryCompanyQueryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

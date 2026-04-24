@@ -1,4 +1,4 @@
-package com.company.companyservice.unit.application.stubs;
+package com.company.companyservice.stubs;
 
 import com.company.companyservice.domain.model.Company;
 import com.company.companyservice.domain.model.CompanyId;

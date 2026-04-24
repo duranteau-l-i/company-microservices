@@ -7,9 +7,9 @@ import com.company.companyservice.domain.exception.DuplicateRegistrationNumberEx
 import com.company.companyservice.domain.model.CompanyFullView;
 import com.company.companyservice.domain.model.Role;
 import com.company.companyservice.domain.port.usecases.CreateCompanyUseCase;
-import com.company.companyservice.unit.application.stubs.InMemoryCompanyCommandRepository;
-import com.company.companyservice.unit.application.stubs.InMemoryCompanyEventPublisher;
-import com.company.companyservice.unit.application.stubs.InMemoryCompanyQueryRepository;
+import com.company.companyservice.stubs.InMemoryCompanyCommandRepository;
+import com.company.companyservice.stubs.InMemoryCompanyEventPublisher;
+import com.company.companyservice.stubs.InMemoryCompanyQueryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

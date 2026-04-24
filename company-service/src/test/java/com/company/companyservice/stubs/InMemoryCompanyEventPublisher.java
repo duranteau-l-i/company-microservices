@@ -1,4 +1,4 @@
-package com.company.companyservice.unit.application.stubs;
+package com.company.companyservice.stubs;
 
 import com.company.companyservice.domain.event.DomainEvent;
 import com.company.companyservice.domain.port.infrastructure.CompanyEventPublisher;

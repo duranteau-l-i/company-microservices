@@ -1,8 +1,8 @@
 package com.company.companyservice.integration.controller;
 
-import com.company.companyservice.unit.application.stubs.InMemoryCompanyCommandRepository;
-import com.company.companyservice.unit.application.stubs.InMemoryCompanyEventPublisher;
-import com.company.companyservice.unit.application.stubs.InMemoryCompanyQueryRepository;
+import com.company.companyservice.stubs.InMemoryCompanyCommandRepository;
+import com.company.companyservice.stubs.InMemoryCompanyEventPublisher;
+import com.company.companyservice.stubs.InMemoryCompanyQueryRepository;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 

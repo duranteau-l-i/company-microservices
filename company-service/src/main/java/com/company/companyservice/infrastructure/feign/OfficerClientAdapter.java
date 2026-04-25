@@ -3,6 +3,8 @@ package com.company.companyservice.infrastructure.feign;
 import com.company.companyservice.domain.model.CompanyId;
 import com.company.companyservice.domain.model.OfficerSummary;
 import com.company.companyservice.domain.port.infrastructure.OfficerQueryPort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -10,6 +12,8 @@ import java.util.Objects;
 
 @Component
 public class OfficerClientAdapter implements OfficerQueryPort {
+
+    private static final Logger log = LoggerFactory.getLogger(OfficerClientAdapter.class);
 
     private final OfficerClient officerClient;
 
@@ -20,7 +24,15 @@ public class OfficerClientAdapter implements OfficerQueryPort {
     @Override
     public OfficerQueryResult findOfficersByCompanyId(CompanyId companyId) {
         OfficerClientFallbackFactory.FALLBACK_FIRED.remove();
-        List<OfficerClientDto> dtos = officerClient.getOfficersByCompanyId(companyId.value());
+        List<OfficerClientDto> dtos;
+        try {
+            dtos = officerClient.getOfficersByCompanyId(companyId.value());
+        } catch (Exception e) {
+            OfficerClientFallbackFactory.FALLBACK_FIRED.remove();
+            log.warn("officer-service call failed for companyId={}: {}", companyId.value(), e.getMessage());
+            return new OfficerQueryResult(List.of(), true);
+        }
+
         boolean fallback = Boolean.TRUE.equals(OfficerClientFallbackFactory.FALLBACK_FIRED.get());
         OfficerClientFallbackFactory.FALLBACK_FIRED.remove();
 

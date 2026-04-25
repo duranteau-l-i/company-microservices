@@ -42,9 +42,7 @@ class OfficerClientIT {
     static void configureProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.cloud.openfeign.client.config.officer-service.url",
                 () -> "http://localhost:" + wireMock.port());
-        registry.add("feign.circuitbreaker.enabled", () -> "true");
-        registry.add("resilience4j.circuitbreaker.instances.officer-service.sliding-window-size", () -> "10");
-        registry.add("resilience4j.circuitbreaker.instances.officer-service.failure-rate-threshold", () -> "50");
+        registry.add("spring.cloud.openfeign.client.config.officer-service.readTimeout", () -> "500");
     }
 
     @AfterAll
@@ -121,6 +119,24 @@ class OfficerClientIT {
                 .willReturn(aResponse()
                         .withStatus(500)
                         .withBody("Internal Server Error")));
+
+        OfficerQueryPort.OfficerQueryResult result =
+                officerClientAdapter.findOfficersByCompanyId(CompanyId.of(companyId));
+
+        assertThat(result.fallback()).isTrue();
+        assertThat(result.officers()).isEmpty();
+    }
+
+    @Test
+    void officerServiceTimesOut_fallbackActivated() {
+        UUID companyId = UUID.randomUUID();
+
+        wireMock.stubFor(get(urlPathEqualTo("/api/officers/by-company/" + companyId))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("[]")
+                        .withFixedDelay(2000)));
 
         OfficerQueryPort.OfficerQueryResult result =
                 officerClientAdapter.findOfficersByCompanyId(CompanyId.of(companyId));

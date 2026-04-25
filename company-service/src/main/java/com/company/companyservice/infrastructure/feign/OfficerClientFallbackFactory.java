@@ -13,17 +13,14 @@ public class OfficerClientFallbackFactory implements FallbackFactory<OfficerClie
 
     private static final Logger log = LoggerFactory.getLogger(OfficerClientFallbackFactory.class);
 
+    static final ThreadLocal<Boolean> FALLBACK_FIRED = new ThreadLocal<>();
+
     @Override
     public OfficerClient create(Throwable cause) {
-        log.warn("officer-service call failed, activating fallback. Cause: {}", cause.getMessage());
-        return new FallbackOfficerClient();
-    }
-
-    private static class FallbackOfficerClient implements OfficerClient {
-
-        @Override
-        public List<OfficerClientDto> getOfficersByCompanyId(UUID companyId) {
-            return null;
-        }
+        return companyId -> {
+            FALLBACK_FIRED.set(true);
+            log.warn("officer-service unavailable for companyId={}: {}", companyId, cause.getMessage());
+            return List.of();
+        };
     }
 }

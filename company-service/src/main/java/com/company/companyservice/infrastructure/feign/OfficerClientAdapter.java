@@ -3,8 +3,6 @@ package com.company.companyservice.infrastructure.feign;
 import com.company.companyservice.domain.model.CompanyId;
 import com.company.companyservice.domain.model.OfficerSummary;
 import com.company.companyservice.domain.port.infrastructure.OfficerQueryPort;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -12,8 +10,6 @@ import java.util.Objects;
 
 @Component
 public class OfficerClientAdapter implements OfficerQueryPort {
-
-    private static final Logger log = LoggerFactory.getLogger(OfficerClientAdapter.class);
 
     private final OfficerClient officerClient;
 
@@ -23,17 +19,12 @@ public class OfficerClientAdapter implements OfficerQueryPort {
 
     @Override
     public OfficerQueryResult findOfficersByCompanyId(CompanyId companyId) {
-        List<OfficerClientDto> dtos;
-        try {
-            dtos = officerClient.getOfficersByCompanyId(companyId.value());
-        } catch (Exception e) {
-            log.warn("Failed to fetch officers from officer-service for companyId={}: {}",
-                    companyId.value(), e.getMessage());
-            return new OfficerQueryResult(List.of(), true);
-        }
+        OfficerClientFallbackFactory.FALLBACK_FIRED.remove();
+        List<OfficerClientDto> dtos = officerClient.getOfficersByCompanyId(companyId.value());
+        boolean fallback = Boolean.TRUE.equals(OfficerClientFallbackFactory.FALLBACK_FIRED.get());
+        OfficerClientFallbackFactory.FALLBACK_FIRED.remove();
 
-        // null signals that the fallback factory returned (circuit open / call failed)
-        if (dtos == null) {
+        if (fallback) {
             return new OfficerQueryResult(List.of(), true);
         }
 

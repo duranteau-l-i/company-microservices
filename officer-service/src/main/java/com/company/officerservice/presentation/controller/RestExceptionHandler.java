@@ -1,8 +1,10 @@
 package com.company.officerservice.presentation.controller;
 
+import com.company.officerservice.domain.exception.CompanyNotFoundException;
 import com.company.officerservice.domain.exception.DuplicateLinkException;
 import com.company.officerservice.domain.exception.OfficerAccessDeniedException;
 import com.company.officerservice.domain.exception.OfficerNotFoundException;
+import com.company.officerservice.domain.exception.ServiceUnavailableException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,6 +20,16 @@ public class RestExceptionHandler {
     @ExceptionHandler(OfficerNotFoundException.class)
     public ResponseEntity<Map<String, Object>> notFound(OfficerNotFoundException e) {
         return body(HttpStatus.NOT_FOUND, e.getMessage());
+    }
+
+    @ExceptionHandler(CompanyNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> companyNotFound(CompanyNotFoundException e) {
+        return body(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
+    }
+
+    @ExceptionHandler(ServiceUnavailableException.class)
+    public ResponseEntity<Map<String, Object>> serviceUnavailable(ServiceUnavailableException e) {
+        return body(HttpStatus.SERVICE_UNAVAILABLE, e.getMessage());
     }
 
     @ExceptionHandler(OfficerAccessDeniedException.class)

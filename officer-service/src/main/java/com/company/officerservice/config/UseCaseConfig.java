@@ -9,6 +9,7 @@ import com.company.officerservice.application.query.GetOfficerHandler;
 import com.company.officerservice.application.query.ListCompaniesByOfficerHandler;
 import com.company.officerservice.application.query.ListOfficersByCompanyHandler;
 import com.company.officerservice.application.query.SearchOfficersHandler;
+import com.company.officerservice.domain.port.infrastructure.CompanyValidationPort;
 import com.company.officerservice.domain.port.infrastructure.OfficerCommandRepository;
 import com.company.officerservice.domain.port.infrastructure.OfficerEventPublisher;
 import com.company.officerservice.domain.port.infrastructure.OfficerQueryRepository;
@@ -51,8 +52,8 @@ public class UseCaseConfig {
     @Bean
     public LinkOfficerToCompanyUseCase linkOfficerToCompanyUseCase(
             OfficerCommandRepository commandRepo, OfficerQueryRepository queryRepo,
-            OfficerEventPublisher publisher) {
-        return new LinkOfficerToCompanyHandler(commandRepo, queryRepo, publisher);
+            OfficerEventPublisher publisher, CompanyValidationPort companyValidationPort) {
+        return new LinkOfficerToCompanyHandler(commandRepo, queryRepo, publisher, companyValidationPort);
     }
 
     @Bean

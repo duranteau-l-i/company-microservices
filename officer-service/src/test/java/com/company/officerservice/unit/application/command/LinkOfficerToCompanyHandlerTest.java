@@ -2,13 +2,16 @@ package com.company.officerservice.unit.application.command;
 
 import com.company.officerservice.application.command.LinkOfficerToCompanyHandler;
 import com.company.officerservice.domain.event.OfficerLinkedToCompanyEvent;
+import com.company.officerservice.domain.exception.CompanyNotFoundException;
 import com.company.officerservice.domain.exception.DuplicateLinkException;
 import com.company.officerservice.domain.exception.OfficerAccessDeniedException;
+import com.company.officerservice.domain.exception.ServiceUnavailableException;
 import com.company.officerservice.domain.model.Address;
 import com.company.officerservice.domain.model.Officer;
 import com.company.officerservice.domain.model.OfficerFullView;
 import com.company.officerservice.domain.model.Role;
 import com.company.officerservice.domain.port.usecases.LinkOfficerToCompanyUseCase;
+import com.company.officerservice.stubs.InMemoryCompanyValidationPort;
 import com.company.officerservice.stubs.InMemoryOfficerCommandRepository;
 import com.company.officerservice.stubs.InMemoryOfficerEventPublisher;
 import com.company.officerservice.stubs.InMemoryOfficerQueryRepository;
@@ -26,6 +29,7 @@ class LinkOfficerToCompanyHandlerTest {
     private InMemoryOfficerCommandRepository commandRepo;
     private InMemoryOfficerQueryRepository queryRepo;
     private InMemoryOfficerEventPublisher publisher;
+    private InMemoryCompanyValidationPort companyValidationPort;
     private LinkOfficerToCompanyHandler handler;
 
     private Officer seedOfficer;
@@ -37,7 +41,9 @@ class LinkOfficerToCompanyHandlerTest {
         commandRepo = new InMemoryOfficerCommandRepository();
         queryRepo = new InMemoryOfficerQueryRepository();
         publisher = new InMemoryOfficerEventPublisher();
-        handler = new LinkOfficerToCompanyHandler(commandRepo, queryRepo, publisher);
+        companyValidationPort = new InMemoryCompanyValidationPort();
+        companyValidationPort.addCompany(companyId);
+        handler = new LinkOfficerToCompanyHandler(commandRepo, queryRepo, publisher, companyValidationPort);
 
         Officer.Created created = Officer.create(
                 "Alice", "Smith", LocalDate.of(1990, 1, 15),
@@ -90,6 +96,26 @@ class LinkOfficerToCompanyHandlerTest {
 
         assertThatThrownBy(() -> handler.link(linkCommand(ownerId, Role.USER, ownerId)))
                 .isInstanceOf(DuplicateLinkException.class);
+
+        assertThat(publisher.publishedEvents()).isEmpty();
+    }
+
+    @Test
+    void linkRejected_whenCompanyDoesNotExist() {
+        companyValidationPort.clear();
+
+        assertThatThrownBy(() -> handler.link(linkCommand(ownerId, Role.USER, ownerId)))
+                .isInstanceOf(CompanyNotFoundException.class);
+
+        assertThat(publisher.publishedEvents()).isEmpty();
+    }
+
+    @Test
+    void linkRejected_whenCompanyServiceUnavailable() {
+        companyValidationPort.setSimulateUnavailable(true);
+
+        assertThatThrownBy(() -> handler.link(linkCommand(ownerId, Role.USER, ownerId)))
+                .isInstanceOf(ServiceUnavailableException.class);
 
         assertThat(publisher.publishedEvents()).isEmpty();
     }

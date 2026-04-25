@@ -16,7 +16,7 @@ public abstract class E2ETestBase {
 
     protected static final String BASE_URL = "http://localhost:8080";
     protected static final String ADMIN_EMAIL = "admin@company.com";
-    protected static final String ADMIN_PASSWORD = "adminpassword123";
+    protected static final String ADMIN_PASSWORD = "admin123";
 
     protected static String adminToken;
 

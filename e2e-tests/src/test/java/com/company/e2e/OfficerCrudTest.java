@@ -94,27 +94,30 @@ class OfficerCrudTest extends E2ETestBase {
         String officerId = createOfficerForCompany(ownerToken, companyId, ownerId);
         String otherUserToken = signUpAndSignIn(randomEmail(), "Password123!");
 
-        // USER role gets restricted view — no companyLinks field
+        // USER role gets restricted view — has companyLinks but no email, phone, dateOfBirth
         auth(otherUserToken)
                 .when()
                 .get("/api/officers/" + officerId)
                 .then()
                 .statusCode(200)
                 .body("id", notNullValue())
-                .body("companyLinks", nullValue());
+                .body("email", nullValue())
+                .body("phone", nullValue());
     }
 
     @Test
-    void unlinkFromCompany_returns200WithEmptyLinks() {
+    void unlinkFromCompany_returns200WithInactiveLink() {
         String officerId = createOfficerForCompany(ownerToken, companyId, ownerId);
 
+        // Unlink marks the link inactive (resignationDate set) rather than removing it
         auth(ownerToken)
                 .queryParam("companyOwnerId", ownerId)
                 .when()
                 .delete("/api/officers/" + officerId + "/links/" + companyId)
                 .then()
                 .statusCode(200)
-                .body("companyLinks", empty());
+                .body("companyLinks", hasSize(1))
+                .body("companyLinks[0].active", equalTo(false));
     }
 
     @Test

@@ -5,6 +5,7 @@ import com.company.companyservice.domain.port.infrastructure.OfficerQueryPort.Of
 import com.company.companyservice.infrastructure.feign.OfficerClientAdapter;
 import com.company.companyservice.infrastructure.feign.OfficerClientDto;
 import com.company.companyservice.infrastructure.feign.OfficerClientFallbackFactory;
+import com.company.companyservice.infrastructure.feign.OfficerCompanyLinkDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +45,7 @@ class OfficerClientAdapterTest {
     void mapsOfficerDto_toOfficerSummary_onSuccessResponse() {
         OfficerClientDto dto = new OfficerClientDto(
                 officerId, "Jane", "Smith",
-                List.of(new OfficerClientDto.CompanyLinkDto(companyId, "CEO")));
+                List.of(new OfficerCompanyLinkDto(companyId, "CEO")));
 
         OfficerClientAdapter adapter = new OfficerClientAdapter(id -> List.of(dto));
 
@@ -62,7 +63,7 @@ class OfficerClientAdapterTest {
     void skipsOfficer_whenNoMatchingCompanyLink() {
         OfficerClientDto dto = new OfficerClientDto(
                 officerId, "Jane", "Smith",
-                List.of(new OfficerClientDto.CompanyLinkDto(UUID.randomUUID(), "CFO")));
+                List.of(new OfficerCompanyLinkDto(UUID.randomUUID(), "CFO")));
 
         OfficerClientAdapter adapter = new OfficerClientAdapter(id -> List.of(dto));
 

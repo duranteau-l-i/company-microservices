@@ -14,6 +14,9 @@ public class CompanyClientFallbackFactory implements FallbackFactory<CompanyClie
     @Override
     public CompanyClient create(Throwable cause) {
         return id -> {
+            if (cause instanceof feign.FeignException.NotFound notFound) {
+                throw notFound;
+            }
             log.warn("company-service unavailable for companyId={}: {}", id, cause.getMessage());
             throw new ServiceUnavailableException("Cannot verify company — try again later");
         };

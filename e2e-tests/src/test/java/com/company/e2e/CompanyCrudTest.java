@@ -59,13 +59,16 @@ class CompanyCrudTest extends E2ETestBase {
 
         String otherToken = signUpAndSignIn(randomEmail(), "Password123!");
 
+        // Restricted view includes id, name, registrationNumber, ownerId, ownerDisplayName, status
+        // but NOT officers, address detail, or timestamps
         auth(otherToken)
                 .when()
                 .get("/api/companies/" + companyId)
                 .then()
                 .statusCode(200)
                 .body("id", equalTo(companyId))
-                .body("ownerId", nullValue());
+                .body("address", nullValue())
+                .body("officers", nullValue());
     }
 
     @Test
@@ -123,7 +126,7 @@ class CompanyCrudTest extends E2ETestBase {
         String mgrEmail = randomEmail();
         adminAuth()
                 .body("""
-                        {"email": "%s", "password": "Password123!", "firstName": "Mgr", "lastName": "Up", "role": "MANAGER"}
+                        {"email": "%s", "password": "Password123!", "firstName": "Mgr", "lastName": "Update", "role": "MANAGER"}
                         """.formatted(mgrEmail))
                 .when()
                 .post("/api/users")

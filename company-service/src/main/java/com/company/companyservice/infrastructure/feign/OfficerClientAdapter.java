@@ -54,7 +54,7 @@ public class OfficerClientAdapter implements OfficerQueryPort {
         }
         String title = dto.companyLinks().stream()
                 .filter(link -> companyId.value().equals(link.companyId()))
-                .map(OfficerClientDto.CompanyLinkDto::title)
+                .map(OfficerCompanyLinkDto::title)
                 .findFirst()
                 .orElse(null);
 

@@ -60,7 +60,7 @@ app:
     public-paths:
       - /api/users/signup
       - /api/users/signin
-      - /api/users/auth/refresh
+      - /api/users/refresh
       - /actuator/health
       - /actuator/info
       - /v3/api-docs/**

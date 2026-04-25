@@ -13,7 +13,7 @@ public class OfficerClientFallbackFactory implements FallbackFactory<OfficerClie
 
     private static final Logger log = LoggerFactory.getLogger(OfficerClientFallbackFactory.class);
 
-    static final ThreadLocal<Boolean> FALLBACK_FIRED = new ThreadLocal<>();
+    public static final ThreadLocal<Boolean> FALLBACK_FIRED = new ThreadLocal<>();
 
     @Override
     public OfficerClient create(Throwable cause) {

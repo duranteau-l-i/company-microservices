@@ -107,7 +107,7 @@ class OfficerEventConsumerIT {
 
         seedCompany(companyId, "Acme Corp", List.of());
 
-        String envelope = buildEnvelope(UUID.randomUUID(), "OfficerLinkedEvent", companyId,
+        String envelope = buildEnvelope(UUID.randomUUID(), "OfficerLinkedToCompanyEvent", officerId,
                 buildLinkedPayload(officerId, companyId, "Alice", "Smith", "CEO"));
 
         testProducer.send("officer-events-officer-it", companyId.toString(), envelope);
@@ -130,7 +130,7 @@ class OfficerEventConsumerIT {
         OfficerSummary officer = new OfficerSummary(officerId, "Bob", "Jones", "CFO");
         seedCompany(companyId, "Beta Ltd", List.of(officer));
 
-        String envelope = buildEnvelope(UUID.randomUUID(), "OfficerUnlinkedEvent", companyId,
+        String envelope = buildEnvelope(UUID.randomUUID(), "OfficerUnlinkedFromCompanyEvent", officerId,
                 buildUnlinkedPayload(officerId, companyId));
 
         testProducer.send("officer-events-officer-it", companyId.toString(), envelope);
@@ -150,7 +150,7 @@ class OfficerEventConsumerIT {
 
         seedCompany(companyId, "Gamma Inc", List.of());
 
-        String envelope = buildEnvelope(eventId, "OfficerLinkedEvent", companyId,
+        String envelope = buildEnvelope(eventId, "OfficerLinkedToCompanyEvent", officerId,
                 buildLinkedPayload(officerId, companyId, "Carol", "White", "CTO"));
 
         testProducer.send("officer-events-officer-it", companyId.toString(), envelope);
@@ -197,7 +197,7 @@ class OfficerEventConsumerIT {
     private Map<String, Object> buildLinkedPayload(UUID officerId, UUID companyId,
                                                     String firstName, String lastName, String title) {
         Map<String, Object> payload = new HashMap<>();
-        payload.put("officerId", officerId.toString());
+        payload.put("aggregateId", officerId.toString());
         payload.put("companyId", companyId.toString());
         payload.put("firstName", firstName);
         payload.put("lastName", lastName);
@@ -207,7 +207,7 @@ class OfficerEventConsumerIT {
 
     private Map<String, Object> buildUnlinkedPayload(UUID officerId, UUID companyId) {
         Map<String, Object> payload = new HashMap<>();
-        payload.put("officerId", officerId.toString());
+        payload.put("aggregateId", officerId.toString());
         payload.put("companyId", companyId.toString());
         return payload;
     }

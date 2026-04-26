@@ -12,6 +12,7 @@ import com.company.officerservice.presentation.controller.RestExceptionHandler;
 import com.company.officerservice.security.JwtAuthenticationFilter;
 import com.company.officerservice.security.JwtTokenValidator;
 import com.company.officerservice.security.SecurityConfig;
+import com.company.officerservice.stubs.InMemoryCompanyValidationPort;
 import com.company.officerservice.stubs.InMemoryOfficerCommandRepository;
 import com.company.officerservice.stubs.InMemoryOfficerQueryRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -70,6 +71,9 @@ class OfficerControllerIT {
     @Autowired
     private InMemoryOfficerQueryRepository queryRepo;
 
+    @Autowired
+    private InMemoryCompanyValidationPort companyValidationPort;
+
     private final UUID ownerId = UUID.randomUUID();
     private final UUID companyId = UUID.randomUUID();
 
@@ -77,6 +81,7 @@ class OfficerControllerIT {
     void clearStubs() {
         commandRepo.clear();
         queryRepo.clear();
+        companyValidationPort.clear();
     }
 
     private Map<String, Object> createRequest() {
@@ -285,6 +290,7 @@ class OfficerControllerIT {
         OfficerFullView view = seedOfficer(ownerId);
         String token = TestJwtHelper.accessToken(ownerId, "owner@test.com", Role.USER);
         UUID newCompanyId = UUID.randomUUID();
+        companyValidationPort.addCompany(newCompanyId);
 
         Map<String, Object> linkRequest = Map.of(
                 "companyId", newCompanyId.toString(),

@@ -54,8 +54,12 @@ public class OfficerEventConsumer {
             JsonNode payload = envelope.get("payload");
 
             switch (eventType) {
-                case "OfficerLinkedEvent" -> handleOfficerLinked(payload);
-                case "OfficerUnlinkedEvent" -> handleOfficerUnlinked(payload);
+                case "OfficerLinkedToCompanyEvent" -> handleOfficerLinked(payload);
+                case "OfficerUnlinkedFromCompanyEvent" -> handleOfficerUnlinked(payload);
+                case "OfficerCreatedEvent",
+                     "OfficerUpdatedEvent",
+                     "OfficerDeletedEvent" ->
+                        log.debug("Ignoring officer event {} — not relevant to company read model", eventType);
                 default -> log.warn("Unknown officer event type: {}", eventType);
             }
 
@@ -67,7 +71,7 @@ public class OfficerEventConsumer {
     }
 
     private void handleOfficerLinked(JsonNode payload) {
-        UUID officerId = UUID.fromString(payload.get("officerId").asText());
+        UUID officerId = UUID.fromString(payload.get("aggregateId").asText());
         UUID companyId = UUID.fromString(payload.get("companyId").asText());
         String firstName = payload.get("firstName").asText();
         String lastName = payload.get("lastName").asText();
@@ -109,7 +113,7 @@ public class OfficerEventConsumer {
     }
 
     private void handleOfficerUnlinked(JsonNode payload) {
-        UUID officerId = UUID.fromString(payload.get("officerId").asText());
+        UUID officerId = UUID.fromString(payload.get("aggregateId").asText());
         UUID companyId = UUID.fromString(payload.get("companyId").asText());
 
         CompanyId id = CompanyId.of(companyId);

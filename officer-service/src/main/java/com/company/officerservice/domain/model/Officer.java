@@ -98,7 +98,7 @@ public final class Officer {
     public Linked linkToCompany(CompanyLink link) {
         boolean duplicate = companyLinks.stream()
                 .filter(CompanyLink::active)
-                .anyMatch(l -> l.companyId().equals(link.companyId()) && l.title().equals(link.title()));
+                .anyMatch(l -> l.companyId().equals(link.companyId()));
         if (duplicate) {
             throw new DuplicateLinkException(link.companyId(), link.title());
         }

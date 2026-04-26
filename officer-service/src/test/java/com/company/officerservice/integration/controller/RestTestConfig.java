@@ -1,5 +1,6 @@
 package com.company.officerservice.integration.controller;
 
+import com.company.officerservice.stubs.InMemoryCompanyValidationPort;
 import com.company.officerservice.stubs.InMemoryOfficerCommandRepository;
 import com.company.officerservice.stubs.InMemoryOfficerEventPublisher;
 import com.company.officerservice.stubs.InMemoryOfficerQueryRepository;
@@ -22,5 +23,10 @@ class RestTestConfig {
     @Bean
     InMemoryOfficerEventPublisher officerEventPublisher() {
         return new InMemoryOfficerEventPublisher();
+    }
+
+    @Bean
+    InMemoryCompanyValidationPort companyValidationPort() {
+        return new InMemoryCompanyValidationPort();
     }
 }

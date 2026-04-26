@@ -71,8 +71,8 @@ class CrossServiceTest extends E2ETestBase {
                 .then()
                 .statusCode(204);
 
-        // Poll: officer's company links should eventually be empty after Kafka propagation
-        awaitNoCompanyLinksForOfficer(adminToken, officerId, 15);
+        // Poll: officer's links to the deleted company should eventually be deactivated (active=false)
+        awaitOfficerLinksDeactivated(adminToken, officerId, companyId, 15);
     }
 
     @Test
@@ -114,12 +114,12 @@ class CrossServiceTest extends E2ETestBase {
         assertThat(false).as("Timed out waiting for officers to appear in company %s", companyId).isTrue();
     }
 
-    // Polls until the officer has no company links remaining.
-    private void awaitNoCompanyLinksForOfficer(String token, String officerId, int timeoutSeconds)
+    // Polls until every officer link to the given company is deactivated (active=false).
+    private void awaitOfficerLinksDeactivated(String token, String officerId, String companyId, int timeoutSeconds)
             throws InterruptedException {
         long deadline = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(timeoutSeconds);
         while (System.currentTimeMillis() < deadline) {
-            List<?> links = given()
+            List<java.util.Map<String, Object>> links = given()
                     .header("Authorization", "Bearer " + token)
                     .when()
                     .get("/api/officers/" + officerId + "/companies")
@@ -127,11 +127,19 @@ class CrossServiceTest extends E2ETestBase {
                     .statusCode(200)
                     .extract()
                     .path("companyLinks");
-            if (links == null || links.isEmpty()) {
-                return;
+            if (links != null) {
+                boolean allDeactivated = links.stream()
+                        .filter(l -> companyId.equals(String.valueOf(l.get("companyId"))))
+                        .allMatch(l -> Boolean.FALSE.equals(l.get("active")));
+                boolean hasMatch = links.stream()
+                        .anyMatch(l -> companyId.equals(String.valueOf(l.get("companyId"))));
+                if (hasMatch && allDeactivated) {
+                    return;
+                }
             }
             Thread.sleep(500);
         }
-        assertThat(false).as("Timed out waiting for officer %s links to be deactivated", officerId).isTrue();
+        assertThat(false).as("Timed out waiting for officer %s links to company %s to be deactivated",
+                officerId, companyId).isTrue();
     }
 }

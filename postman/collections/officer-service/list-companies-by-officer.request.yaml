@@ -1,0 +1,9 @@
+$kind: http-request
+name: List Companies by Officer
+method: GET
+url: "{{officerServiceBaseUrl}}/api/officers/{{officerId}}/companies"
+order: 10000
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"

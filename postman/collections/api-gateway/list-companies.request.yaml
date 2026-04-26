@@ -1,0 +1,9 @@
+$kind: http-request
+name: List Companies (via Gateway)
+method: GET
+url: "{{apiGatewayBaseUrl}}/api/companies"
+order: 9000
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"

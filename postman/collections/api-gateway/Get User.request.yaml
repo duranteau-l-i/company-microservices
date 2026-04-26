@@ -1,0 +1,9 @@
+$kind: http-request
+name: Get User
+method: GET
+url: "{{apiGatewayBaseUrl}}/api/users/{{userId}}"
+order: 5000
+auth:
+  credentials:
+    token: "{{accessToken}}"
+  type: bearer

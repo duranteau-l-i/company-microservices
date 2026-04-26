@@ -1,0 +1,25 @@
+$kind: http-request
+name: Sign In (via Gateway - admin)
+url: "{{apiGatewayBaseUrl}}/api/users/signin"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "email": "admin@company.com",
+      "password": "admin123"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      if (pm.response.code === 200) {
+          const body = JSON.parse(pm.response.body);
+
+          pm.environment.set("accessToken", body.accessToken);
+          pm.environment.set("refreshToken", body.refreshToken);
+          pm.environment.set("expiresIn", body.expiresIn);
+      }
+    language: text/javascript
+order: 3416

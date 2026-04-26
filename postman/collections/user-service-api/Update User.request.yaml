@@ -1,0 +1,18 @@
+$kind: http-request
+url: "{{userServiceBaseUrl}}/api/users/{{userId}}"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "firstName": "AliceUpdated",
+      "lastName": "SmithUpdated",
+      "role": "USER"
+    }
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"
+order: 7117

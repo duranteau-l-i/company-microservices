@@ -10,7 +10,7 @@ scripts:
 
           const companyId = body.id;
 
-          pm.variables.companyId = companyId;
+          pm.environment.set("companyId", companyId);
       }
     language: text/javascript
 order: 4000

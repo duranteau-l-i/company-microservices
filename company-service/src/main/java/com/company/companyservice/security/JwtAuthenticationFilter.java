@@ -21,6 +21,8 @@ import java.util.List;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    public static final ThreadLocal<String> CURRENT_JWT = new ThreadLocal<>();
+
     private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     private final JwtTokenValidator tokenValidator;
@@ -34,12 +36,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain chain) throws ServletException, IOException {
+        CURRENT_JWT.remove();
         String header = request.getHeader("Authorization");
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
             try {
                 Claims claims = tokenValidator.parseClaims(token);
                 if ("access".equals(claims.get("type", String.class))) {
+                    CURRENT_JWT.set(header);
                     String userId = claims.getSubject();
                     String email = claims.get("email", String.class);
                     String role = claims.get("role", String.class);
@@ -56,6 +60,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.clearContext();
             }
         }
-        chain.doFilter(request, response);
+        try {
+            chain.doFilter(request, response);
+        } finally {
+            CURRENT_JWT.remove();
+        }
     }
 }

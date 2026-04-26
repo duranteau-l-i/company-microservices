@@ -1,0 +1,9 @@
+$kind: http-request
+name: Delete User
+url: "{{apiGatewayBaseUrl}}/api/users/{{userId}}"
+method: DELETE
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"
+order: 5866

@@ -9,6 +9,9 @@ values:
   - key: expiresIn
     enabled: true
     value: ''
-  - key: ''
+  - key: userId
+    enabled: true
+    value: ''
+  - key: companyId
     enabled: true
     value: ''

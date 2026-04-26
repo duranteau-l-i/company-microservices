@@ -5,27 +5,17 @@
       "Bash(rtk read:*)",
       "Bash(rtk ls *)",
       "Bash(rtk docker *)",
-      "Bash(mvn -B test -Dtest=\"com.company.userservice.unit.domain.**\")",
       "Bash(mvn -B test-compile)",
-      "Bash(mvn -B test -Dtest=\"com.company.userservice.unit.**\")",
-      "Bash(mvn -B test -Dtest=\"com.company.userservice.integration.persistence.PostgresUserCommandRepositoryIT\")",
       "Bash(docker context *)",
       "Bash(docker version *)",
-      "Bash(DOCKER_HOST=unix:///Users/ludovicduranteau/.docker/run/docker.sock TESTCONTAINERS_HOST_OVERRIDE=localhost mvn -B test -Dtest=\"com.company.userservice.integration.persistence.PostgresUserCommandRepositoryIT\")",
-      "Bash(DOCKER_HOST=unix:///var/run/docker.sock mvn -B test -Dtest=\"com.company.userservice.integration.persistence.PostgresUserCommandRepositoryIT\")",
       "Bash(rtk curl *)",
       "Bash(docker info *)",
       "Bash(rtk find *)",
-      "Read(//private/var/run/**)",
-      "Bash(DOCKER_API_VERSION=1.40 rtk curl -s --unix-socket /Users/ludovicduranteau/.docker/run/docker.sock -H \"Accept: application/json\" http://localhost/_ping)",
       "Bash(docker system *)",
       "Bash(rtk gh *)",
-      "Bash(./mvnw -q test -Dtest=PostgresUserCommandRepositoryIT)",
-      "Bash(mvn -q test -Dtest=PostgresUserCommandRepositoryIT)",
       "Bash(mvn -q dependency:tree)",
       "Bash(mvn dependency:tree)",
       "Bash(mvn dependency:tree -Dverbose)",
-      "Bash(mvn -q -pl user-service compile)",
       "Bash(mvn -q compile)",
       "Bash(mvn -q test-compile)",
       "Bash(mvn -q test -Dtest='*Test')",
@@ -45,8 +35,7 @@
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
       "Bash(mvn -f api-gateway/pom.xml test)",
-      "Bash(mvn -f /Users/ludovicduranteau/Documents/personal/company-microservices/.worktrees/feat/api-gateway/api-gateway/pom.xml test -q)",
-      "Bash(mvn -f /Users/ludovicduranteau/Documents/personal/company-microservices/.worktrees/feat/api-gateway/api-gateway/pom.xml test)"
+      "Bash(rtk mvn *)"
     ]
   }
 }

@@ -1,0 +1,38 @@
+$kind: http-request
+name: Create Officer (via Gateway)
+method: POST
+url: "{{apiGatewayBaseUrl}}/api/officers"
+order: 12000
+headers:
+  Content-Type: application/json
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"
+body:
+  type: json
+  content: |-
+    {
+      "companyId": "{{companyId}}",
+      "companyOwnerId": "{{userId}}",
+      "firstName": "Alice",
+      "lastName": "Smith",
+      "dateOfBirth": "1990-01-15",
+      "nationality": "French",
+      "street": "1 Rue de la Paix",
+      "city": "Paris",
+      "postalCode": "75001",
+      "country": "France",
+      "email": "alice@example.com",
+      "phone": "+33 1 23 45 67 89",
+      "title": "Director",
+      "appointmentDate": "2024-01-01"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      if (pm.response.code === 201) {
+          const body = JSON.parse(pm.response.body);
+          pm.variables.set("officerId", body.id);
+      }
+    language: text/javascript

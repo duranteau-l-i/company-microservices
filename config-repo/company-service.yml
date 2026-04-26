@@ -40,6 +40,8 @@ resilience4j:
         automatic-transition-from-open-to-half-open-enabled: true
 
 feign:
+  circuitbreaker:
+    enabled: false
   client:
     config:
       officer-service:

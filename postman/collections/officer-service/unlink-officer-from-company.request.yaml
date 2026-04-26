@@ -1,0 +1,9 @@
+$kind: http-request
+name: Unlink Officer from Company
+method: DELETE
+url: "{{officerServiceBaseUrl}}/api/officers/{{officerId}}/links/{{companyId}}"
+order: 12000
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"

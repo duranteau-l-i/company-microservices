@@ -1,0 +1,22 @@
+$kind: http-request
+name: Update Company (via Gateway)
+method: PUT
+url: "{{apiGatewayBaseUrl}}/api/companies/{{companyId}}"
+order: 8000
+headers:
+  Content-Type: application/json
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"
+body:
+  type: json
+  content: |-
+    {
+      "name": "Acme Corporation Updated",
+      "registrationNumber": "REG-2026-001-UPDATED",
+      "street": "456 Oak Avenue",
+      "city": "San Jose",
+      "postalCode": "95110",
+      "country": "USA"
+    }

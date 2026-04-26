@@ -1,0 +1,32 @@
+$kind: http-request
+name: Create Company (via Gateway)
+method: POST
+url: "{{apiGatewayBaseUrl}}/api/companies"
+order: 6000
+headers:
+  Content-Type: application/json
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"
+body:
+  type: json
+  content: |-
+    {
+      "name": "Acme Corporation",
+      "registrationNumber": "REG-2026-001",
+      "street": "123 Main Street",
+      "city": "San Francisco",
+      "postalCode": "94102",
+      "country": "USA",
+      "ownerDisplayName": "John Founder"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      if (pm.response.code === 201) {
+          const body = JSON.parse(pm.response.body);
+
+          pm.environment.set("companyId", body.id);
+      }
+    language: text/javascript

@@ -1,0 +1,9 @@
+$kind: http-request
+name: Search Officers
+method: GET
+url: "{{officerServiceBaseUrl}}/api/officers/search?firstName=Alice&lastName=Smith"
+order: 8000
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"

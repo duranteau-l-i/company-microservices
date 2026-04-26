@@ -17,10 +17,11 @@ body:
 scripts:
   - type: afterResponse
     code: |-
-      if (pm.response.code === 201) {
+      if (pm.response.code === 200) {
           const body = JSON.parse(pm.response.body);
-          pm.environment.accessToken = body.accessToken;
-          pm.environment.refreshToken = body.refreshToken;
-          pm.environment.expiresIn = body.expiresIn;
+
+          pm.environment.set("accessToken", body.accessToken);
+          pm.environment.set("refreshToken", body.refreshToken);
+          pm.environment.set("expiresIn", body.expiresIn);
       }
     language: text/javascript

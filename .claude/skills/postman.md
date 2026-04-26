@@ -130,6 +130,31 @@ values:
     value: ''
 ```
 
+## API Gateway Collection
+
+Every service routed through the api-gateway **must** also have its endpoints mirrored in `postman/collections/api-gateway/`. This is mandatory — the gateway collection is the primary E2E test surface.
+
+### Gateway ordering convention
+
+The gateway collection is grouped by service in 1000-increment blocks:
+
+| Order range | Service |
+|---|---|
+| 1000–5000 | user-service (auth + user endpoints) |
+| 6000–11000 | company-service endpoints |
+| 12000–17000 | officer-service endpoints |
+| 18000+ | future services |
+
+Within each block, follow the same 1000-slot logic as service collections.
+
+### Rules for gateway requests
+
+- Use `{{apiGatewayBaseUrl}}` as the base URL (not the service's own base URL).
+- Append `(via Gateway)` to the request name so it is distinct from the per-service copy.
+- Auth and body are identical to the per-service request — only the base URL changes.
+- Capture created resource IDs into `pm.variables` so downstream requests in the same run can use them.
+- Add any new resource ID variable (e.g., `companyId`, `officerId`) to the gateway `collection.yaml` variables block.
+
 ## Adding a New Service
 
 1. Create `postman/collections/<service-name>/collection.yaml` — set the name, port, and variables.
@@ -137,6 +162,7 @@ values:
 3. Add a `.request.yaml` file for every endpoint (see the user-service collection as reference).
 4. Add `<service>BaseUrl` to `postman/environments/local.yaml`.
 5. If the service issues tokens, add an afterResponse script on the signin/signup request to capture them into `pm.environment`.
+6. **Mirror all endpoints in the api-gateway collection** — add one `.request.yaml` per endpoint in `postman/collections/api-gateway/`, using the next free 1000-block in the gateway ordering table above, and add any new resource ID variable to `postman/collections/api-gateway/collection.yaml`.
 
 ## Adding a New Endpoint
 
@@ -144,7 +170,8 @@ values:
 2. Pick an `order:` value in the right 1000-slot.
 3. Set correct method, URL, auth, and body matching the current DTO.
 4. If the response creates a resource, capture its `id` into a `pm.variables` entry for use by downstream requests.
+5. **Add the matching gateway request** to `postman/collections/api-gateway/` following the gateway rules above.
 
 ## Keeping Requests in Sync with DTOs
 
-When a DTO field is added, removed, or renamed — update the matching request body in the collection. The Postman body is the living example of what the endpoint accepts.
+When a DTO field is added, removed, or renamed — update the matching request body in both the service collection and the api-gateway collection. The Postman body is the living example of what the endpoint accepts.

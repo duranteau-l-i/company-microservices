@@ -7,10 +7,11 @@ import com.company.companyservice.domain.model.CompanyFullView;
 import com.company.companyservice.domain.model.CompanyId;
 import com.company.companyservice.domain.model.CompanyRestrictedView;
 import com.company.companyservice.domain.model.CompanyStatus;
-import com.company.companyservice.domain.model.CompanyView;
+import com.company.companyservice.domain.model.OfficerSummary;
 import com.company.companyservice.domain.model.Role;
 import com.company.companyservice.domain.port.usecases.GetCompanyUseCase;
-import com.company.companyservice.unit.application.stubs.InMemoryCompanyQueryRepository;
+import com.company.companyservice.stubs.InMemoryCompanyQueryRepository;
+import com.company.companyservice.stubs.InMemoryOfficerQueryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,12 +28,14 @@ class GetCompanyHandlerTest {
     private static final CompanyId COMPANY_ID = CompanyId.generate();
 
     private InMemoryCompanyQueryRepository queryRepo;
+    private InMemoryOfficerQueryPort officerQueryPort;
     private GetCompanyHandler handler;
 
     @BeforeEach
     void setUp() {
         queryRepo = new InMemoryCompanyQueryRepository();
-        handler = new GetCompanyHandler(queryRepo);
+        officerQueryPort = new InMemoryOfficerQueryPort();
+        handler = new GetCompanyHandler(queryRepo, officerQueryPort);
 
         CompanyFullView seeded = new CompanyFullView(
                 COMPANY_ID,
@@ -54,9 +57,10 @@ class GetCompanyHandlerTest {
         UUID callerId = UUID.randomUUID();
         GetCompanyUseCase.Query query = new GetCompanyUseCase.Query(callerId, Role.ADMIN, COMPANY_ID);
 
-        CompanyView result = handler.get(query);
+        GetCompanyUseCase.Result result = handler.get(query);
 
-        assertThat(result).isInstanceOf(CompanyFullView.class);
+        assertThat(result.view()).isInstanceOf(CompanyFullView.class);
+        assertThat(result.warnings()).isEmpty();
     }
 
     @Test
@@ -64,18 +68,20 @@ class GetCompanyHandlerTest {
         UUID callerId = UUID.randomUUID();
         GetCompanyUseCase.Query query = new GetCompanyUseCase.Query(callerId, Role.MANAGER, COMPANY_ID);
 
-        CompanyView result = handler.get(query);
+        GetCompanyUseCase.Result result = handler.get(query);
 
-        assertThat(result).isInstanceOf(CompanyFullView.class);
+        assertThat(result.view()).isInstanceOf(CompanyFullView.class);
+        assertThat(result.warnings()).isEmpty();
     }
 
     @Test
     void ownerSeesFullView() {
         GetCompanyUseCase.Query query = new GetCompanyUseCase.Query(OWNER_ID, Role.USER, COMPANY_ID);
 
-        CompanyView result = handler.get(query);
+        GetCompanyUseCase.Result result = handler.get(query);
 
-        assertThat(result).isInstanceOf(CompanyFullView.class);
+        assertThat(result.view()).isInstanceOf(CompanyFullView.class);
+        assertThat(result.warnings()).isEmpty();
     }
 
     @Test
@@ -83,9 +89,37 @@ class GetCompanyHandlerTest {
         UUID otherUserId = UUID.randomUUID();
         GetCompanyUseCase.Query query = new GetCompanyUseCase.Query(otherUserId, Role.USER, COMPANY_ID);
 
-        CompanyView result = handler.get(query);
+        GetCompanyUseCase.Result result = handler.get(query);
 
-        assertThat(result).isInstanceOf(CompanyRestrictedView.class);
+        assertThat(result.view()).isInstanceOf(CompanyRestrictedView.class);
+        assertThat(result.warnings()).isEmpty();
+    }
+
+    @Test
+    void fullViewIncludesOfficers() {
+        OfficerSummary officer = new OfficerSummary(UUID.randomUUID(), "John", "Doe", "Director");
+        officerQueryPort.addOfficer(COMPANY_ID, officer);
+
+        GetCompanyUseCase.Query query = new GetCompanyUseCase.Query(OWNER_ID, Role.USER, COMPANY_ID);
+        GetCompanyUseCase.Result result = handler.get(query);
+
+        assertThat(result.view()).isInstanceOf(CompanyFullView.class);
+        CompanyFullView full = (CompanyFullView) result.view();
+        assertThat(full.officers()).containsExactly(officer);
+        assertThat(result.warnings()).isEmpty();
+    }
+
+    @Test
+    void fallbackAddsWarning() {
+        officerQueryPort.setSimulateFallback(true);
+
+        GetCompanyUseCase.Query query = new GetCompanyUseCase.Query(OWNER_ID, Role.USER, COMPANY_ID);
+        GetCompanyUseCase.Result result = handler.get(query);
+
+        assertThat(result.view()).isInstanceOf(CompanyFullView.class);
+        CompanyFullView full = (CompanyFullView) result.view();
+        assertThat(full.officers()).isEmpty();
+        assertThat(result.warnings()).containsExactly("Officer service temporarily unavailable");
     }
 
     @Test

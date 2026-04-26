@@ -1,0 +1,26 @@
+$kind: http-request
+name: Update Officer (via Gateway)
+method: PUT
+url: "{{apiGatewayBaseUrl}}/api/officers/{{officerId}}"
+order: 13000
+headers:
+  Content-Type: application/json
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"
+body:
+  type: json
+  content: |-
+    {
+      "firstName": "Alice",
+      "lastName": "Dupont",
+      "dateOfBirth": "1990-01-15",
+      "nationality": "French",
+      "street": "2 Avenue des Champs",
+      "city": "Paris",
+      "postalCode": "75008",
+      "country": "France",
+      "email": "alice.dupont@example.com",
+      "phone": "+33 1 23 45 67 89"
+    }

@@ -1,9 +1,10 @@
 $kind: http-request
-name: Delete Officer (via Gateway)
+name: Delete Officer
 method: DELETE
 url: "{{apiGatewayBaseUrl}}/api/officers/{{officerId}}"
-order: 15000
+order: 4501105926753920
 auth:
-  type: bearer
   credentials:
-    token: "{{accessToken}}"
+    - key: token
+      value: "{{accessToken}}"
+  type: bearer

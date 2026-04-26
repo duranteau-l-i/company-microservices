@@ -1,0 +1,10 @@
+$kind: http-request
+name: List Companies
+method: GET
+url: "{{apiGatewayBaseUrl}}/api/companies"
+order: 4031740713835513
+auth:
+  credentials:
+    - key: token
+      value: "{{accessToken}}"
+  type: bearer

@@ -1,16 +1,16 @@
 $kind: http-request
-name: Sign In (via Gateway)
-method: POST
+name: Sign In - Admin
 url: "{{apiGatewayBaseUrl}}/api/users/signin"
-order: 3000
+method: POST
 headers:
-  Content-Type: application/json
+  - key: Content-Type
+    value: application/json
 body:
   type: json
   content: |-
     {
-      "email": "alice@example.com",
-      "password": "password123"
+      "email": "admin@company.com",
+      "password": "admin123"
     }
 scripts:
   - type: afterResponse
@@ -23,3 +23,4 @@ scripts:
           pm.environment.set("expiresIn", body.expiresIn);
       }
     language: text/javascript
+order: 3802228159499587

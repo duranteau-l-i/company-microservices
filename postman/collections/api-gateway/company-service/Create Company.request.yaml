@@ -1,14 +1,16 @@
 $kind: http-request
-name: Create Company (via Gateway)
+name: Create Company
 method: POST
 url: "{{apiGatewayBaseUrl}}/api/companies"
-order: 6000
+order: 1777222513797
 headers:
-  Content-Type: application/json
+  - key: Content-Type
+    value: application/json
 auth:
-  type: bearer
   credentials:
-    token: "{{accessToken}}"
+    - key: token
+      value: "{{accessToken}}"
+  type: bearer
 body:
   type: json
   content: |-

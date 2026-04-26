@@ -1,14 +1,16 @@
 $kind: http-request
-name: Update Company (via Gateway)
+name: Update Company
 method: PUT
 url: "{{apiGatewayBaseUrl}}/api/companies/{{companyId}}"
-order: 8000
+order: 2216218491729977
 headers:
-  Content-Type: application/json
+  - key: Content-Type
+    value: application/json
 auth:
-  type: bearer
   credentials:
-    token: "{{accessToken}}"
+    - key: token
+      value: "{{accessToken}}"
+  type: bearer
 body:
   type: json
   content: |-

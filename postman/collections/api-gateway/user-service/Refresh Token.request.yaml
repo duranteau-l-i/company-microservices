@@ -1,10 +1,11 @@
 $kind: http-request
-name: Refresh Token (via Gateway)
+name: Refresh Token
 method: POST
 url: "{{apiGatewayBaseUrl}}/api/users/auth/refresh"
-order: 4000
+order: 4376680451805201
 headers:
-  Content-Type: application/json
+  - key: Content-Type
+    value: application/json
 body:
   type: json
   content: |-

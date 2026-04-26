@@ -1,18 +1,17 @@
 $kind: http-request
-name: Sign Up (via Gateway)
+name: Sign In
 method: POST
-url: "{{apiGatewayBaseUrl}}/api/users/signup"
-order: 2000
+url: "{{apiGatewayBaseUrl}}/api/users/signin"
+order: 2656696315611301
 headers:
-  Content-Type: application/json
+  - key: Content-Type
+    value: application/json
 body:
   type: json
   content: |-
     {
       "email": "alice@example.com",
-      "password": "password123",
-      "firstName": "Alice",
-      "lastName": "Smith"
+      "password": "password123"
     }
 scripts:
   - type: afterResponse

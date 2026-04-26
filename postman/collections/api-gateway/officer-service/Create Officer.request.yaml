@@ -1,14 +1,16 @@
 $kind: http-request
-name: Create Officer (via Gateway)
+name: Create Officer
 method: POST
 url: "{{apiGatewayBaseUrl}}/api/officers"
-order: 12000
+order: 1777222555597
 headers:
-  Content-Type: application/json
+  - key: Content-Type
+    value: application/json
 auth:
-  type: bearer
   credentials:
-    token: "{{accessToken}}"
+    - key: token
+      value: "{{accessToken}}"
+  type: bearer
 body:
   type: json
   content: |-

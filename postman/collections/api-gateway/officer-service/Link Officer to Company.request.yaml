@@ -1,14 +1,16 @@
 $kind: http-request
-name: Link Officer to Company (via Gateway)
+name: Link Officer to Company
 method: POST
 url: "{{apiGatewayBaseUrl}}/api/officers/{{officerId}}/links"
-order: 14000
+order: 4500030889285896
 headers:
-  Content-Type: application/json
+  - key: Content-Type
+    value: application/json
 auth:
-  type: bearer
   credentials:
-    token: "{{accessToken}}"
+    - key: token
+      value: "{{accessToken}}"
+  type: bearer
 body:
   type: json
   content: |-

@@ -1,9 +1,10 @@
 $kind: http-request
-name: Unlink Officer from Company (via Gateway)
+name: Unlink Officer from Company
 method: DELETE
 url: "{{apiGatewayBaseUrl}}/api/officers/{{officerId}}/links/{{companyId}}"
-order: 15000
+order: 4502010334288450
 auth:
-  type: bearer
   credentials:
-    token: "{{accessToken}}"
+    - key: token
+      value: "{{accessToken}}"
+  type: bearer

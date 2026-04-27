@@ -15,3 +15,6 @@ values:
   - key: companyId
     enabled: true
     value: ''
+  - key: officerId
+    enabled: true
+    value: ''

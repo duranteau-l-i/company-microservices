@@ -59,6 +59,13 @@ public class InMemoryCompanyQueryRepository implements CompanyQueryRepository {
         store.remove(id);
     }
 
+    @Override
+    public List<CompanyFullView> findCompaniesContainingOfficer(UUID officerId) {
+        return store.values().stream()
+                .filter(v -> v.officers() != null && v.officers().stream().anyMatch(o -> o.officerId().equals(officerId)))
+                .toList();
+    }
+
     public void clear() {
         store.clear();
     }

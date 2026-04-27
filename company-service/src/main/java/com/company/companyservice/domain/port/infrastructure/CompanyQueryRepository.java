@@ -16,4 +16,5 @@ public interface CompanyQueryRepository {
     List<CompanyRestrictedView> search(String query);
     CompanyFullView save(CompanyFullView view);
     void deleteById(CompanyId id);
+    List<CompanyFullView> findCompaniesContainingOfficer(UUID officerId);
 }

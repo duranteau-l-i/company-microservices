@@ -56,10 +56,10 @@ public class OfficerEventConsumer {
             switch (eventType) {
                 case "OfficerLinkedToCompanyEvent" -> handleOfficerLinked(payload);
                 case "OfficerUnlinkedFromCompanyEvent" -> handleOfficerUnlinked(payload);
-                case "OfficerCreatedEvent",
-                     "OfficerUpdatedEvent",
-                     "OfficerDeletedEvent" ->
-                        log.debug("Ignoring officer event {} — not relevant to company read model", eventType);
+                case "OfficerUpdatedEvent" -> handleOfficerUpdated(payload);
+                case "OfficerDeletedEvent" -> handleOfficerDeleted(payload);
+                case "OfficerCreatedEvent" ->
+                        log.debug("Ignoring OfficerCreatedEvent — read model only stores officers linked to a company");
                 default -> log.warn("Unknown officer event type: {}", eventType);
             }
 
@@ -142,5 +142,45 @@ public class OfficerEventConsumer {
                 updatedOfficers
         );
         queryRepository.save(updated);
+    }
+
+    private void handleOfficerUpdated(JsonNode payload) {
+        UUID officerId = UUID.fromString(payload.get("aggregateId").asText());
+        String firstName = payload.get("firstName").asText();
+        String lastName = payload.get("lastName").asText();
+
+        for (CompanyFullView current : queryRepository.findCompaniesContainingOfficer(officerId)) {
+            List<OfficerSummary> updatedOfficers = current.officers().stream()
+                    .map(o -> o.officerId().equals(officerId)
+                            ? new OfficerSummary(o.officerId(), firstName, lastName, o.title())
+                            : o)
+                    .toList();
+            queryRepository.save(rebuildWith(current, updatedOfficers));
+        }
+    }
+
+    private void handleOfficerDeleted(JsonNode payload) {
+        UUID officerId = UUID.fromString(payload.get("aggregateId").asText());
+        for (CompanyFullView current : queryRepository.findCompaniesContainingOfficer(officerId)) {
+            List<OfficerSummary> remaining = current.officers().stream()
+                    .filter(o -> !o.officerId().equals(officerId))
+                    .toList();
+            queryRepository.save(rebuildWith(current, remaining));
+        }
+    }
+
+    private static CompanyFullView rebuildWith(CompanyFullView current, List<OfficerSummary> officers) {
+        return new CompanyFullView(
+                current.id(),
+                current.name(),
+                current.registrationNumber(),
+                current.address(),
+                current.ownerId(),
+                current.ownerDisplayName(),
+                current.status(),
+                current.createdAt(),
+                current.updatedAt(),
+                officers
+        );
     }
 }

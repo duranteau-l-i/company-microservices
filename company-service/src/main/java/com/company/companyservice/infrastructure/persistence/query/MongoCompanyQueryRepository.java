@@ -58,4 +58,11 @@ public class MongoCompanyQueryRepository implements CompanyQueryRepository {
     public void deleteById(CompanyId id) {
         mongo.deleteById(id.value());
     }
+
+    @Override
+    public List<CompanyFullView> findCompaniesContainingOfficer(UUID officerId) {
+        return mongo.findByOfficers_OfficerId(officerId).stream()
+                .map(CompanyDocumentMapper::toFullView)
+                .toList();
+    }
 }

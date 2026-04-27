@@ -10,4 +10,6 @@ public interface CompanyMongoRepository extends MongoRepository<CompanyDocument,
     List<CompanyDocument> findByOwnerId(UUID ownerId);
 
     List<CompanyDocument> findByNameContainingIgnoreCase(String name);
+
+    List<CompanyDocument> findByOfficers_OfficerId(UUID officerId);
 }

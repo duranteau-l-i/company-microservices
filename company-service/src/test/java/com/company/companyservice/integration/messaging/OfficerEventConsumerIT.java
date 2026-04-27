@@ -166,6 +166,64 @@ class OfficerEventConsumerIT {
         });
     }
 
+    @Test
+    void officerUpdatedEvent_refreshesEmbeddedFirstNameLastName() throws Exception {
+        UUID companyId = UUID.randomUUID();
+        UUID officerId = UUID.randomUUID();
+
+        OfficerSummary officer = new OfficerSummary(officerId, "Alice", "Smith", "CEO");
+        seedCompany(companyId, "Acme Corp", List.of(officer));
+
+        Map<String, Object> updatedPayload = new HashMap<>();
+        updatedPayload.put("aggregateId", officerId.toString());
+        updatedPayload.put("firstName", "Alicia");
+        updatedPayload.put("lastName", "Smithson");
+        updatedPayload.put("email", "alicia@example.com");
+        updatedPayload.put("phone", null);
+        updatedPayload.put("dateOfBirth", "1990-01-01");
+        updatedPayload.put("nationality", "FR");
+
+        String envelope = buildEnvelope(UUID.randomUUID(), "OfficerUpdatedEvent", officerId, updatedPayload);
+        testProducer.send("officer-events-officer-it", officerId.toString(), envelope);
+
+        await().atMost(15, TimeUnit.SECONDS).untilAsserted(() -> {
+            Optional<CompanyFullView> found = findById(companyId);
+            assertThat(found).isPresent();
+            assertThat(found.get().officers()).hasSize(1);
+            assertThat(found.get().officers().get(0).firstName()).isEqualTo("Alicia");
+            assertThat(found.get().officers().get(0).lastName()).isEqualTo("Smithson");
+            assertThat(found.get().officers().get(0).title()).isEqualTo("CEO");
+        });
+    }
+
+    @Test
+    void officerDeletedEvent_removesOfficerFromAllCompanies() throws Exception {
+        UUID companyAId = UUID.randomUUID();
+        UUID companyBId = UUID.randomUUID();
+        UUID officerId = UUID.randomUUID();
+
+        OfficerSummary officer = new OfficerSummary(officerId, "Bob", "Jones", "CFO");
+        seedCompany(companyAId, "Alpha Corp", List.of(officer));
+        seedCompany(companyBId, "Beta Ltd", List.of(officer));
+
+        Map<String, Object> deletedPayload = new HashMap<>();
+        deletedPayload.put("aggregateId", officerId.toString());
+        deletedPayload.put("firstName", "Bob");
+        deletedPayload.put("lastName", "Jones");
+
+        String envelope = buildEnvelope(UUID.randomUUID(), "OfficerDeletedEvent", officerId, deletedPayload);
+        testProducer.send("officer-events-officer-it", officerId.toString(), envelope);
+
+        await().atMost(15, TimeUnit.SECONDS).untilAsserted(() -> {
+            Optional<CompanyFullView> foundA = findById(companyAId);
+            Optional<CompanyFullView> foundB = findById(companyBId);
+            assertThat(foundA).isPresent();
+            assertThat(foundB).isPresent();
+            assertThat(foundA.get().officers()).isEmpty();
+            assertThat(foundB.get().officers()).isEmpty();
+        });
+    }
+
     // ---- helpers ----
 
     private void seedCompany(UUID companyId, String name, List<OfficerSummary> officers) {

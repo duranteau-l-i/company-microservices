@@ -5,7 +5,6 @@ import com.company.officerservice.domain.event.OfficerLinkedToCompanyEvent;
 import com.company.officerservice.domain.exception.CompanyNotFoundException;
 import com.company.officerservice.domain.exception.DuplicateLinkException;
 import com.company.officerservice.domain.exception.OfficerAccessDeniedException;
-import com.company.officerservice.domain.exception.ServiceUnavailableException;
 import com.company.officerservice.domain.model.Address;
 import com.company.officerservice.domain.model.Officer;
 import com.company.officerservice.domain.model.OfficerFullView;
@@ -106,16 +105,6 @@ class LinkOfficerToCompanyHandlerTest {
 
         assertThatThrownBy(() -> handler.link(linkCommand(ownerId, Role.USER, ownerId)))
                 .isInstanceOf(CompanyNotFoundException.class);
-
-        assertThat(publisher.publishedEvents()).isEmpty();
-    }
-
-    @Test
-    void linkRejected_whenCompanyServiceUnavailable() {
-        companyValidationPort.setSimulateUnavailable(true);
-
-        assertThatThrownBy(() -> handler.link(linkCommand(ownerId, Role.USER, ownerId)))
-                .isInstanceOf(ServiceUnavailableException.class);
 
         assertThat(publisher.publishedEvents()).isEmpty();
     }

@@ -13,12 +13,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public class PostgresOfficerCommandRepository implements OfficerCommandRepository {
+public class OfficerCommandRepositoryAdapter implements OfficerCommandRepository {
 
-    private final OfficerJpaRepository jpa;
+    private final OfficerEntityRepository jpa;
     private final EntityManager em;
 
-    public PostgresOfficerCommandRepository(OfficerJpaRepository jpa, EntityManager em) {
+    public OfficerCommandRepositoryAdapter(OfficerEntityRepository jpa, EntityManager em) {
         this.jpa = jpa;
         this.em = em;
     }
@@ -30,18 +30,18 @@ public class PostgresOfficerCommandRepository implements OfficerCommandRepositor
         // Explicitly delete existing links before re-inserting to avoid unique constraint
         // violations caused by Hibernate's INSERT-before-DELETE ordering with orphanRemoval.
         if (jpa.existsById(id)) {
-            em.createQuery("DELETE FROM CompanyLinkJpaEntity l WHERE l.officer.id = :id")
+            em.createQuery("DELETE FROM CompanyLinkEntity l WHERE l.officer.id = :id")
                     .setParameter("id", id)
                     .executeUpdate();
         }
-        OfficerJpaEntity saved = jpa.save(OfficerJpaMapper.toEntity(officer));
-        return OfficerJpaMapper.toDomain(saved);
+        OfficerEntity saved = jpa.save(OfficerEntityMapper.toEntity(officer));
+        return OfficerEntityMapper.toDomain(saved);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<Officer> findById(OfficerId id) {
-        return jpa.findById(id.value()).map(OfficerJpaMapper::toDomain);
+        return jpa.findById(id.value()).map(OfficerEntityMapper::toDomain);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class PostgresOfficerCommandRepository implements OfficerCommandRepositor
     public List<Officer> findByNameAndDateOfBirth(String firstName, String lastName, LocalDate dateOfBirth) {
         return jpa.findByFirstNameIgnoreCaseAndLastNameIgnoreCaseAndDateOfBirth(firstName, lastName, dateOfBirth)
                 .stream()
-                .map(OfficerJpaMapper::toDomain)
+                .map(OfficerEntityMapper::toDomain)
                 .toList();
     }
 

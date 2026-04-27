@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 @Component
-public class MongoCompanyValidationAdapter implements CompanyValidationPort {
+public class CompanyValidationAdapter implements CompanyValidationPort {
 
-    private final KnownCompanyMongoRepository repository;
+    private final KnownCompanyRepository repository;
 
-    public MongoCompanyValidationAdapter(KnownCompanyMongoRepository repository) {
+    public CompanyValidationAdapter(KnownCompanyRepository repository) {
         this.repository = repository;
     }
 

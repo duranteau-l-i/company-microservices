@@ -13,14 +13,14 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "company_links")
-public class CompanyLinkJpaEntity {
+public class CompanyLinkEntity {
 
     @Id
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "officer_id", nullable = false)
-    private OfficerJpaEntity officer;
+    private OfficerEntity officer;
 
     @Column(name = "company_id", nullable = false)
     private UUID companyId;
@@ -37,9 +37,9 @@ public class CompanyLinkJpaEntity {
     @Column(nullable = false)
     private boolean active;
 
-    protected CompanyLinkJpaEntity() {}
+    protected CompanyLinkEntity() {}
 
-    public CompanyLinkJpaEntity(UUID id, OfficerJpaEntity officer, UUID companyId,
+    public CompanyLinkEntity(UUID id, OfficerEntity officer, UUID companyId,
                                 String title, LocalDate appointmentDate,
                                 LocalDate resignationDate, boolean active) {
         this.id = id;
@@ -52,7 +52,7 @@ public class CompanyLinkJpaEntity {
     }
 
     public UUID getId() { return id; }
-    public OfficerJpaEntity getOfficer() { return officer; }
+    public OfficerEntity getOfficer() { return officer; }
     public UUID getCompanyId() { return companyId; }
     public String getTitle() { return title; }
     public LocalDate getAppointmentDate() { return appointmentDate; }

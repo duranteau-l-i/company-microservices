@@ -6,8 +6,8 @@ import com.company.officerservice.domain.model.CompanyLink;
 import com.company.officerservice.domain.model.Officer;
 import com.company.officerservice.domain.model.OfficerFullView;
 import com.company.officerservice.infrastructure.persistence.query.KnownCompanyDocument;
-import com.company.officerservice.infrastructure.persistence.query.KnownCompanyMongoRepository;
-import com.company.officerservice.infrastructure.persistence.query.ProcessedEventMongoRepository;
+import com.company.officerservice.infrastructure.persistence.query.KnownCompanyRepository;
+import com.company.officerservice.infrastructure.persistence.query.ProcessedEventRepository;
 import com.company.officerservice.presentation.consumer.CompanyEventConsumer;
 import com.company.officerservice.stubs.InMemoryOfficerCommandRepository;
 import com.company.officerservice.stubs.InMemoryOfficerQueryRepository;
@@ -77,10 +77,10 @@ class CompanyEventConsumerIT {
     }
 
     @Autowired
-    KnownCompanyMongoRepository knownCompanyRepository;
+    KnownCompanyRepository knownCompanyRepository;
 
     @Autowired
-    ProcessedEventMongoRepository processedEventMongoRepository;
+    ProcessedEventRepository processedEventRepository;
 
     @Autowired
     InMemoryOfficerCommandRepository commandRepository;
@@ -98,7 +98,7 @@ class CompanyEventConsumerIT {
     @BeforeEach
     void setUp() {
         knownCompanyRepository.deleteAll();
-        processedEventMongoRepository.deleteAll();
+        processedEventRepository.deleteAll();
         commandRepository.clear();
         queryRepository.clear();
 
@@ -190,7 +190,7 @@ class CompanyEventConsumerIT {
         testProducer.send("company-events-company-consumer-it", companyId.toString(), envelope);
 
         await().atMost(15, TimeUnit.SECONDS).untilAsserted(() ->
-                assertThat(processedEventMongoRepository.existsById(eventId)).isTrue());
+                assertThat(processedEventRepository.existsById(eventId)).isTrue());
 
         // Wait a bit then verify only one entry exists in known_companies
         await().during(2, TimeUnit.SECONDS).atMost(5, TimeUnit.SECONDS).untilAsserted(() ->

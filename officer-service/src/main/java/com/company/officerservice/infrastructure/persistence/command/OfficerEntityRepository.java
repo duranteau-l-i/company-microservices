@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-public interface OfficerJpaRepository extends JpaRepository<OfficerJpaEntity, UUID> {
-    List<OfficerJpaEntity> findByFirstNameIgnoreCaseAndLastNameIgnoreCaseAndDateOfBirth(
+public interface OfficerEntityRepository extends JpaRepository<OfficerEntity, UUID> {
+    List<OfficerEntity> findByFirstNameIgnoreCaseAndLastNameIgnoreCaseAndDateOfBirth(
             String firstName, String lastName, LocalDate dateOfBirth);
 }

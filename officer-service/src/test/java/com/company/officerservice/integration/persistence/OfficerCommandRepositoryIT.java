@@ -3,7 +3,7 @@ package com.company.officerservice.integration.persistence;
 import com.company.officerservice.domain.model.Address;
 import com.company.officerservice.domain.model.CompanyLink;
 import com.company.officerservice.domain.model.Officer;
-import com.company.officerservice.infrastructure.persistence.command.PostgresOfficerCommandRepository;
+import com.company.officerservice.infrastructure.persistence.command.OfficerCommandRepositoryAdapter;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +25,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(PostgresOfficerCommandRepository.class)
+@Import(OfficerCommandRepositoryAdapter.class)
 @Testcontainers
-class PostgresOfficerCommandRepositoryIT {
+class OfficerCommandRepositoryIT {
 
     @Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine");
@@ -46,7 +46,7 @@ class PostgresOfficerCommandRepositoryIT {
     }
 
     @Autowired
-    PostgresOfficerCommandRepository repository;
+    OfficerCommandRepositoryAdapter repository;
 
     @Autowired
     EntityManager entityManager;

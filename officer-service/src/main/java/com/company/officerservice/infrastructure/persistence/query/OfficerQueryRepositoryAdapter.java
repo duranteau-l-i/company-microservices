@@ -15,29 +15,29 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public class MongoOfficerQueryRepository implements OfficerQueryRepository {
+public class OfficerQueryRepositoryAdapter implements OfficerQueryRepository {
 
-    private final OfficerMongoRepository mongo;
+    private final OfficerDocumentRepository documentRepository;
     private final MongoTemplate mongoTemplate;
 
-    public MongoOfficerQueryRepository(OfficerMongoRepository mongo, MongoTemplate mongoTemplate) {
-        this.mongo = mongo;
+    public OfficerQueryRepositoryAdapter(OfficerDocumentRepository documentRepository, MongoTemplate mongoTemplate) {
+        this.documentRepository = documentRepository;
         this.mongoTemplate = mongoTemplate;
     }
 
     @Override
     public Optional<OfficerFullView> findFullById(OfficerId id) {
-        return mongo.findById(id.value()).map(OfficerDocumentMapper::toFullView);
+        return documentRepository.findById(id.value()).map(OfficerDocumentMapper::toFullView);
     }
 
     @Override
     public Optional<OfficerRestrictedView> findRestrictedById(OfficerId id) {
-        return mongo.findById(id.value()).map(OfficerDocumentMapper::toRestrictedView);
+        return documentRepository.findById(id.value()).map(OfficerDocumentMapper::toRestrictedView);
     }
 
     @Override
     public List<OfficerFullView> findByCompanyId(UUID companyId) {
-        return mongo.findByActiveCompanyId(companyId).stream()
+        return documentRepository.findByActiveCompanyId(companyId).stream()
                 .map(OfficerDocumentMapper::toFullView)
                 .toList();
     }
@@ -64,12 +64,12 @@ public class MongoOfficerQueryRepository implements OfficerQueryRepository {
 
     @Override
     public OfficerFullView save(OfficerFullView view) {
-        OfficerDocument saved = mongo.save(OfficerDocumentMapper.toDocument(view));
+        OfficerDocument saved = documentRepository.save(OfficerDocumentMapper.toDocument(view));
         return OfficerDocumentMapper.toFullView(saved);
     }
 
     @Override
     public void deleteById(OfficerId id) {
-        mongo.deleteById(id.value());
+        documentRepository.deleteById(id.value());
     }
 }

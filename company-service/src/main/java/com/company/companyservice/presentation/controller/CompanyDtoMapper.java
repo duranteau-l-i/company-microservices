@@ -11,10 +11,6 @@ import java.util.List;
 public class CompanyDtoMapper {
 
     public CompanyFullResponse toFullResponse(CompanyFullView view) {
-        return toFullResponse(view, List.of());
-    }
-
-    public CompanyFullResponse toFullResponse(CompanyFullView view, List<String> warnings) {
         AddressResponse addressResponse = new AddressResponse(
                 view.address().street(),
                 view.address().city(),
@@ -36,8 +32,7 @@ public class CompanyDtoMapper {
                 view.status().name(),
                 view.createdAt().toString(),
                 view.updatedAt().toString(),
-                officers,
-                warnings
+                officers
         );
     }
 

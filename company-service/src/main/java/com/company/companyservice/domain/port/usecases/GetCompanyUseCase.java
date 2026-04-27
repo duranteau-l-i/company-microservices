@@ -4,7 +4,6 @@ import com.company.companyservice.domain.model.CompanyId;
 import com.company.companyservice.domain.model.CompanyView;
 import com.company.companyservice.domain.model.Role;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface GetCompanyUseCase {
@@ -12,5 +11,5 @@ public interface GetCompanyUseCase {
 
     record Query(UUID callerId, Role callerRole, CompanyId companyId) {}
 
-    record Result(CompanyView view, List<String> warnings) {}
+    record Result(CompanyView view) {}
 }

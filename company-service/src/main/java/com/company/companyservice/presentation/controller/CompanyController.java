@@ -90,7 +90,7 @@ public class CompanyController {
         );
         GetCompanyUseCase.Result result = getCompanyUseCase.get(query);
         Object response = switch (result.view()) {
-            case CompanyFullView full -> mapper.toFullResponse(full, result.warnings());
+            case CompanyFullView full -> mapper.toFullResponse(full);
             case CompanyRestrictedView restricted -> mapper.toRestrictedResponse(restricted);
         };
         return ResponseEntity.ok(response);

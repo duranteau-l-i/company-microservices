@@ -2,7 +2,7 @@
 
 ## When to Use
 
-When implementing synchronous inter-service communication with fault tolerance.
+When implementing synchronous inter-service communication with fault tolerance for **new** requirements. This pattern is currently **not used** in this project — all inter-service communication between business services is event-driven via Kafka. Refer to the `kafka-events` skill for the current approach.
 
 ## Feign Clients
 
@@ -29,10 +29,9 @@ Per client:
 
 ## Existing Feign Clients
 
-| Caller | Target | Purpose |
-|---|---|---|
-| company-service | officer-service | Fetch officers for a company |
-| officer-service | company-service | Validate companyId exists before linking |
+This project no longer uses Feign. All inter-service communication is event-driven via Kafka:
+- `company-service` reads officer data from its own MongoDB projection (`CompanyFullView.officers`), kept current by consuming officer events
+- `officer-service` validates company existence against its own `known_companies` MongoDB projection, kept current by consuming company events
 
 ## Resilience4j Circuit Breaker
 

@@ -37,7 +37,7 @@ Each service has a fully independent `pom.xml` with `spring-boot-starter-parent`
 ### Registry Service
 - Eureka Server
 - All services register on startup, discover each other through it
-- OpenFeign resolves service names via Eureka
+- Services register for discovery; no service-to-service HTTP calls use Eureka at runtime (all inter-service communication is event-driven)
 
 ### API Gateway
 - Spring Cloud Gateway
@@ -73,7 +73,7 @@ Each business service follows this internal structure:
     │   │   ├── persistence/
     │   │   │   ├── command/      # PostgreSQL (JPA)
     │   │   │   └── query/        # MongoDB
-    │   │   └── feign/            # OpenFeign clients
+    │   │   └── (no feign — all inter-service communication is event-driven)
     │   ├── presentation/
     │   │   ├── rest/             # Controllers
     │   │   └── kafka/            # Kafka consumers
@@ -174,12 +174,12 @@ On first startup, if no ADMIN exists, one is created from environment variables.
 ### Restricted View
 name, registrationNumber, owner display name, status. No address, no officers.
 
-### Fault Tolerance
-Officer fetch via OpenFeign. If officer-service is down: returns company with `officers: null` + `warnings: ["Officer service unavailable"]`.
+### Officer Read Model
+Officers are embedded directly in the `CompanyFullView` MongoDB document. The read model is kept in sync by `OfficerEventConsumer` handling `OfficerLinkedToCompanyEvent`, `OfficerUnlinkedFromCompanyEvent`, `OfficerUpdatedEvent`, and `OfficerDeletedEvent`. No HTTP call to officer-service is made at query time.
 
 ### Events
 - Published: `CompanyCreatedEvent`, `CompanyUpdatedEvent`, `CompanyDeletedEvent`
-- Consumed: `OfficerLinkedToCompanyEvent`, `OfficerUnlinkedFromCompanyEvent`, `OfficerUpdatedEvent`
+- Consumed: `OfficerLinkedToCompanyEvent`, `OfficerUnlinkedFromCompanyEvent`, `OfficerUpdatedEvent`, `OfficerDeletedEvent`
 
 ---
 
@@ -225,9 +225,10 @@ firstName, lastName, title/role. No dateOfBirth, address, email, phone.
 - Published: `OfficerCreatedEvent`, `OfficerUpdatedEvent`, `OfficerDeletedEvent`, `OfficerLinkedToCompanyEvent`, `OfficerUnlinkedFromCompanyEvent`
 - Consumed: `CompanyDeletedEvent` (deactivates all links for that company)
 
-### Inter-Service Calls
-- Validates companyId via OpenFeign before linking
-- If company-service is down: rejects with 503 ("Cannot verify company — try again later")
+### Company Existence Validation
+- officer-service validates companyId against its own `known_companies` MongoDB projection, maintained by `CompanyEventConsumer` handling `CompanyCreatedEvent` and `CompanyDeletedEvent`
+- No HTTP call to company-service is made at link time
+- **Eventual consistency note:** if a client links an officer to a company immediately after creating it, the `known_companies` projection may not yet contain the new id — the link fails with 404 `CompanyNotFoundException`; the client should retry
 
 ---
 
@@ -353,22 +354,17 @@ Stored hashed in PostgreSQL (user-service). 7-day expiry. One-time use with rota
 
 ---
 
-## Inter-Service Communication & Fault Tolerance
+## Inter-Service Communication
 
-### Synchronous (OpenFeign + Resilience4j)
+All inter-service communication is **event-driven via Kafka**. There are no Feign/HTTP calls between business services.
 
-| Caller | Target | Purpose |
-|---|---|---|
-| company-service | officer-service | Fetch officers for a company |
-| officer-service | company-service | Validate companyId before linking |
+### How Each Service Avoids Calling Others
 
-**Configuration:** service discovery via Eureka, 3s connect / 5s read timeout, 2 retries with backoff.
+**company-service — officer data:**
+The `GET /api/companies/{id}` response includes embedded officer summaries read directly from the `CompanyFullView` MongoDB document. `OfficerEventConsumer` keeps this list current by handling `OfficerLinkedToCompanyEvent`, `OfficerUnlinkedFromCompanyEvent`, `OfficerUpdatedEvent`, and `OfficerDeletedEvent`.
 
-**Circuit breaker:** 50% failure rate over 10 calls → open for 30s → half-open retry.
-
-**Fallback strategies:**
-- company → officer down: graceful degradation (return company without officers + warning)
-- officer → company down: fail fast with 503 (data integrity protection)
+**officer-service — company existence:**
+Before linking an officer to a company, officer-service checks its local `known_companies` MongoDB projection (maintained by `CompanyEventConsumer` handling `CompanyCreatedEvent` and `CompanyDeletedEvent`). If the company id is not found, a 404 `CompanyNotFoundException` is returned. This is eventually consistent — a brand-new company may not yet appear in the projection; callers should retry on 404.
 
 ### Asynchronous (Kafka)
 For eventual consistency: read model sync, cross-service state reactions.
@@ -391,10 +387,10 @@ For eventual consistency: read model sync, cross-service state reactions.
 - **No Spring context** — pure Java, fast
 
 ### Integration Tests
-- **Scope:** adapters (persistence, messaging, REST, Feign)
+- **Scope:** adapters (persistence, messaging, REST)
 - **Infrastructure:** Testcontainers (PostgreSQL, MongoDB, Kafka)
 - **Framework:** JUnit 5 + Spring Boot Test + Testcontainers
-- **Includes:** JPA repos, MongoDB repos, Kafka ser/de, controllers (MockMvc), Feign (WireMock)
+- **Includes:** JPA repos, MongoDB repos, Kafka ser/de, controllers (MockMvc)
 
 ### End-to-End Tests
 - **Scope:** full service behavior through HTTP
@@ -419,7 +415,7 @@ For eventual consistency: read model sync, cross-service state reactions.
 | Config | Spring Cloud Config Server |
 | Registry | Eureka |
 | Gateway | Spring Cloud Gateway |
-| Sync calls | OpenFeign + Resilience4j |
+| Inter-service communication | Apache Kafka (event-driven, no Feign) |
 | Async messaging | Apache Kafka |
 | Write DB | PostgreSQL 16 |
 | Read DB | MongoDB 7 |
@@ -427,5 +423,5 @@ For eventual consistency: read model sync, cross-service state reactions.
 | Auth | JWT (Spring Security) |
 | Containers | Docker + Docker Compose |
 | Unit tests | JUnit 5 + AssertJ + InMemory adapters |
-| Integration tests | Testcontainers + WireMock |
+| Integration tests | Testcontainers |
 | E2E tests | RestAssured / WebTestClient |

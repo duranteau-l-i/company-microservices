@@ -9,7 +9,7 @@ Microservices platform for managing companies and their officers. Java 21, Sprin
 - **DDD + Hexagonal Architecture** — domain layer has zero framework imports
 - **CQRS** — PostgreSQL (write/command), MongoDB (read/query), synced via Kafka
 - **Each service is fully independent** — no shared parent POM, no shared library
-- **Inter-service communication** — Kafka (async), OpenFeign + Resilience4j (sync with fault tolerance)
+- **Inter-service communication** — Kafka (async, event-driven)
 
 ## Services
 
@@ -26,7 +26,7 @@ Microservices platform for managing companies and their officers. Java 21, Sprin
 
 - Java 21, Spring Boot 3.x, Maven (independent POMs per service)
 - PostgreSQL 16, MongoDB 7, Apache Kafka
-- Spring Security + JWT, OpenFeign + Resilience4j, Flyway
+- Spring Security + JWT, Flyway
 - Docker + Docker Compose, Testcontainers
 
 ## Development Skills

@@ -4,8 +4,7 @@ method: POST
 url: "{{apiGatewayBaseUrl}}/api/users/signin"
 order: 2656696315611301
 headers:
-  - key: Content-Type
-    value: application/json
+  Content-Type: application/json
 body:
   type: json
   content: |-
@@ -22,5 +21,11 @@ scripts:
           pm.environment.set("accessToken", body.accessToken);
           pm.environment.set("refreshToken", body.refreshToken);
           pm.environment.set("expiresIn", body.expiresIn);
+
+          let [ , jwtPayload, ] = body.accessToken.split('.');
+          let jwtPayloadJsonString = atob(jwtPayload);
+          let jwtPayloadJson = JSON.parse(jwtPayloadJsonString);
+          
+          pm.environment.set("userId", jwtPayloadJson.sub);
       }
     language: text/javascript

@@ -35,7 +35,9 @@
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
       "Bash(mvn -f api-gateway/pom.xml test)",
-      "Bash(rtk mvn *)"
+      "Bash(rtk mvn *)",
+      "Bash(git -C /Users/ludovicduranteau/Documents/personal/company-microservices/.worktrees/officer-service add src/main/java/com/company/officerservice/domain/event/OfficerCreatedEvent.java src/main/java/com/company/officerservice/domain/event/OfficerDeletedEvent.java src/main/java/com/company/officerservice/domain/event/OfficerLinkedToCompanyEvent.java src/main/java/com/company/officerservice/domain/event/OfficerUnlinkedFromCompanyEvent.java src/main/java/com/company/officerservice/domain/event/OfficerUpdatedEvent.java src/main/java/com/company/officerservice/domain/model/CompanyLink.java src/main/java/com/company/officerservice/domain/model/Officer.java src/test/java/com/company/officerservice/unit/domain/model/OfficerTest.java)",
+      "Bash(git -C /Users/ludovicduranteau/Documents/personal/company-microservices/.worktrees/officer-service commit -m ' *)"
     ]
   }
 }

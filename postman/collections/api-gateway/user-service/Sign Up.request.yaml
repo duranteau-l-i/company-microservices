@@ -4,8 +4,7 @@ method: POST
 url: "{{apiGatewayBaseUrl}}/api/users/signup"
 order: 1777222306067
 headers:
-  - key: Content-Type
-    value: application/json
+  Content-Type: application/json
 body:
   type: json
   content: |-
@@ -18,11 +17,17 @@ body:
 scripts:
   - type: afterResponse
     code: |-
-      if (pm.response.code === 200) {
+      if (pm.response.code === 201) {
           const body = JSON.parse(pm.response.body);
 
           pm.environment.set("accessToken", body.accessToken);
           pm.environment.set("refreshToken", body.refreshToken);
           pm.environment.set("expiresIn", body.expiresIn);
+
+          let [ , jwtPayload, ] = body.accessToken.split('.');
+          let jwtPayloadJsonString = atob(jwtPayload);
+          let jwtPayloadJson = JSON.parse(jwtPayloadJsonString);
+          
+          pm.environment.set("userId", jwtPayloadJson.sub);
       }
     language: text/javascript

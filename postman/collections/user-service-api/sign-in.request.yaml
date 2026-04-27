@@ -11,6 +11,12 @@ scripts:
           pm.environment.set("accessToken", body.accessToken);
           pm.environment.set("refreshToken", body.refreshToken);
           pm.environment.set("expiresIn", body.expiresIn);
+
+          let [ , jwtPayload, ] = body.accessToken.split('.');
+          let jwtPayloadJsonString = atob(jwtPayload);
+          let jwtPayloadJson = JSON.parse(jwtPayloadJsonString);
+          
+          pm.environment.set("userId", jwtPayloadJson.sub);
       }
     language: text/javascript
 order: 2000

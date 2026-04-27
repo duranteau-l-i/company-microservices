@@ -97,19 +97,7 @@ public class OfficerEventConsumer {
         List<OfficerSummary> updatedOfficers = new ArrayList<>(current.officers());
         updatedOfficers.add(new OfficerSummary(officerId, firstName, lastName, title));
 
-        CompanyFullView updated = new CompanyFullView(
-                current.id(),
-                current.name(),
-                current.registrationNumber(),
-                current.address(),
-                current.ownerId(),
-                current.ownerDisplayName(),
-                current.status(),
-                current.createdAt(),
-                current.updatedAt(),
-                updatedOfficers
-        );
-        queryRepository.save(updated);
+        queryRepository.save(rebuildWith(current, updatedOfficers));
     }
 
     private void handleOfficerUnlinked(JsonNode payload) {
@@ -129,19 +117,7 @@ public class OfficerEventConsumer {
                 .filter(o -> !o.officerId().equals(officerId))
                 .toList();
 
-        CompanyFullView updated = new CompanyFullView(
-                current.id(),
-                current.name(),
-                current.registrationNumber(),
-                current.address(),
-                current.ownerId(),
-                current.ownerDisplayName(),
-                current.status(),
-                current.createdAt(),
-                current.updatedAt(),
-                updatedOfficers
-        );
-        queryRepository.save(updated);
+        queryRepository.save(rebuildWith(current, updatedOfficers));
     }
 
     private void handleOfficerUpdated(JsonNode payload) {

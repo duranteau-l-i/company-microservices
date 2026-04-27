@@ -172,4 +172,50 @@ class MongoCompanyQueryRepositoryIT {
 
         assertThat(repository.findFullById(view.id())).isEmpty();
     }
+
+    @Test
+    void findCompaniesContainingOfficer_returnsOnlyMatchingCompanies() {
+        UUID targetOfficerId = UUID.randomUUID();
+        UUID otherOfficerId = UUID.randomUUID();
+
+        OfficerSummary targetOfficer = new OfficerSummary(targetOfficerId, "Alice", "Smith", "CEO");
+        OfficerSummary otherOfficer = new OfficerSummary(otherOfficerId, "Bob", "Jones", "CFO");
+
+        CompanyFullView companyWithTarget = new CompanyFullView(
+                CompanyId.generate(),
+                "Target Corp",
+                "REG-" + UUID.randomUUID().toString().substring(0, 8),
+                new Address("1 Main St", "Paris", "75001", "France"),
+                UUID.randomUUID(),
+                "John Doe",
+                CompanyStatus.ACTIVE,
+                Instant.now(),
+                Instant.now(),
+                List.of(targetOfficer)
+        );
+
+        CompanyFullView companyWithOther = new CompanyFullView(
+                CompanyId.generate(),
+                "Other Corp",
+                "REG-" + UUID.randomUUID().toString().substring(0, 8),
+                new Address("2 Side St", "Lyon", "69001", "France"),
+                UUID.randomUUID(),
+                "Jane Doe",
+                CompanyStatus.ACTIVE,
+                Instant.now(),
+                Instant.now(),
+                List.of(otherOfficer)
+        );
+
+        repository.save(companyWithTarget);
+        repository.save(companyWithOther);
+
+        List<CompanyFullView> result = repository.findCompaniesContainingOfficer(targetOfficerId);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).name()).isEqualTo("Target Corp");
+        assertThat(result.get(0).officers())
+                .hasSize(1)
+                .allMatch(o -> o.officerId().equals(targetOfficerId));
+    }
 }

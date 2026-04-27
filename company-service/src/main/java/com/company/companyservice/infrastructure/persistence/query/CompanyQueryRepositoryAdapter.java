@@ -11,57 +11,57 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public class MongoCompanyQueryRepository implements CompanyQueryRepository {
+public class CompanyQueryRepositoryAdapter implements CompanyQueryRepository {
 
-    private final CompanyMongoRepository mongo;
+    private final CompanyDocumentRepository documentRepository;
 
-    public MongoCompanyQueryRepository(CompanyMongoRepository mongo) {
-        this.mongo = mongo;
+    public CompanyQueryRepositoryAdapter(CompanyDocumentRepository documentRepository) {
+        this.documentRepository = documentRepository;
     }
 
     @Override
     public Optional<CompanyFullView> findFullById(CompanyId id) {
-        return mongo.findById(id.value()).map(CompanyDocumentMapper::toFullView);
+        return documentRepository.findById(id.value()).map(CompanyDocumentMapper::toFullView);
     }
 
     @Override
     public Optional<CompanyRestrictedView> findRestrictedById(CompanyId id) {
-        return mongo.findById(id.value()).map(CompanyDocumentMapper::toRestrictedView);
+        return documentRepository.findById(id.value()).map(CompanyDocumentMapper::toRestrictedView);
     }
 
     @Override
     public List<CompanyFullView> findAllFull() {
-        return mongo.findAll().stream().map(CompanyDocumentMapper::toFullView).toList();
+        return documentRepository.findAll().stream().map(CompanyDocumentMapper::toFullView).toList();
     }
 
     @Override
     public List<CompanyFullView> findFullByOwnerId(UUID ownerId) {
-        return mongo.findByOwnerId(ownerId).stream().map(CompanyDocumentMapper::toFullView).toList();
+        return documentRepository.findByOwnerId(ownerId).stream().map(CompanyDocumentMapper::toFullView).toList();
     }
 
     @Override
     public List<CompanyRestrictedView> search(String query) {
         if (query == null || query.isBlank()) {
-            return mongo.findAll().stream().map(CompanyDocumentMapper::toRestrictedView).toList();
+            return documentRepository.findAll().stream().map(CompanyDocumentMapper::toRestrictedView).toList();
         }
-        return mongo.findByNameContainingIgnoreCase(query).stream()
+        return documentRepository.findByNameContainingIgnoreCase(query).stream()
                 .map(CompanyDocumentMapper::toRestrictedView).toList();
     }
 
     @Override
     public CompanyFullView save(CompanyFullView view) {
-        CompanyDocument saved = mongo.save(CompanyDocumentMapper.toDocument(view));
+        CompanyDocument saved = documentRepository.save(CompanyDocumentMapper.toDocument(view));
         return CompanyDocumentMapper.toFullView(saved);
     }
 
     @Override
     public void deleteById(CompanyId id) {
-        mongo.deleteById(id.value());
+        documentRepository.deleteById(id.value());
     }
 
     @Override
     public List<CompanyFullView> findCompaniesContainingOfficer(UUID officerId) {
-        return mongo.findByOfficers_OfficerId(officerId).stream()
+        return documentRepository.findByOfficers_OfficerId(officerId).stream()
                 .map(CompanyDocumentMapper::toFullView)
                 .toList();
     }

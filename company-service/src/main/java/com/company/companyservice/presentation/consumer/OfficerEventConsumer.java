@@ -5,7 +5,7 @@ import com.company.companyservice.domain.model.CompanyId;
 import com.company.companyservice.domain.model.OfficerSummary;
 import com.company.companyservice.domain.port.infrastructure.CompanyQueryRepository;
 import com.company.companyservice.infrastructure.persistence.query.ProcessedEventDocument;
-import com.company.companyservice.infrastructure.persistence.query.ProcessedEventMongoRepository;
+import com.company.companyservice.infrastructure.persistence.query.ProcessedEventRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -25,12 +25,12 @@ public class OfficerEventConsumer {
     private static final Logger log = LoggerFactory.getLogger(OfficerEventConsumer.class);
 
     private final CompanyQueryRepository queryRepository;
-    private final ProcessedEventMongoRepository processedEvents;
+    private final ProcessedEventRepository processedEvents;
     private final ObjectMapper objectMapper;
 
     public OfficerEventConsumer(
             CompanyQueryRepository queryRepository,
-            ProcessedEventMongoRepository processedEvents,
+            ProcessedEventRepository processedEvents,
             ObjectMapper objectMapper) {
         this.queryRepository = queryRepository;
         this.processedEvents = processedEvents;

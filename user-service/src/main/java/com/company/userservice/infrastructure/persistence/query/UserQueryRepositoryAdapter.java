@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class MongoUserQueryRepository implements UserQueryRepository {
+public class UserQueryRepositoryAdapter implements UserQueryRepository {
 
-    private final UserMongoRepository mongo;
+    private final UserDocumentRepository mongo;
 
-    public MongoUserQueryRepository(UserMongoRepository mongo) {
+    public UserQueryRepositoryAdapter(UserDocumentRepository mongo) {
         this.mongo = mongo;
     }
 

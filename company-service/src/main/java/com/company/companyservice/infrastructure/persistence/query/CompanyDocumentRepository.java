@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 import java.util.UUID;
 
-public interface CompanyMongoRepository extends MongoRepository<CompanyDocument, UUID> {
+public interface CompanyDocumentRepository extends MongoRepository<CompanyDocument, UUID> {
 
     List<CompanyDocument> findByOwnerId(UUID ownerId);
 

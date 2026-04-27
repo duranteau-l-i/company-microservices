@@ -4,7 +4,7 @@ import com.company.userservice.domain.model.EmailAddress;
 import com.company.userservice.domain.model.Role;
 import com.company.userservice.domain.model.UserId;
 import com.company.userservice.domain.model.UserReadModel;
-import com.company.userservice.infrastructure.persistence.query.MongoUserQueryRepository;
+import com.company.userservice.infrastructure.persistence.query.UserQueryRepositoryAdapter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +22,9 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataMongoTest
-@Import(MongoUserQueryRepository.class)
+@Import(UserQueryRepositoryAdapter.class)
 @Testcontainers
-class MongoUserQueryRepositoryIT {
+class UserQueryRepositoryIT {
 
     @Container
     static MongoDBContainer mongo = new MongoDBContainer("mongo:7");
@@ -38,7 +38,7 @@ class MongoUserQueryRepositoryIT {
     }
 
     @Autowired
-    MongoUserQueryRepository repository;
+    UserQueryRepositoryAdapter repository;
 
     @BeforeEach
     void reset() {

@@ -7,10 +7,10 @@ import com.company.companyservice.domain.model.CompanyId;
 import com.company.companyservice.domain.model.CompanyStatus;
 import com.company.companyservice.domain.model.OfficerSummary;
 import com.company.companyservice.infrastructure.persistence.query.CompanyDocumentMapper;
-import com.company.companyservice.infrastructure.persistence.query.CompanyMongoRepository;
-import com.company.companyservice.infrastructure.persistence.query.MongoCompanyQueryRepository;
+import com.company.companyservice.infrastructure.persistence.query.CompanyDocumentRepository;
+import com.company.companyservice.infrastructure.persistence.query.CompanyQueryRepositoryAdapter;
 import com.company.companyservice.infrastructure.persistence.query.ProcessedEventDocument;
-import com.company.companyservice.infrastructure.persistence.query.ProcessedEventMongoRepository;
+import com.company.companyservice.infrastructure.persistence.query.ProcessedEventRepository;
 import com.company.companyservice.presentation.consumer.CompanyEventConsumer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -47,7 +47,7 @@ import static org.awaitility.Awaitility.await;
 @Import({
         KafkaConfig.class,
         CompanyEventConsumer.class,
-        MongoCompanyQueryRepository.class
+        CompanyQueryRepositoryAdapter.class
 })
 @EmbeddedKafka(
         partitions = 1,
@@ -76,10 +76,10 @@ class CompanyEventConsumerIT {
     }
 
     @Autowired
-    CompanyMongoRepository companyMongoRepository;
+    CompanyDocumentRepository companyDocumentRepository;
 
     @Autowired
-    ProcessedEventMongoRepository processedEventMongoRepository;
+    ProcessedEventRepository processedEventRepository;
 
     @Autowired
     EmbeddedKafkaBroker embeddedKafka;
@@ -91,8 +91,8 @@ class CompanyEventConsumerIT {
 
     @BeforeEach
     void setUp() {
-        companyMongoRepository.deleteAll();
-        processedEventMongoRepository.deleteAll();
+        companyDocumentRepository.deleteAll();
+        processedEventRepository.deleteAll();
 
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, embeddedKafka.getBrokersAsString());
@@ -134,7 +134,7 @@ class CompanyEventConsumerIT {
                 new Address("1 Main St", "Paris", "75001", "France"),
                 ownerId, "John Doe", CompanyStatus.ACTIVE,
                 now, now, List.of());
-        companyMongoRepository.save(CompanyDocumentMapper.toDocument(existing));
+        companyDocumentRepository.save(CompanyDocumentMapper.toDocument(existing));
 
         UUID eventId = UUID.randomUUID();
         String envelope = buildEnvelope(eventId, "CompanyUpdatedEvent", companyId,
@@ -164,7 +164,7 @@ class CompanyEventConsumerIT {
                 new Address("1 Main St", "Paris", "75001", "France"),
                 ownerId, "John Doe", CompanyStatus.ACTIVE,
                 now, now, List.of(officer));
-        companyMongoRepository.save(CompanyDocumentMapper.toDocument(existing));
+        companyDocumentRepository.save(CompanyDocumentMapper.toDocument(existing));
 
         UUID eventId = UUID.randomUUID();
         String envelope = buildEnvelope(eventId, "CompanyUpdatedEvent", companyId,
@@ -192,7 +192,7 @@ class CompanyEventConsumerIT {
                 new Address("1 Main St", "Paris", "75001", "France"),
                 ownerId, "Jane Doe", CompanyStatus.ACTIVE,
                 now, now, List.of());
-        companyMongoRepository.save(CompanyDocumentMapper.toDocument(existing));
+        companyDocumentRepository.save(CompanyDocumentMapper.toDocument(existing));
 
         UUID eventId = UUID.randomUUID();
         String envelope = buildEnvelope(eventId, "CompanyDeletedEvent", companyId,
@@ -218,11 +218,11 @@ class CompanyEventConsumerIT {
         testProducer.send("company-events-consumer-it", companyId.toString(), envelope);
 
         await().atMost(15, TimeUnit.SECONDS).untilAsserted(() ->
-                assertThat(processedEventMongoRepository.existsById(eventId)).isTrue());
+                assertThat(processedEventRepository.existsById(eventId)).isTrue());
 
         // Wait briefly then assert no second entry was written for the duplicate event
         await().during(2, TimeUnit.SECONDS).atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
-            List<ProcessedEventDocument> entries = processedEventMongoRepository.findAll().stream()
+            List<ProcessedEventDocument> entries = processedEventRepository.findAll().stream()
                     .filter(e -> e.getEventId().equals(eventId))
                     .toList();
             assertThat(entries).hasSize(1);
@@ -232,7 +232,7 @@ class CompanyEventConsumerIT {
     // ---- helpers ----
 
     private Optional<CompanyFullView> findById(UUID id) {
-        return companyMongoRepository.findById(id)
+        return companyDocumentRepository.findById(id)
                 .map(CompanyDocumentMapper::toFullView);
     }
 

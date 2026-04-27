@@ -1,7 +1,7 @@
 package com.company.companyservice.stubs;
 
 import com.company.companyservice.infrastructure.persistence.query.ProcessedEventDocument;
-import com.company.companyservice.infrastructure.persistence.query.ProcessedEventMongoRepository;
+import com.company.companyservice.infrastructure.persistence.query.ProcessedEventRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 
-public class InMemoryProcessedEventRepository implements ProcessedEventMongoRepository {
+public class InMemoryProcessedEventRepository implements ProcessedEventRepository {
 
     private final Map<UUID, ProcessedEventDocument> store = new HashMap<>();
 

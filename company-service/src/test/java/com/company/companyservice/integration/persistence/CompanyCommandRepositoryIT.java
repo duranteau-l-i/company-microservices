@@ -2,7 +2,7 @@ package com.company.companyservice.integration.persistence;
 
 import com.company.companyservice.domain.model.Address;
 import com.company.companyservice.domain.model.Company;
-import com.company.companyservice.infrastructure.persistence.command.PostgresCompanyCommandRepository;
+import com.company.companyservice.infrastructure.persistence.command.CompanyCommandRepositoryAdapter;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +24,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(PostgresCompanyCommandRepository.class)
+@Import(CompanyCommandRepositoryAdapter.class)
 @Testcontainers
-class PostgresCompanyCommandRepositoryIT {
+class CompanyCommandRepositoryIT {
 
     @Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine");
@@ -45,7 +45,7 @@ class PostgresCompanyCommandRepositoryIT {
     }
 
     @Autowired
-    PostgresCompanyCommandRepository repository;
+    CompanyCommandRepositoryAdapter repository;
 
     @Autowired
     EntityManager entityManager;

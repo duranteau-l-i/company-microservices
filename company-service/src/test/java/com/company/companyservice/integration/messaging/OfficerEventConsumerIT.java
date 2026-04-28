@@ -143,6 +143,47 @@ class OfficerEventConsumerIT {
     }
 
     @Test
+    void officerUpdatedEvent_updatesOfficerNameInLinkedCompany() throws Exception {
+        UUID companyId = UUID.randomUUID();
+        UUID officerId = UUID.randomUUID();
+
+        OfficerSummary officer = new OfficerSummary(officerId, "Alice", "Smith", "CEO");
+        seedCompany(companyId, "Acme Corp", List.of(officer));
+
+        String envelope = buildEnvelope(UUID.randomUUID(), "OfficerUpdatedEvent", officerId,
+                buildUpdatedPayload(officerId, "Alice", "Johnson"));
+
+        testProducer.send("officer-events-officer-it", officerId.toString(), envelope);
+
+        await().atMost(15, TimeUnit.SECONDS).untilAsserted(() -> {
+            Optional<CompanyFullView> found = findById(companyId);
+            assertThat(found).isPresent();
+            assertThat(found.get().officers()).hasSize(1);
+            assertThat(found.get().officers().get(0).lastName()).isEqualTo("Johnson");
+        });
+    }
+
+    @Test
+    void officerDeletedEvent_removesOfficerFromLinkedCompany() throws Exception {
+        UUID companyId = UUID.randomUUID();
+        UUID officerId = UUID.randomUUID();
+
+        OfficerSummary officer = new OfficerSummary(officerId, "Bob", "Jones", "CFO");
+        seedCompany(companyId, "Beta Ltd", List.of(officer));
+
+        String envelope = buildEnvelope(UUID.randomUUID(), "OfficerDeletedEvent", officerId,
+                buildDeletedPayload(officerId));
+
+        testProducer.send("officer-events-officer-it", officerId.toString(), envelope);
+
+        await().atMost(15, TimeUnit.SECONDS).untilAsserted(() -> {
+            Optional<CompanyFullView> found = findById(companyId);
+            assertThat(found).isPresent();
+            assertThat(found.get().officers()).isEmpty();
+        });
+    }
+
+    @Test
     void officerLinkedEvent_duplicateDelivery_officerNotAddedTwice() throws Exception {
         UUID companyId = UUID.randomUUID();
         UUID officerId = UUID.randomUUID();
@@ -209,6 +250,20 @@ class OfficerEventConsumerIT {
         Map<String, Object> payload = new HashMap<>();
         payload.put("aggregateId", officerId.toString());
         payload.put("companyId", companyId.toString());
+        return payload;
+    }
+
+    private Map<String, Object> buildUpdatedPayload(UUID officerId, String firstName, String lastName) {
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("aggregateId", officerId.toString());
+        payload.put("firstName", firstName);
+        payload.put("lastName", lastName);
+        return payload;
+    }
+
+    private Map<String, Object> buildDeletedPayload(UUID officerId) {
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("aggregateId", officerId.toString());
         return payload;
     }
 }

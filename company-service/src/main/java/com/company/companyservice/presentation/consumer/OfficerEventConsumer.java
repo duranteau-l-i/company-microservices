@@ -56,10 +56,10 @@ public class OfficerEventConsumer {
             switch (eventType) {
                 case "OfficerLinkedToCompanyEvent" -> handleOfficerLinked(payload);
                 case "OfficerUnlinkedFromCompanyEvent" -> handleOfficerUnlinked(payload);
-                case "OfficerCreatedEvent",
-                     "OfficerUpdatedEvent",
-                     "OfficerDeletedEvent" ->
-                        log.debug("Ignoring officer event {} — not relevant to company read model", eventType);
+                case "OfficerUpdatedEvent" -> handleOfficerUpdated(payload);
+                case "OfficerDeletedEvent" -> handleOfficerDeleted(payload);
+                case "OfficerCreatedEvent" ->
+                        log.debug("Ignoring OfficerCreatedEvent — not relevant to company read model");
                 default -> log.warn("Unknown officer event type: {}", eventType);
             }
 
@@ -110,6 +110,40 @@ public class OfficerEventConsumer {
                 updatedOfficers
         );
         queryRepository.save(updated);
+    }
+
+    private void handleOfficerUpdated(JsonNode payload) {
+        UUID officerId = UUID.fromString(payload.get("aggregateId").asText());
+        String firstName = payload.get("firstName").asText();
+        String lastName = payload.get("lastName").asText();
+
+        List<CompanyFullView> companies = queryRepository.findAllByOfficerId(officerId);
+        for (CompanyFullView current : companies) {
+            List<OfficerSummary> updatedOfficers = current.officers().stream()
+                    .map(o -> o.officerId().equals(officerId)
+                            ? new OfficerSummary(officerId, firstName, lastName, o.title())
+                            : o)
+                    .toList();
+            queryRepository.save(new CompanyFullView(
+                    current.id(), current.name(), current.registrationNumber(),
+                    current.address(), current.ownerId(), current.ownerDisplayName(),
+                    current.status(), current.createdAt(), current.updatedAt(), updatedOfficers));
+        }
+    }
+
+    private void handleOfficerDeleted(JsonNode payload) {
+        UUID officerId = UUID.fromString(payload.get("aggregateId").asText());
+
+        List<CompanyFullView> companies = queryRepository.findAllByOfficerId(officerId);
+        for (CompanyFullView current : companies) {
+            List<OfficerSummary> updatedOfficers = current.officers().stream()
+                    .filter(o -> !o.officerId().equals(officerId))
+                    .toList();
+            queryRepository.save(new CompanyFullView(
+                    current.id(), current.name(), current.registrationNumber(),
+                    current.address(), current.ownerId(), current.ownerDisplayName(),
+                    current.status(), current.createdAt(), current.updatedAt(), updatedOfficers));
+        }
     }
 
     private void handleOfficerUnlinked(JsonNode payload) {

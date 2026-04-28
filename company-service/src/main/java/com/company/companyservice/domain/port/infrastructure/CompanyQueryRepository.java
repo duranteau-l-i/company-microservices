@@ -13,6 +13,7 @@ public interface CompanyQueryRepository {
     Optional<CompanyRestrictedView> findRestrictedById(CompanyId id);
     List<CompanyFullView> findAllFull();
     List<CompanyFullView> findFullByOwnerId(UUID ownerId);
+    List<CompanyFullView> findAllByOfficerId(UUID officerId);
     List<CompanyRestrictedView> search(String query);
     CompanyFullView save(CompanyFullView view);
     void deleteById(CompanyId id);

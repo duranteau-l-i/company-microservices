@@ -40,6 +40,13 @@ public class InMemoryCompanyQueryRepository implements CompanyQueryRepository {
     }
 
     @Override
+    public List<CompanyFullView> findAllByOfficerId(UUID officerId) {
+        return store.values().stream()
+                .filter(v -> v.officers().stream().anyMatch(o -> o.officerId().equals(officerId)))
+                .toList();
+    }
+
+    @Override
     public List<CompanyRestrictedView> search(String query) {
         String needle = query.toLowerCase(Locale.ROOT);
         return store.values().stream()

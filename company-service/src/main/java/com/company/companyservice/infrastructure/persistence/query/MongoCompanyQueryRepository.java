@@ -40,6 +40,11 @@ public class MongoCompanyQueryRepository implements CompanyQueryRepository {
     }
 
     @Override
+    public List<CompanyFullView> findAllByOfficerId(UUID officerId) {
+        return mongo.findByOfficers_OfficerId(officerId).stream().map(CompanyDocumentMapper::toFullView).toList();
+    }
+
+    @Override
     public List<CompanyRestrictedView> search(String query) {
         if (query == null || query.isBlank()) {
             return mongo.findAll().stream().map(CompanyDocumentMapper::toRestrictedView).toList();

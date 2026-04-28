@@ -167,6 +167,5 @@ user-service/
 
 ## See also
 
-- Root `CLAUDE.md` — platform-wide conventions
 - `docs/specs/2026-04-19-company-microservices-design.md` — design document
 - `docs/plans/02-user-service.md` — implementation plan for this service

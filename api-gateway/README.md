@@ -14,7 +14,7 @@ Responsibilities:
 
 ## Architecture
 
-Reactive Spring Cloud Gateway (WebFlux). No DDD domain layer — the gateway is infrastructure only. See [CLAUDE.md](../CLAUDE.md) and the [design spec](../docs/specs/2026-04-19-company-microservices-design.md) for platform-wide architecture decisions.
+Reactive Spring Cloud Gateway (WebFlux). No DDD domain layer — the gateway is infrastructure only. See the [design spec](../docs/specs/2026-04-19-company-microservices-design.md) for platform-wide architecture decisions.
 
 ## Routes
 
@@ -146,6 +146,5 @@ api-gateway/
 
 ## See Also
 
-- Platform overview and conventions: [CLAUDE.md](../CLAUDE.md)
 - Design specification: [docs/specs/2026-04-19-company-microservices-design.md](../docs/specs/2026-04-19-company-microservices-design.md)
 - Implementation plan: [docs/plans/03-api-gateway.md](../docs/plans/03-api-gateway.md)

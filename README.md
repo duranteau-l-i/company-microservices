@@ -274,13 +274,11 @@ company-microservices/
 │   └── plans/               # Per-service implementation plans
 ├── docker-compose.yml       # Full stack (includes infra)
 ├── docker-compose.infra.yml # Infrastructure only (postgres, mongo, kafka, config, registry)
-├── .env.example             # Environment variable template
-└── CLAUDE.md                # Developer conventions for this repo
+└── .env.example             # Environment variable template
 ```
 
 ## See also
 
-- `CLAUDE.md` — coding conventions, architecture rules, testing patterns
 - `docs/specs/2026-04-19-company-microservices-design.md` — full design specification
 - `docs/plans/` — per-service implementation plans
 - Each service has its own `README.md` with endpoint docs, config reference, and test instructions

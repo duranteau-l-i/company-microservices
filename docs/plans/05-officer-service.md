@@ -259,7 +259,7 @@
 
 ### Task 11: README & OpenAPI
 
-Follow `.claude/skills/service-documentation.md`.
+Create service documentation following the pattern established in other service READMEs.
 
 **Files:**
 - Create: `officer-service/README.md`, `officer-service/src/main/java/com/company/officerservice/infrastructure/config/OpenApiConfig.java`

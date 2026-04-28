@@ -191,6 +191,5 @@ company-service/
 
 ## See also
 
-- Root `CLAUDE.md` — platform-wide conventions
 - `docs/specs/2026-04-19-company-microservices-design.md` — design document
 - `docs/plans/04-company-service.md` — implementation plan for this service

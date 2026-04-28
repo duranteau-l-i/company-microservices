@@ -109,7 +109,7 @@ User-confirmed trade-offs:
 git status -sb
 ```
 
-Expected: on `events-driven`, no uncommitted business changes (the existing `M .claude/settings.local.json`, `M .idea/misc.xml`, `?? .claude/worktrees/` are unrelated and should be left alone or stashed).
+Expected: on `events-driven`, no uncommitted business changes (the existing `M .idea/misc.xml` is unrelated and should be left alone or stashed).
 
 - [ ] **Step 2: Run baseline build to confirm a green starting point**
 
@@ -1251,12 +1251,10 @@ Update wording so the document reflects:
 - `officer-service` validates company existence against a `known_companies` projection maintained by `CompanyEventConsumer` (handling `CompanyCreatedEvent`, `CompanyDeletedEvent`).
 - Linking to a not-yet-propagated company returns `404` and the client retries.
 
-Also sweep `.claude/skills/feign-resilience.md` — if the project still wants to keep the document for future projects, that's fine, but remove any wording suggesting it's currently in use here. If preferred, delete the file: it no longer applies to any service in this repo.
-
 - [ ] **Step 3: Commit**
 
 ```bash
-git add docs/specs/2026-04-19-company-microservices-design.md .claude/skills/feign-resilience.md
+git add docs/specs/2026-04-19-company-microservices-design.md
 git commit -m "docs: describe pure event-driven inter-service communication"
 ```
 

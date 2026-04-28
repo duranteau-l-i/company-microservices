@@ -106,7 +106,7 @@
 
 ### Task 5: README & OpenAPI aggregation
 
-Follow `.claude/skills/service-documentation.md`.
+Create service documentation following the pattern established in other service READMEs.
 
 **Files:**
 - Create: `api-gateway/README.md`

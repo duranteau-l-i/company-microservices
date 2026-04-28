@@ -15,7 +15,7 @@ Officer management, company linking, and CQRS read model synchronization for the
 
 ## Architecture
 
-DDD + Hexagonal + CQRS — see [CLAUDE.md](../CLAUDE.md) and the [design spec](../docs/specs/2026-04-19-company-microservices-design.md).
+DDD + Hexagonal + CQRS — see the [design spec](../docs/specs/2026-04-19-company-microservices-design.md).
 
 ## Endpoints
 
@@ -144,6 +144,5 @@ officer-service/
 
 ## See also
 
-- [Root CLAUDE.md](../CLAUDE.md) — platform architecture, conventions, workflow
 - [Design spec](../docs/specs/2026-04-19-company-microservices-design.md)
 - [Implementation plan](../docs/plans/)

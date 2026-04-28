@@ -41,6 +41,6 @@ Phase 1 (Infrastructure)
 - Service starts and registers with Eureka
 - Docker Compose includes the service
 - Config is in config-repo
-- `README.md` exists at the service root and covers the sections required by `.claude/skills/service-documentation.md`
+- `README.md` exists at the service root covering architecture, endpoints, configuration, and testing instructions
 - OpenAPI spec is exposed via springdoc-openapi; Swagger UI reachable at `/swagger-ui.html`
 - Committed with conventional commit messages

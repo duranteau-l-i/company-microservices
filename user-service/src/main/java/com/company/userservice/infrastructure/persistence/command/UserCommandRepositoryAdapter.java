@@ -10,31 +10,31 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Repository
-public class PostgresUserCommandRepository implements UserCommandRepository {
+public class UserCommandRepositoryAdapter implements UserCommandRepository {
 
-    private final UserJpaRepository jpa;
+    private final UserEntityRepository jpa;
 
-    public PostgresUserCommandRepository(UserJpaRepository jpa) {
+    public UserCommandRepositoryAdapter(UserEntityRepository jpa) {
         this.jpa = jpa;
     }
 
     @Override
     @Transactional
     public User save(User user) {
-        UserJpaEntity saved = jpa.save(UserJpaMapper.toEntity(user));
-        return UserJpaMapper.toDomain(saved);
+        UserEntity saved = jpa.save(UserEntityMapper.toEntity(user));
+        return UserEntityMapper.toDomain(saved);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<User> findById(UserId id) {
-        return jpa.findById(id.value()).map(UserJpaMapper::toDomain);
+        return jpa.findById(id.value()).map(UserEntityMapper::toDomain);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<User> findByEmail(EmailAddress email) {
-        return jpa.findByEmail(email.value()).map(UserJpaMapper::toDomain);
+        return jpa.findByEmail(email.value()).map(UserEntityMapper::toDomain);
     }
 
     @Override

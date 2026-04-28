@@ -7,9 +7,9 @@ import com.company.companyservice.domain.model.CompanyId;
 import com.company.companyservice.domain.model.CompanyStatus;
 import com.company.companyservice.domain.model.OfficerSummary;
 import com.company.companyservice.infrastructure.persistence.query.CompanyDocumentMapper;
-import com.company.companyservice.infrastructure.persistence.query.CompanyMongoRepository;
-import com.company.companyservice.infrastructure.persistence.query.MongoCompanyQueryRepository;
-import com.company.companyservice.infrastructure.persistence.query.ProcessedEventMongoRepository;
+import com.company.companyservice.infrastructure.persistence.query.CompanyDocumentRepository;
+import com.company.companyservice.infrastructure.persistence.query.CompanyQueryRepositoryAdapter;
+import com.company.companyservice.infrastructure.persistence.query.ProcessedEventDocumentRepository;
 import com.company.companyservice.presentation.consumer.OfficerEventConsumer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -46,7 +46,7 @@ import static org.awaitility.Awaitility.await;
 @Import({
         KafkaConfig.class,
         OfficerEventConsumer.class,
-        MongoCompanyQueryRepository.class
+        CompanyQueryRepositoryAdapter.class
 })
 @EmbeddedKafka(
         partitions = 1,
@@ -75,10 +75,10 @@ class OfficerEventConsumerIT {
     }
 
     @Autowired
-    CompanyMongoRepository companyMongoRepository;
+    CompanyDocumentRepository companyDocumentRepository;
 
     @Autowired
-    ProcessedEventMongoRepository processedEventMongoRepository;
+    ProcessedEventDocumentRepository processedEventDocumentRepository;
 
     @Autowired
     EmbeddedKafkaBroker embeddedKafka;
@@ -89,8 +89,8 @@ class OfficerEventConsumerIT {
 
     @BeforeEach
     void setUp() {
-        companyMongoRepository.deleteAll();
-        processedEventMongoRepository.deleteAll();
+        companyDocumentRepository.deleteAll();
+        processedEventDocumentRepository.deleteAll();
 
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, embeddedKafka.getBrokersAsString());
@@ -198,7 +198,7 @@ class OfficerEventConsumerIT {
         testProducer.send("officer-events-officer-it", companyId.toString(), envelope);
 
         await().atMost(15, TimeUnit.SECONDS).untilAsserted(() ->
-                assertThat(processedEventMongoRepository.existsById(eventId)).isTrue());
+                assertThat(processedEventDocumentRepository.existsById(eventId)).isTrue());
 
         await().during(2, TimeUnit.SECONDS).atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
             Optional<CompanyFullView> found = findById(companyId);
@@ -216,11 +216,11 @@ class OfficerEventConsumerIT {
                 new Address("1 Main St", "Paris", "75001", "France"),
                 UUID.randomUUID(), "Owner Name", CompanyStatus.ACTIVE,
                 now, now, officers);
-        companyMongoRepository.save(CompanyDocumentMapper.toDocument(view));
+        companyDocumentRepository.save(CompanyDocumentMapper.toDocument(view));
     }
 
     private Optional<CompanyFullView> findById(UUID id) {
-        return companyMongoRepository.findById(id).map(CompanyDocumentMapper::toFullView);
+        return companyDocumentRepository.findById(id).map(CompanyDocumentMapper::toFullView);
     }
 
     private String buildEnvelope(UUID eventId, String eventType, UUID aggregateId, Object payload) throws Exception {

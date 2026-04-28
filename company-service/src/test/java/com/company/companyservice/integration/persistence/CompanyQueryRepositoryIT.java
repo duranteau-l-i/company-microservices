@@ -6,7 +6,7 @@ import com.company.companyservice.domain.model.CompanyId;
 import com.company.companyservice.domain.model.CompanyRestrictedView;
 import com.company.companyservice.domain.model.CompanyStatus;
 import com.company.companyservice.domain.model.OfficerSummary;
-import com.company.companyservice.infrastructure.persistence.query.MongoCompanyQueryRepository;
+import com.company.companyservice.infrastructure.persistence.query.CompanyQueryRepositoryAdapter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +26,9 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataMongoTest
-@Import(MongoCompanyQueryRepository.class)
+@Import(CompanyQueryRepositoryAdapter.class)
 @Testcontainers
-class MongoCompanyQueryRepositoryIT {
+class CompanyQueryRepositoryIT {
 
     @Container
     static MongoDBContainer mongo = new MongoDBContainer("mongo:7");
@@ -42,7 +42,7 @@ class MongoCompanyQueryRepositoryIT {
     }
 
     @Autowired
-    MongoCompanyQueryRepository repository;
+    CompanyQueryRepositoryAdapter repository;
 
     @BeforeEach
     void reset() {

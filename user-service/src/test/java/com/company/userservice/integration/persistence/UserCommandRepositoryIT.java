@@ -4,7 +4,7 @@ import com.company.userservice.domain.model.EmailAddress;
 import com.company.userservice.domain.model.Role;
 import com.company.userservice.domain.model.User;
 import com.company.userservice.domain.model.UserId;
-import com.company.userservice.infrastructure.persistence.command.PostgresUserCommandRepository;
+import com.company.userservice.infrastructure.persistence.command.UserCommandRepositoryAdapter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -22,9 +22,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(PostgresUserCommandRepository.class)
+@Import(UserCommandRepositoryAdapter.class)
 @Testcontainers
-class PostgresUserCommandRepositoryIT {
+class UserCommandRepositoryIT {
 
     @Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine");
@@ -43,7 +43,7 @@ class PostgresUserCommandRepositoryIT {
     }
 
     @Autowired
-    PostgresUserCommandRepository repository;
+    UserCommandRepositoryAdapter repository;
 
     @Test
     void saveAndFindById() {

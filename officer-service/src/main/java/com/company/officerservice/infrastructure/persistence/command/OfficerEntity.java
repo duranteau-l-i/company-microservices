@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "officers")
-public class OfficerJpaEntity {
+public class OfficerEntity {
 
     @Id
     private UUID id;
@@ -58,11 +58,11 @@ public class OfficerJpaEntity {
     private Instant updatedAt;
 
     @OneToMany(mappedBy = "officer", cascade = CascadeType.ALL, orphanRemoval = false, fetch = FetchType.EAGER)
-    private List<CompanyLinkJpaEntity> companyLinks = new ArrayList<>();
+    private List<CompanyLinkEntity> companyLinks = new ArrayList<>();
 
-    protected OfficerJpaEntity() {}
+    protected OfficerEntity() {}
 
-    public OfficerJpaEntity(UUID id, String firstName, String lastName, LocalDate dateOfBirth,
+    public OfficerEntity(UUID id, String firstName, String lastName, LocalDate dateOfBirth,
                             String nationality, String street, String city, String postalCode,
                             String country, String email, String phone,
                             Instant createdAt, Instant updatedAt) {
@@ -94,9 +94,9 @@ public class OfficerJpaEntity {
     public String getPhone() { return phone; }
     public Instant getCreatedAt() { return createdAt; }
     public Instant getUpdatedAt() { return updatedAt; }
-    public List<CompanyLinkJpaEntity> getCompanyLinks() { return companyLinks; }
+    public List<CompanyLinkEntity> getCompanyLinks() { return companyLinks; }
 
-    public void setCompanyLinks(List<CompanyLinkJpaEntity> companyLinks) {
+    public void setCompanyLinks(List<CompanyLinkEntity> companyLinks) {
         this.companyLinks.clear();
         this.companyLinks.addAll(companyLinks);
     }

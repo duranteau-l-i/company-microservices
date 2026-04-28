@@ -9,22 +9,22 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class MongoUserQueryRepository implements UserQueryRepository {
+public class UserQueryRepositoryAdapter implements UserQueryRepository {
 
-    private final UserMongoRepository mongo;
+    private final UserDocumentRepository documentRepository;
 
-    public MongoUserQueryRepository(UserMongoRepository mongo) {
-        this.mongo = mongo;
+    public UserQueryRepositoryAdapter(UserDocumentRepository documentRepository) {
+        this.documentRepository = documentRepository;
     }
 
     @Override
     public Optional<UserReadModel> findById(UserId id) {
-        return mongo.findById(id.value()).map(UserDocumentMapper::toDomain);
+        return documentRepository.findById(id.value()).map(UserDocumentMapper::toDomain);
     }
 
     @Override
     public List<UserReadModel> findAll() {
-        return mongo.findAll().stream().map(UserDocumentMapper::toDomain).toList();
+        return documentRepository.findAll().stream().map(UserDocumentMapper::toDomain).toList();
     }
 
     @Override
@@ -33,17 +33,17 @@ public class MongoUserQueryRepository implements UserQueryRepository {
             return findAll();
         }
 
-        return mongo.searchByText(query).stream().map(UserDocumentMapper::toDomain).toList();
+        return documentRepository.searchByText(query).stream().map(UserDocumentMapper::toDomain).toList();
     }
 
     @Override
     public UserReadModel save(UserReadModel readModel) {
-        UserDocument saved = mongo.save(UserDocumentMapper.toDocument(readModel));
+        UserDocument saved = documentRepository.save(UserDocumentMapper.toDocument(readModel));
         return UserDocumentMapper.toDomain(saved);
     }
 
     @Override
     public void deleteById(UserId id) {
-        mongo.deleteById(id.value());
+        documentRepository.deleteById(id.value());
     }
 }

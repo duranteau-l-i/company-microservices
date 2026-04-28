@@ -11,12 +11,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public class MongoCompanyQueryRepository implements CompanyQueryRepository {
+public class CompanyQueryRepositoryAdapter implements CompanyQueryRepository {
 
-    private final CompanyMongoRepository mongo;
+    private final CompanyDocumentRepository documentRepository;
 
-    public MongoCompanyQueryRepository(CompanyMongoRepository mongo) {
-        this.mongo = mongo;
+    public CompanyQueryRepositoryAdapter(CompanyDocumentRepository documentRepository) {
+        this.documentRepository = documentRepository;
     }
 
     @Override

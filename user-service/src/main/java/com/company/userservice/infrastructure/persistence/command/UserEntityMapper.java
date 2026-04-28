@@ -5,12 +5,12 @@ import com.company.userservice.domain.model.Role;
 import com.company.userservice.domain.model.User;
 import com.company.userservice.domain.model.UserId;
 
-public final class UserJpaMapper {
+public final class UserEntityMapper {
 
-    private UserJpaMapper() {}
+    private UserEntityMapper() {}
 
-    public static UserJpaEntity toEntity(User user) {
-        return new UserJpaEntity(
+    public static UserEntity toEntity(User user) {
+        return new UserEntity(
                 user.id().value(),
                 user.email().value(),
                 user.passwordHash(),
@@ -22,7 +22,7 @@ public final class UserJpaMapper {
                 user.updatedAt());
     }
 
-    public static User toDomain(UserJpaEntity entity) {
+    public static User toDomain(UserEntity entity) {
         return new User(
                 UserId.of(entity.getId()),
                 EmailAddress.of(entity.getEmail()),

@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "companies")
-public class CompanyJpaEntity {
+public class CompanyEntity {
 
     @Id
     private UUID id;
@@ -45,9 +45,9 @@ public class CompanyJpaEntity {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    protected CompanyJpaEntity() {}
+    protected CompanyEntity() {}
 
-    public CompanyJpaEntity(UUID id, String name, String registrationNumber,
+    public CompanyEntity(UUID id, String name, String registrationNumber,
                             String street, String city, String postalCode, String country,
                             UUID ownerId, String status, Instant createdAt, Instant updatedAt) {
         this.id = id;

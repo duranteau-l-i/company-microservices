@@ -8,12 +8,12 @@ import com.company.officerservice.domain.model.OfficerId;
 import java.util.List;
 import java.util.UUID;
 
-public final class OfficerJpaMapper {
+public final class OfficerEntityMapper {
 
-    private OfficerJpaMapper() {}
+    private OfficerEntityMapper() {}
 
-    public static OfficerJpaEntity toEntity(Officer officer) {
-        OfficerJpaEntity entity = new OfficerJpaEntity(
+    public static OfficerEntity toEntity(Officer officer) {
+        OfficerEntity entity = new OfficerEntity(
                 officer.id().value(),
                 officer.firstName(),
                 officer.lastName(),
@@ -29,7 +29,7 @@ public final class OfficerJpaMapper {
                 officer.updatedAt()
         );
 
-        List<CompanyLinkJpaEntity> linkEntities = officer.companyLinks().stream()
+        List<CompanyLinkEntity> linkEntities = officer.companyLinks().stream()
                 .map(link -> toLinkEntity(link, entity))
                 .toList();
         entity.setCompanyLinks(linkEntities);
@@ -37,14 +37,14 @@ public final class OfficerJpaMapper {
         return entity;
     }
 
-    public static Officer toDomain(OfficerJpaEntity entity) {
+    public static Officer toDomain(OfficerEntity entity) {
         Address address = new Address(
                 entity.getStreet(), entity.getCity(),
                 entity.getPostalCode(), entity.getCountry()
         );
 
         List<CompanyLink> links = entity.getCompanyLinks().stream()
-                .map(OfficerJpaMapper::toLinkDomain)
+                .map(OfficerEntityMapper::toLinkDomain)
                 .toList();
 
         return new Officer(
@@ -62,8 +62,8 @@ public final class OfficerJpaMapper {
         );
     }
 
-    private static CompanyLinkJpaEntity toLinkEntity(CompanyLink link, OfficerJpaEntity officer) {
-        return new CompanyLinkJpaEntity(
+    private static CompanyLinkEntity toLinkEntity(CompanyLink link, OfficerEntity officer) {
+        return new CompanyLinkEntity(
                 UUID.randomUUID(),
                 officer,
                 link.companyId(),
@@ -74,7 +74,7 @@ public final class OfficerJpaMapper {
         );
     }
 
-    private static CompanyLink toLinkDomain(CompanyLinkJpaEntity entity) {
+    private static CompanyLink toLinkDomain(CompanyLinkEntity entity) {
         return new CompanyLink(
                 entity.getCompanyId(),
                 entity.getTitle(),

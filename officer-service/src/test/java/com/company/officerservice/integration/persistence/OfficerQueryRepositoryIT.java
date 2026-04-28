@@ -5,8 +5,8 @@ import com.company.officerservice.domain.model.CompanyLink;
 import com.company.officerservice.domain.model.OfficerFullView;
 import com.company.officerservice.domain.model.OfficerId;
 import com.company.officerservice.domain.model.OfficerRestrictedView;
-import com.company.officerservice.infrastructure.persistence.query.MongoOfficerQueryRepository;
-import com.company.officerservice.infrastructure.persistence.query.OfficerMongoRepository;
+import com.company.officerservice.infrastructure.persistence.query.OfficerQueryRepositoryAdapter;
+import com.company.officerservice.infrastructure.persistence.query.OfficerDocumentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +27,9 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataMongoTest
-@Import(MongoOfficerQueryRepository.class)
+@Import(OfficerQueryRepositoryAdapter.class)
 @Testcontainers
-class MongoOfficerQueryRepositoryIT {
+class OfficerQueryRepositoryIT {
 
     @Container
     static MongoDBContainer mongoContainer = new MongoDBContainer("mongo:7");
@@ -43,14 +43,14 @@ class MongoOfficerQueryRepositoryIT {
     }
 
     @Autowired
-    MongoOfficerQueryRepository repository;
+    OfficerQueryRepositoryAdapter repository;
 
     @Autowired
-    OfficerMongoRepository mongo;
+    OfficerDocumentRepository documentRepository;
 
     @BeforeEach
     void reset() {
-        mongo.deleteAll();
+        documentRepository.deleteAll();
     }
 
     private OfficerFullView buildView(String firstName, String lastName, LocalDate dob) {

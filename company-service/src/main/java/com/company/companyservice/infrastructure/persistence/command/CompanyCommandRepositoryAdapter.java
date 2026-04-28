@@ -9,25 +9,25 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Repository
-public class PostgresCompanyCommandRepository implements CompanyCommandRepository {
+public class CompanyCommandRepositoryAdapter implements CompanyCommandRepository {
 
-    private final CompanyJpaRepository jpa;
+    private final CompanyEntityRepository jpa;
 
-    public PostgresCompanyCommandRepository(CompanyJpaRepository jpa) {
+    public CompanyCommandRepositoryAdapter(CompanyEntityRepository jpa) {
         this.jpa = jpa;
     }
 
     @Override
     @Transactional
     public Company save(Company company) {
-        CompanyJpaEntity saved = jpa.save(CompanyJpaMapper.toEntity(company));
-        return CompanyJpaMapper.toDomain(saved);
+        CompanyEntity saved = jpa.save(CompanyEntityMapper.toEntity(company));
+        return CompanyEntityMapper.toDomain(saved);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<Company> findById(CompanyId id) {
-        return jpa.findById(id.value()).map(CompanyJpaMapper::toDomain);
+        return jpa.findById(id.value()).map(CompanyEntityMapper::toDomain);
     }
 
     @Override

@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "users")
-public class UserJpaEntity {
+public class UserEntity {
 
     @Id
     private UUID id;
@@ -39,9 +39,9 @@ public class UserJpaEntity {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    protected UserJpaEntity() {}
+    protected UserEntity() {}
 
-    public UserJpaEntity(UUID id, String email, String passwordHash, String firstName, String lastName,
+    public UserEntity(UUID id, String email, String passwordHash, String firstName, String lastName,
                          String role, boolean active, Instant createdAt, Instant updatedAt) {
         this.id = id;
         this.email = email;

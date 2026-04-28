@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.Query;
 import java.util.List;
 import java.util.UUID;
 
-public interface UserMongoRepository extends MongoRepository<UserDocument, UUID> {
+public interface UserDocumentRepository extends MongoRepository<UserDocument, UUID> {
 
     @Query("{ $or: [ " +
            "{ 'email': { $regex: ?0, $options: 'i' } }, " +

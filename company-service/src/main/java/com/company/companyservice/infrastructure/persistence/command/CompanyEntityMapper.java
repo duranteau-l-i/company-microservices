@@ -5,12 +5,12 @@ import com.company.companyservice.domain.model.Company;
 import com.company.companyservice.domain.model.CompanyId;
 import com.company.companyservice.domain.model.CompanyStatus;
 
-public final class CompanyJpaMapper {
+public final class CompanyEntityMapper {
 
-    private CompanyJpaMapper() {}
+    private CompanyEntityMapper() {}
 
-    public static CompanyJpaEntity toEntity(Company company) {
-        return new CompanyJpaEntity(
+    public static CompanyEntity toEntity(Company company) {
+        return new CompanyEntity(
                 company.id().value(),
                 company.name(),
                 company.registrationNumber(),
@@ -25,7 +25,7 @@ public final class CompanyJpaMapper {
         );
     }
 
-    public static Company toDomain(CompanyJpaEntity entity) {
+    public static Company toDomain(CompanyEntity entity) {
         return new Company(
                 CompanyId.of(entity.getId()),
                 entity.getName(),

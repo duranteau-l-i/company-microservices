@@ -1,6 +1,6 @@
 # Company Microservices Platform
 
-A platform for managing companies and their officers, built with Java 21, Spring Boot 3.x, and Spring Cloud. Six independent services communicate via Kafka (async) and OpenFeign (sync), with PostgreSQL as the write store and MongoDB as the read store.
+A platform for managing companies and their officers, built with Java 21, Spring Boot 3.x, and Spring Cloud. Six independent services communicate asynchronously via Kafka, with PostgreSQL as the write store and MongoDB as the read store.
 
 ## Services
 

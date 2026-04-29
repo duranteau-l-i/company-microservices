@@ -11,7 +11,7 @@ Officer management, company linking, and CQRS read model synchronization for the
 - Consumes `officer-events` (internal) to synchronize the MongoDB read model.
 - Consumes `company-events` (external) to handle `CompanyDeletedEvent` — unlinks officers from deleted companies.
 - Validates JWTs (HS256, shared secret from Config Service) — does not generate tokens.
-- Communicates with **company-service** via Feign + Resilience4j (circuit breaker, fail-fast on link).
+- Validates company existence via MongoDB read model (kept current by consuming company events).
 
 ## Architecture
 

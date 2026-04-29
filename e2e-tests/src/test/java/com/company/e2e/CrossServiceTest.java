@@ -21,8 +21,7 @@ class CrossServiceTest extends E2ETestBase {
 
         createOfficerForCompany(ownerToken, companyId, ownerId);
 
-        // Feign call from company-service to officer-service is synchronous,
-        // but officer-service's read model is populated via Kafka (async).
+        // Officer events are consumed asynchronously to update the company-service read model.
         // Poll until the officer appears in the company response.
         awaitOfficersInCompany(ownerToken, companyId, 1);
     }

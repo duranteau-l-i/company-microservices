@@ -28,22 +28,3 @@ app:
     topics:
       company-events: company-events
       officer-events: officer-events
-
-resilience4j:
-  circuitbreaker:
-    instances:
-      officer-service:
-        sliding-window-size: 10
-        failure-rate-threshold: 50
-        wait-duration-in-open-state: 30s
-        permitted-number-of-calls-in-half-open-state: 3
-        automatic-transition-from-open-to-half-open-enabled: true
-
-feign:
-  circuitbreaker:
-    enabled: false
-  client:
-    config:
-      officer-service:
-        connect-timeout: 3000
-        read-timeout: 5000

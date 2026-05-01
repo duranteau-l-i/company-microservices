@@ -60,6 +60,8 @@ class KafkaUserEventPublisherIT {
         UserCreatedEvent event = UserCreatedEvent.of(
                 UserId.of(userId),
                 EmailAddress.of("user@test.com"),
+                "firstname",
+                "lastname",
                 Role.USER,
                 Instant.now());
 

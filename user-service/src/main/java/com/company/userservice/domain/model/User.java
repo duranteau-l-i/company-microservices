@@ -44,7 +44,7 @@ public final class User {
                                   Role role) {
         Instant now = Instant.now();
         User user = new User(UserId.generate(), email, passwordHash, firstName, lastName, role, true, now, now);
-        UserCreatedEvent event = UserCreatedEvent.of(user.id, user.email, user.role, now);
+        UserCreatedEvent event = UserCreatedEvent.of(user.id, user.email, firstName, lastName, user.role, now);
         return new Created(user, event);
     }
 

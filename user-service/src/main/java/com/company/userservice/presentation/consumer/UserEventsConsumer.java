@@ -71,8 +71,8 @@ public class UserEventsConsumer {
         UserReadModel model = new UserReadModel(
                 UserId.of(event.aggregateId()),
                 EmailAddress.of(event.email()),
-                "",
-                "",
+                event.firstName(),
+                event.lastName(),
                 Role.valueOf(event.role()),
                 true,
                 event.timestamp(),

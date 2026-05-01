@@ -11,13 +11,15 @@ public record UserCreatedEvent(
         UUID eventId,
         UUID aggregateId,
         String email,
+        String firstName,
+        String lastName,
         String role,
         Instant timestamp,
         int version
 ) implements DomainEvent {
 
-    public static UserCreatedEvent of(UserId userId, EmailAddress email, Role role, Instant timestamp) {
-        return new UserCreatedEvent(UUID.randomUUID(), userId.value(), email.value(), role.name(), timestamp, 1);
+    public static UserCreatedEvent of(UserId userId, EmailAddress email, String firstName, String lastName, Role role, Instant timestamp) {
+        return new UserCreatedEvent(UUID.randomUUID(), userId.value(), email.value(), firstName, lastName, role.name(), timestamp, 1);
     }
 
     @Override

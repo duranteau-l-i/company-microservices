@@ -1,9 +1,7 @@
 $kind: http-request
 name: List Users
-url: "{{apiGatewayBaseUrl}}/api/users?search=alice"
+url: "{{apiGatewayBaseUrl}}/api/users"
 method: GET
-queryParams:
-  search: alice
 auth:
   type: bearer
   credentials:

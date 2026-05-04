@@ -7,6 +7,7 @@ services:
       context: ./api-gateway
       dockerfile: Dockerfile
     container_name: api-gateway
+    restart: unless-stopped
     depends_on:
       config-service:
         condition: service_healthy
@@ -33,6 +34,7 @@ services:
       context: ./user-service
       dockerfile: Dockerfile
     container_name: user-service
+    restart: unless-stopped
     depends_on:
       config-service:
         condition: service_healthy
@@ -76,6 +78,7 @@ services:
       context: ./company-service
       dockerfile: Dockerfile
     container_name: company-service
+    restart: unless-stopped
     depends_on:
       config-service:
         condition: service_healthy
@@ -117,6 +120,7 @@ services:
       context: ./officer-service
       dockerfile: Dockerfile
     container_name: officer-service
+    restart: unless-stopped
     depends_on:
       config-service:
         condition: service_healthy

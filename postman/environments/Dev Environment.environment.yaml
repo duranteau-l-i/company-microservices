@@ -10,5 +10,3 @@ values:
     value: ''
   - key: companyId
     value: ''
-  - key: officerId
-    value: ''

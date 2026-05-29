@@ -26,7 +26,6 @@ public class UpdateUserHandler implements UpdateUserUseCase {
         UserId targetId = command.targetId();
 
         boolean self = command.callerId().equals(targetId);
-
         boolean privileged = command.callerRole() == Role.ADMIN || command.callerRole() == Role.MANAGER;
 
         if (!self && !privileged) {
@@ -35,6 +34,12 @@ public class UpdateUserHandler implements UpdateUserUseCase {
 
         User user = repository.findById(targetId)
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + targetId));
+
+        if (command.callerRole() == Role.MANAGER && !self) {
+            if (user.role() == Role.ADMIN || user.role() == Role.MANAGER) {
+                throw new InsufficientPermissionException("MANAGER cannot update ADMIN or other MANAGER accounts");
+            }
+        }
 
         user.updateProfile(command.firstName(), command.lastName());
 

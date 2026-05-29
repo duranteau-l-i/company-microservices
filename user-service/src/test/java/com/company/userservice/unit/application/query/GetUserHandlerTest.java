@@ -43,4 +43,37 @@ class GetUserHandlerTest {
         assertThatThrownBy(() -> handler.get(new GetUserUseCase.Query(user.id(), Role.USER, missing)))
                 .isInstanceOf(UserNotFoundException.class);
     }
+
+    @Test
+    void userCannotFetchAnotherUsersProfile() {
+        UserId otherUserId = UserId.generate();
+
+        assertThatThrownBy(() -> handler.get(new GetUserUseCase.Query(otherUserId, Role.USER, user.id())))
+                .isInstanceOf(UserNotFoundException.class);
+    }
+
+    @Test
+    void userCanFetchOwnProfile() {
+        UserReadModel result = handler.get(new GetUserUseCase.Query(user.id(), Role.USER, user.id()));
+
+        assertThat(result.id()).isEqualTo(user.id());
+    }
+
+    @Test
+    void managerCanFetchAnyProfile() {
+        UserId managerId = UserId.generate();
+
+        UserReadModel result = handler.get(new GetUserUseCase.Query(managerId, Role.MANAGER, user.id()));
+
+        assertThat(result.id()).isEqualTo(user.id());
+    }
+
+    @Test
+    void adminCanFetchAnyProfile() {
+        UserId adminId = UserId.generate();
+
+        UserReadModel result = handler.get(new GetUserUseCase.Query(adminId, Role.ADMIN, user.id()));
+
+        assertThat(result.id()).isEqualTo(user.id());
+    }
 }

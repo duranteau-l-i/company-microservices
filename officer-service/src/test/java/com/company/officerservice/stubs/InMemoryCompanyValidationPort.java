@@ -1,35 +1,31 @@
 package com.company.officerservice.stubs;
 
-import com.company.officerservice.domain.exception.ServiceUnavailableException;
 import com.company.officerservice.domain.port.infrastructure.CompanyValidationPort;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 public class InMemoryCompanyValidationPort implements CompanyValidationPort {
 
-    private final Set<UUID> existingCompanies = new HashSet<>();
-    private boolean simulateUnavailable = false;
+    private final Map<UUID, UUID> companyOwners = new HashMap<>();
 
-    public void addCompany(UUID companyId) {
-        existingCompanies.add(companyId);
-    }
-
-    public void setSimulateUnavailable(boolean simulateUnavailable) {
-        this.simulateUnavailable = simulateUnavailable;
+    public void addCompany(UUID companyId, UUID ownerId) {
+        companyOwners.put(companyId, ownerId);
     }
 
     public void clear() {
-        existingCompanies.clear();
-        simulateUnavailable = false;
+        companyOwners.clear();
     }
 
     @Override
     public boolean companyExists(UUID companyId) {
-        if (simulateUnavailable) {
-            throw new ServiceUnavailableException("Cannot verify company — try again later");
-        }
-        return existingCompanies.contains(companyId);
+        return companyOwners.containsKey(companyId);
+    }
+
+    @Override
+    public Optional<UUID> findOwnerId(UUID companyId) {
+        return Optional.ofNullable(companyOwners.get(companyId));
     }
 }

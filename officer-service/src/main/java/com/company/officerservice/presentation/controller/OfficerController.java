@@ -79,7 +79,7 @@ public class OfficerController {
     public ResponseEntity<OfficerFullResponse> create(@Valid @RequestBody CreateOfficerRequest request) {
         OfficerFullView view = createOfficerUseCase.create(new CreateOfficerUseCase.Command(
                 currentUserId(), currentRole(),
-                request.companyId(), request.companyOwnerId(),
+                request.companyId(),
                 request.firstName(), request.lastName(), request.dateOfBirth(),
                 request.nationality(), request.street(), request.city(),
                 request.postalCode(), request.country(),
@@ -163,7 +163,7 @@ public class OfficerController {
             @PathVariable UUID id,
             @Valid @RequestBody LinkOfficerRequest request) {
         OfficerFullView view = linkOfficerToCompanyUseCase.link(new LinkOfficerToCompanyUseCase.Command(
-                currentUserId(), currentRole(), request.companyOwnerId(),
+                currentUserId(), currentRole(),
                 OfficerId.of(id), request.companyId(),
                 request.title(), request.appointmentDate()
         ));
@@ -174,10 +174,9 @@ public class OfficerController {
     @Operation(summary = "Unlink an officer from a company (company owner or MANAGER/ADMIN)")
     public ResponseEntity<OfficerFullResponse> unlink(
             @PathVariable UUID id,
-            @PathVariable UUID companyId,
-            @RequestParam UUID companyOwnerId) {
+            @PathVariable UUID companyId) {
         OfficerFullView view = unlinkOfficerFromCompanyUseCase.unlink(new UnlinkOfficerFromCompanyUseCase.Command(
-                currentUserId(), currentRole(), companyOwnerId, OfficerId.of(id), companyId
+                currentUserId(), currentRole(), OfficerId.of(id), companyId
         ));
         return ResponseEntity.ok(mapper.toFullResponse(view));
     }

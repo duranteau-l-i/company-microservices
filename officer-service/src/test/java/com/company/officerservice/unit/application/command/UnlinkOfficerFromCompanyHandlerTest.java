@@ -9,6 +9,7 @@ import com.company.officerservice.domain.model.Officer;
 import com.company.officerservice.domain.model.OfficerFullView;
 import com.company.officerservice.domain.model.Role;
 import com.company.officerservice.domain.port.usecases.UnlinkOfficerFromCompanyUseCase;
+import com.company.officerservice.stubs.InMemoryCompanyValidationPort;
 import com.company.officerservice.stubs.InMemoryOfficerCommandRepository;
 import com.company.officerservice.stubs.InMemoryOfficerEventPublisher;
 import com.company.officerservice.stubs.InMemoryOfficerQueryRepository;
@@ -16,7 +17,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,6 +27,7 @@ class UnlinkOfficerFromCompanyHandlerTest {
     private InMemoryOfficerCommandRepository commandRepo;
     private InMemoryOfficerQueryRepository queryRepo;
     private InMemoryOfficerEventPublisher publisher;
+    private InMemoryCompanyValidationPort companyValidationPort;
     private UnlinkOfficerFromCompanyHandler handler;
 
     private Officer seedOfficer;
@@ -38,7 +39,9 @@ class UnlinkOfficerFromCompanyHandlerTest {
         commandRepo = new InMemoryOfficerCommandRepository();
         queryRepo = new InMemoryOfficerQueryRepository();
         publisher = new InMemoryOfficerEventPublisher();
-        handler = new UnlinkOfficerFromCompanyHandler(commandRepo, queryRepo, publisher);
+        companyValidationPort = new InMemoryCompanyValidationPort();
+        companyValidationPort.addCompany(companyId, ownerId);
+        handler = new UnlinkOfficerFromCompanyHandler(commandRepo, queryRepo, publisher, companyValidationPort);
 
         Officer.Created created = Officer.create(
                 "Alice", "Smith", LocalDate.of(1990, 1, 15),
@@ -54,7 +57,7 @@ class UnlinkOfficerFromCompanyHandlerTest {
 
     @Test
     void companyOwnerUnlinksOfficer() {
-        OfficerFullView result = handler.unlink(unlinkCommand(ownerId, Role.USER, ownerId));
+        OfficerFullView result = handler.unlink(unlinkCommand(ownerId, Role.USER));
 
         assertThat(result.companyLinks()).allMatch(l -> !l.active());
         assertThat(publisher.publishedEvents()).hasSize(1);
@@ -63,14 +66,14 @@ class UnlinkOfficerFromCompanyHandlerTest {
 
     @Test
     void managerUnlinksFromAnyCompany() {
-        OfficerFullView result = handler.unlink(unlinkCommand(UUID.randomUUID(), Role.MANAGER, UUID.randomUUID()));
+        OfficerFullView result = handler.unlink(unlinkCommand(UUID.randomUUID(), Role.MANAGER));
 
         assertThat(result.companyLinks()).allMatch(l -> !l.active());
     }
 
     @Test
     void adminUnlinksFromAnyCompany() {
-        OfficerFullView result = handler.unlink(unlinkCommand(UUID.randomUUID(), Role.ADMIN, UUID.randomUUID()));
+        OfficerFullView result = handler.unlink(unlinkCommand(UUID.randomUUID(), Role.ADMIN));
 
         assertThat(result.companyLinks()).allMatch(l -> !l.active());
     }
@@ -79,15 +82,15 @@ class UnlinkOfficerFromCompanyHandlerTest {
     void nonOwnerUserCannotUnlink() {
         UUID notOwner = UUID.randomUUID();
 
-        assertThatThrownBy(() -> handler.unlink(unlinkCommand(notOwner, Role.USER, ownerId)))
+        assertThatThrownBy(() -> handler.unlink(unlinkCommand(notOwner, Role.USER)))
                 .isInstanceOf(OfficerAccessDeniedException.class);
 
         assertThat(publisher.publishedEvents()).isEmpty();
     }
 
-    private UnlinkOfficerFromCompanyUseCase.Command unlinkCommand(UUID callerId, Role role, UUID companyOwnerId) {
+    private UnlinkOfficerFromCompanyUseCase.Command unlinkCommand(UUID callerId, Role role) {
         return new UnlinkOfficerFromCompanyUseCase.Command(
-                callerId, role, companyOwnerId, seedOfficer.id(), companyId
+                callerId, role, seedOfficer.id(), companyId
         );
     }
 

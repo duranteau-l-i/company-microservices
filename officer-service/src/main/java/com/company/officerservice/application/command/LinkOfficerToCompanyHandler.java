@@ -14,6 +14,7 @@ import com.company.officerservice.domain.port.infrastructure.OfficerQueryReposit
 import com.company.officerservice.domain.port.usecases.LinkOfficerToCompanyUseCase;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class LinkOfficerToCompanyHandler implements LinkOfficerToCompanyUseCase {
 
@@ -34,11 +35,13 @@ public class LinkOfficerToCompanyHandler implements LinkOfficerToCompanyUseCase 
 
     @Override
     public OfficerFullView link(Command command) {
-        if (command.callerRole() == Role.USER && !command.callerId().equals(command.companyOwnerId())) {
-            throw new OfficerAccessDeniedException("USER can only link officers to their own company");
-        }
-
-        if (!companyValidationPort.companyExists(command.companyId())) {
+        if (command.callerRole() == Role.USER) {
+            UUID realOwnerId = companyValidationPort.findOwnerId(command.companyId())
+                    .orElseThrow(() -> new CompanyNotFoundException(command.companyId()));
+            if (!realOwnerId.equals(command.callerId())) {
+                throw new OfficerAccessDeniedException("USER can only link officers to their own company");
+            }
+        } else if (!companyValidationPort.companyExists(command.companyId())) {
             throw new CompanyNotFoundException(command.companyId());
         }
 

@@ -31,8 +31,8 @@ public class UseCaseConfig {
     @Bean
     public CreateOfficerUseCase createOfficerUseCase(
             OfficerCommandRepository commandRepo, OfficerQueryRepository queryRepo,
-            OfficerEventPublisher publisher) {
-        return new CreateOfficerHandler(commandRepo, queryRepo, publisher);
+            OfficerEventPublisher publisher, CompanyValidationPort companyValidationPort) {
+        return new CreateOfficerHandler(commandRepo, queryRepo, publisher, companyValidationPort);
     }
 
     @Bean
@@ -59,8 +59,8 @@ public class UseCaseConfig {
     @Bean
     public UnlinkOfficerFromCompanyUseCase unlinkOfficerFromCompanyUseCase(
             OfficerCommandRepository commandRepo, OfficerQueryRepository queryRepo,
-            OfficerEventPublisher publisher) {
-        return new UnlinkOfficerFromCompanyHandler(commandRepo, queryRepo, publisher);
+            OfficerEventPublisher publisher, CompanyValidationPort companyValidationPort) {
+        return new UnlinkOfficerFromCompanyHandler(commandRepo, queryRepo, publisher, companyValidationPort);
     }
 
     @Bean

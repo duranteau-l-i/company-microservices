@@ -13,7 +13,6 @@ public interface CreateOfficerUseCase {
             UUID callerId,
             Role callerRole,
             UUID companyId,
-            UUID companyOwnerId,
             String firstName,
             String lastName,
             LocalDate dateOfBirth,

@@ -27,9 +27,40 @@ class CompanyClientAdapterTest {
     @Test
     void companyExists_returnsTrue_whenClientReturnsDto() {
         UUID companyId = UUID.randomUUID();
-        CompanyClientAdapter adapter = new CompanyClientAdapter(id -> new CompanyClientDto(id));
+        CompanyClientAdapter adapter = new CompanyClientAdapter(id -> new CompanyClientDto(id, UUID.randomUUID()));
 
         assertThat(adapter.companyExists(companyId)).isTrue();
+    }
+
+    @Test
+    void findOwnerId_returnsOwner_whenClientReturnsDto() {
+        UUID companyId = UUID.randomUUID();
+        UUID ownerId = UUID.randomUUID();
+        CompanyClientAdapter adapter = new CompanyClientAdapter(id -> new CompanyClientDto(id, ownerId));
+
+        assertThat(adapter.findOwnerId(companyId)).contains(ownerId);
+    }
+
+    @Test
+    void findOwnerId_returnsEmpty_whenClientThrowsNotFound() {
+        UUID companyId = UUID.randomUUID();
+        CompanyClientAdapter adapter = new CompanyClientAdapter(id -> {
+            throw notFoundException();
+        });
+
+        assertThat(adapter.findOwnerId(companyId)).isEmpty();
+    }
+
+    @Test
+    void findOwnerId_rethrows_whenFallbackThrowsServiceUnavailable() {
+        UUID companyId = UUID.randomUUID();
+        CompanyClientAdapter adapter = new CompanyClientAdapter(id -> {
+            throw new ServiceUnavailableException("Cannot verify company — try again later");
+        });
+
+        assertThatThrownBy(() -> adapter.findOwnerId(companyId))
+                .isInstanceOf(ServiceUnavailableException.class)
+                .hasMessageContaining("Cannot verify company");
     }
 
     @Test

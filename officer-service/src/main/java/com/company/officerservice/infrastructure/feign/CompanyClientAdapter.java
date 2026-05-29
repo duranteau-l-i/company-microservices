@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -31,6 +32,22 @@ public class CompanyClientAdapter implements CompanyValidationPort {
             throw e;
         } catch (Exception e) {
             log.error("Failed to verify company {} via company-service: {} — {}",
+                    companyId, e.getClass().getName(), e.getMessage(), e);
+            throw new ServiceUnavailableException("Cannot verify company — try again later");
+        }
+    }
+
+    @Override
+    public Optional<UUID> findOwnerId(UUID companyId) {
+        try {
+            CompanyClientDto company = companyClient.getCompany(companyId);
+            return Optional.ofNullable(company.ownerId());
+        } catch (FeignException.NotFound e) {
+            return Optional.empty();
+        } catch (ServiceUnavailableException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("Failed to resolve owner of company {} via company-service: {} — {}",
                     companyId, e.getClass().getName(), e.getMessage(), e);
             throw new ServiceUnavailableException("Cannot verify company — try again later");
         }

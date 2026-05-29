@@ -82,12 +82,12 @@ class OfficerControllerIT {
         commandRepo.clear();
         queryRepo.clear();
         companyValidationPort.clear();
+        companyValidationPort.addCompany(companyId, ownerId);
     }
 
     private Map<String, Object> createRequest() {
         return Map.ofEntries(
                 Map.entry("companyId", companyId.toString()),
-                Map.entry("companyOwnerId", ownerId.toString()),
                 Map.entry("firstName", "Alice"),
                 Map.entry("lastName", "Smith"),
                 Map.entry("dateOfBirth", "1990-01-15"),
@@ -290,11 +290,10 @@ class OfficerControllerIT {
         OfficerFullView view = seedOfficer(ownerId);
         String token = TestJwtHelper.accessToken(ownerId, "owner@test.com", Role.USER);
         UUID newCompanyId = UUID.randomUUID();
-        companyValidationPort.addCompany(newCompanyId);
+        companyValidationPort.addCompany(newCompanyId, ownerId);
 
         Map<String, Object> linkRequest = Map.of(
                 "companyId", newCompanyId.toString(),
-                "companyOwnerId", ownerId.toString(),
                 "title", "CEO",
                 "appointmentDate", "2024-06-01"
         );
@@ -329,7 +328,6 @@ class OfficerControllerIT {
         String token = TestJwtHelper.accessToken(ownerId, "owner@test.com", Role.USER);
 
         mockMvc.perform(delete("/api/officers/" + officer.id().value() + "/links/" + companyId)
-                        .param("companyOwnerId", ownerId.toString())
                         .header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.companyLinks[0].active").value(false));

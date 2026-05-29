@@ -12,7 +12,6 @@ public interface UnlinkOfficerFromCompanyUseCase {
     record Command(
             UUID callerId,
             Role callerRole,
-            UUID companyOwnerId,
             OfficerId officerId,
             UUID companyId
     ) {}

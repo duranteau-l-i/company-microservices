@@ -1,36 +1,46 @@
 package com.company.officerservice.application.command;
 
+import com.company.officerservice.domain.exception.CompanyNotFoundException;
 import com.company.officerservice.domain.exception.OfficerAccessDeniedException;
 import com.company.officerservice.domain.model.Address;
 import com.company.officerservice.domain.model.CompanyLink;
 import com.company.officerservice.domain.model.Officer;
 import com.company.officerservice.domain.model.OfficerFullView;
 import com.company.officerservice.domain.model.Role;
+import com.company.officerservice.domain.port.infrastructure.CompanyValidationPort;
 import com.company.officerservice.domain.port.infrastructure.OfficerCommandRepository;
 import com.company.officerservice.domain.port.infrastructure.OfficerEventPublisher;
 import com.company.officerservice.domain.port.infrastructure.OfficerQueryRepository;
 import com.company.officerservice.domain.port.usecases.CreateOfficerUseCase;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class CreateOfficerHandler implements CreateOfficerUseCase {
 
     private final OfficerCommandRepository commandRepo;
     private final OfficerQueryRepository queryRepo;
     private final OfficerEventPublisher publisher;
+    private final CompanyValidationPort companyValidationPort;
 
     public CreateOfficerHandler(OfficerCommandRepository commandRepo,
                                 OfficerQueryRepository queryRepo,
-                                OfficerEventPublisher publisher) {
+                                OfficerEventPublisher publisher,
+                                CompanyValidationPort companyValidationPort) {
         this.commandRepo = Objects.requireNonNull(commandRepo, "commandRepo");
         this.queryRepo = Objects.requireNonNull(queryRepo, "queryRepo");
         this.publisher = Objects.requireNonNull(publisher, "publisher");
+        this.companyValidationPort = Objects.requireNonNull(companyValidationPort, "companyValidationPort");
     }
 
     @Override
     public OfficerFullView create(Command command) {
-        if (command.callerRole() == Role.USER && !command.callerId().equals(command.companyOwnerId())) {
-            throw new OfficerAccessDeniedException("USER can only create officers for their own company");
+        if (command.callerRole() == Role.USER) {
+            UUID realOwnerId = companyValidationPort.findOwnerId(command.companyId())
+                    .orElseThrow(() -> new CompanyNotFoundException(command.companyId()));
+            if (!realOwnerId.equals(command.callerId())) {
+                throw new OfficerAccessDeniedException("USER can only create officers for their own company");
+            }
         }
 
         Address address = new Address(command.street(), command.city(), command.postalCode(), command.country());

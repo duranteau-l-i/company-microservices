@@ -75,6 +75,14 @@ class SearchOfficersHandlerTest {
         assertThat(results).allMatch(v -> v instanceof OfficerRestrictedView);
     }
 
+    @Test
+    void regexWildcardInputIsNotExpandedToMatchAll() {
+        List<OfficerRestrictedView> results = handler.search(
+                new SearchOfficersUseCase.Command(UUID.randomUUID(), Role.USER, ".*", null, null));
+
+        assertThat(results).isEmpty();
+    }
+
     private static OfficerFullView officer(String firstName, String lastName, LocalDate dob) {
         return new OfficerFullView(
                 OfficerId.generate(), firstName, lastName, dob,

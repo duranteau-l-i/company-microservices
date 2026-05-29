@@ -17,6 +17,7 @@ import com.company.userservice.domain.port.usecases.SignInUseCase;
 import com.company.userservice.domain.port.usecases.SignUpUseCase;
 import com.company.userservice.domain.port.usecases.UpdateUserUseCase;
 import com.company.userservice.domain.port.infrastructure.PasswordHasher;
+import com.company.userservice.domain.port.infrastructure.RefreshTokenRepository;
 import com.company.userservice.domain.port.infrastructure.TokenProvider;
 import com.company.userservice.domain.port.infrastructure.UserCommandRepository;
 import com.company.userservice.domain.port.infrastructure.UserEventPublisher;
@@ -66,8 +67,9 @@ public class UseCaseConfig {
     @Bean
     public DeleteUserUseCase deleteUserUseCase(
             UserCommandRepository commandRepository,
-            UserEventPublisher publisher) {
-        return new DeleteUserHandler(commandRepository, publisher);
+            UserEventPublisher publisher,
+            RefreshTokenRepository refreshTokenRepository) {
+        return new DeleteUserHandler(commandRepository, publisher, refreshTokenRepository);
     }
 
     @Bean

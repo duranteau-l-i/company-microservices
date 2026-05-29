@@ -7,6 +7,7 @@ import com.company.userservice.domain.model.EmailAddress;
 import com.company.userservice.domain.model.Role;
 import com.company.userservice.domain.model.User;
 import com.company.userservice.domain.port.usecases.DeleteUserUseCase;
+import com.company.userservice.stubs.InMemoryRefreshTokenRepository;
 import com.company.userservice.stubs.InMemoryUserCommandRepository;
 import com.company.userservice.stubs.InMemoryUserEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,7 @@ class DeleteUserHandlerTest {
 
     private InMemoryUserCommandRepository repo;
     private InMemoryUserEventPublisher publisher;
+    private InMemoryRefreshTokenRepository refreshTokenRepo;
     private DeleteUserHandler handler;
     private User target;
 
@@ -26,7 +28,8 @@ class DeleteUserHandlerTest {
     void setUp() {
         repo = new InMemoryUserCommandRepository();
         publisher = new InMemoryUserEventPublisher();
-        handler = new DeleteUserHandler(repo, publisher);
+        refreshTokenRepo = new InMemoryRefreshTokenRepository();
+        handler = new DeleteUserHandler(repo, publisher, refreshTokenRepo);
         target = User.create(EmailAddress.of("terry@test.com"), "h", "T", "Target", Role.USER).user();
         repo.save(target);
     }
@@ -52,5 +55,17 @@ class DeleteUserHandlerTest {
         assertThatThrownBy(() -> handler.delete(new DeleteUserUseCase.Command(
                 target.id(), Role.USER, target.id())))
                 .isInstanceOf(InsufficientPermissionException.class);
+    }
+
+    @Test
+    void deleteRevokesAllRefreshTokens() {
+        refreshTokenRepo.save(new com.company.userservice.domain.model.RefreshToken(
+                target.id(), "terry@test.com", Role.USER,
+                "some-hash", java.time.Instant.now().plusSeconds(3600)
+        ));
+
+        handler.delete(new DeleteUserUseCase.Command(target.id(), Role.ADMIN, target.id()));
+
+        assertThat(refreshTokenRepo.size()).isEqualTo(0);
     }
 }

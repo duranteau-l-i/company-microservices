@@ -73,11 +73,20 @@ class ListOfficersByCompanyHandlerTest {
     }
 
     @Test
-    void returnsEmptyListForUnknownCompany() {
+    void returnsEmptyListForUnknownCompanyAsManager() {
         List<OfficerView> results = handler.list(
                 new ListOfficersByCompanyUseCase.Command(UUID.randomUUID(), Role.MANAGER, UUID.randomUUID()));
 
         assertThat(results).isEmpty();
+    }
+
+    @Test
+    void userIsRejectedWhenCompanyNotInProjection() {
+        companyValidationPort.clear();
+
+        assertThatThrownBy(() -> handler.list(
+                new ListOfficersByCompanyUseCase.Command(UUID.randomUUID(), Role.USER, companyId)))
+                .isInstanceOf(OfficerAccessDeniedException.class);
     }
 
     private static OfficerFullView officerWithLinks(String firstName, String lastName, List<CompanyLink> links) {

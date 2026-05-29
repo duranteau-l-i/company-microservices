@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 @Repository
 public class OfficerQueryRepositoryAdapter implements OfficerQueryRepository {
@@ -47,10 +48,10 @@ public class OfficerQueryRepositoryAdapter implements OfficerQueryRepository {
         Criteria criteria = new Criteria();
 
         if (firstName != null && !firstName.isBlank()) {
-            criteria = criteria.and("firstName").regex(firstName, "i");
+            criteria = criteria.and("firstName").regex(Pattern.quote(firstName.trim()), "i");
         }
         if (lastName != null && !lastName.isBlank()) {
-            criteria = criteria.and("lastName").regex(lastName, "i");
+            criteria = criteria.and("lastName").regex(Pattern.quote(lastName.trim()), "i");
         }
         if (dateOfBirth != null) {
             criteria = criteria.and("dateOfBirth").is(dateOfBirth);

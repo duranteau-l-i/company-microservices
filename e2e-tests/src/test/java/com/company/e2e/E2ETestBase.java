@@ -114,12 +114,11 @@ public abstract class E2ETestBase {
                 .path("id");
     }
 
-    protected String createOfficerForCompany(String token, String companyId, String companyOwnerId) {
+    protected String createOfficerForCompany(String token, String companyId) {
         return auth(token)
                 .body("""
                         {
                           "companyId": "%s",
-                          "companyOwnerId": "%s",
                           "firstName": "Alice",
                           "lastName": "Smith",
                           "dateOfBirth": "1990-01-15",
@@ -133,7 +132,7 @@ public abstract class E2ETestBase {
                           "title": "Director",
                           "appointmentDate": "2024-01-01"
                         }
-                        """.formatted(companyId, companyOwnerId, randomEmail()))
+                        """.formatted(companyId, randomEmail()))
                 .when()
                 .post("/api/officers")
                 .then()
@@ -143,16 +142,15 @@ public abstract class E2ETestBase {
                 .toString();
     }
 
-    protected ValidatableResponse linkOfficer(String token, String officerId, String companyId, String companyOwnerId) {
+    protected ValidatableResponse linkOfficer(String token, String officerId, String companyId) {
         return auth(token)
                 .body("""
                         {
                           "companyId": "%s",
-                          "companyOwnerId": "%s",
                           "title": "Secretary",
                           "appointmentDate": "2024-06-01"
                         }
-                        """.formatted(companyId, companyOwnerId))
+                        """.formatted(companyId))
                 .when()
                 .post("/api/officers/" + officerId + "/links")
                 .then();

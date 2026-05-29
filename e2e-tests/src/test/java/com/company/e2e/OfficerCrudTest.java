@@ -10,26 +10,25 @@ import static org.hamcrest.Matchers.*;
 class OfficerCrudTest extends E2ETestBase {
 
     private String ownerToken;
-    private String ownerId;
     private String companyId;
 
     @BeforeEach
     void setupUserAndCompany() {
         String email = randomEmail();
-        ownerId = signUp(email, "Password123!", "Officer", "Owner");
+        signUp(email, "Password123!", "Officer", "Owner");
         ownerToken = signIn(email, "Password123!");
         companyId = createCompany(ownerToken, "OfficerCo " + randomString(), "REG-" + randomString());
     }
 
     @Test
     void createOfficer_returns201WithId() {
-        String officerId = createOfficerForCompany(ownerToken, companyId, ownerId);
+        String officerId = createOfficerForCompany(ownerToken, companyId);
         assertThat(officerId).isNotNull();
     }
 
     @Test
     void searchByName_returnsMatches() {
-        createOfficerForCompany(ownerToken, companyId, ownerId);
+        createOfficerForCompany(ownerToken, companyId);
 
         auth(ownerToken)
                 .queryParam("firstName", "Alice")
@@ -44,7 +43,7 @@ class OfficerCrudTest extends E2ETestBase {
 
     @Test
     void searchByNameAndDob_returnsMatches() {
-        createOfficerForCompany(ownerToken, companyId, ownerId);
+        createOfficerForCompany(ownerToken, companyId);
 
         auth(ownerToken)
                 .queryParam("firstName", "Alice")
@@ -58,26 +57,26 @@ class OfficerCrudTest extends E2ETestBase {
 
     @Test
     void linkToSecondCompany_returns200() {
-        String officerId = createOfficerForCompany(ownerToken, companyId, ownerId);
+        String officerId = createOfficerForCompany(ownerToken, companyId);
         String secondCompanyId = createCompany(ownerToken, "Second Co " + randomString(), "REG-" + randomString());
 
-        linkOfficer(ownerToken, officerId, secondCompanyId, ownerId)
+        linkOfficer(ownerToken, officerId, secondCompanyId)
                 .statusCode(200)
                 .body("companyLinks", hasSize(greaterThan(1)));
     }
 
     @Test
     void linkDuplicate_returns409() {
-        String officerId = createOfficerForCompany(ownerToken, companyId, ownerId);
+        String officerId = createOfficerForCompany(ownerToken, companyId);
 
         // Link to the same company again — expect 409 Conflict
-        linkOfficer(ownerToken, officerId, companyId, ownerId)
+        linkOfficer(ownerToken, officerId, companyId)
                 .statusCode(409);
     }
 
     @Test
     void adminGetOfficer_returnsFullView() {
-        String officerId = createOfficerForCompany(ownerToken, companyId, ownerId);
+        String officerId = createOfficerForCompany(ownerToken, companyId);
 
         adminAuth()
                 .when()
@@ -91,7 +90,7 @@ class OfficerCrudTest extends E2ETestBase {
 
     @Test
     void userGetOfficer_returnsRestrictedView() {
-        String officerId = createOfficerForCompany(ownerToken, companyId, ownerId);
+        String officerId = createOfficerForCompany(ownerToken, companyId);
         String otherUserToken = signUpAndSignIn(randomEmail(), "Password123!");
 
         // USER role gets restricted view — has companyLinks but no email, phone, dateOfBirth
@@ -107,11 +106,10 @@ class OfficerCrudTest extends E2ETestBase {
 
     @Test
     void unlinkFromCompany_returns200WithInactiveLink() {
-        String officerId = createOfficerForCompany(ownerToken, companyId, ownerId);
+        String officerId = createOfficerForCompany(ownerToken, companyId);
 
         // Unlink marks the link inactive (resignationDate set) rather than removing it
         auth(ownerToken)
-                .queryParam("companyOwnerId", ownerId)
                 .when()
                 .delete("/api/officers/" + officerId + "/links/" + companyId)
                 .then()
@@ -122,7 +120,7 @@ class OfficerCrudTest extends E2ETestBase {
 
     @Test
     void listOfficersByCompany_returnsOfficersForCompany() {
-        createOfficerForCompany(ownerToken, companyId, ownerId);
+        createOfficerForCompany(ownerToken, companyId);
 
         auth(ownerToken)
                 .when()
@@ -135,7 +133,7 @@ class OfficerCrudTest extends E2ETestBase {
 
     @Test
     void listCompaniesByOfficer_returnsCompanyLinks() {
-        String officerId = createOfficerForCompany(ownerToken, companyId, ownerId);
+        String officerId = createOfficerForCompany(ownerToken, companyId);
 
         auth(ownerToken)
                 .when()

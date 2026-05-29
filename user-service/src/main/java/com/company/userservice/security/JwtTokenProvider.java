@@ -26,9 +26,12 @@ public class JwtTokenProvider implements TokenProvider {
     private final long refreshTtlSeconds;
 
     public JwtTokenProvider(
-            @Value("${app.security.jwt.secret:change-me-change-me-change-me-change-me-64-bytes}") String secret,
+            @Value("${app.security.jwt.secret}") String secret,
             @Value("${app.security.jwt.access-token-expiration:1800000}") long accessTtlMillis,
             @Value("${app.security.jwt.refresh-token-expiration:604800000}") long refreshTtlMillis) {
+        if (secret == null || secret.length() < 32) {
+            throw new IllegalStateException("app.security.jwt.secret must be at least 32 characters");
+        }
         this.signingKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.accessTtlSeconds = accessTtlMillis / 1000;
         this.refreshTtlSeconds = refreshTtlMillis / 1000;

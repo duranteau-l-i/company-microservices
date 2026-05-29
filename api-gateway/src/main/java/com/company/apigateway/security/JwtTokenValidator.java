@@ -17,7 +17,10 @@ public class JwtTokenValidator {
     private final SecretKey signingKey;
 
     public JwtTokenValidator(
-            @Value("${app.security.jwt.secret:local-dev-secret-change-me-to-a-long-random-string-at-least-256-bits-long}") String secret) {
+            @Value("${app.security.jwt.secret}") String secret) {
+        if (secret == null || secret.length() < 32) {
+            throw new IllegalStateException("app.security.jwt.secret must be at least 32 characters");
+        }
         this.signingKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 

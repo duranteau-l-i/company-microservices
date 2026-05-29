@@ -11,6 +11,7 @@ import com.company.officerservice.domain.port.usecases.ListOfficersByCompanyUseC
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class ListOfficersByCompanyHandler implements ListOfficersByCompanyUseCase {
 
@@ -25,18 +26,19 @@ public class ListOfficersByCompanyHandler implements ListOfficersByCompanyUseCas
 
     @Override
     public List<OfficerView> list(Command command) {
+        if (!command.callerRole().isAtLeast(Role.MANAGER)) {
+            UUID ownerId = companyValidationPort.findOwnerId(command.companyId())
+                    .orElseThrow(() -> new OfficerAccessDeniedException("USER can only list officers for their own company"));
+            if (!ownerId.equals(command.callerId())) {
+                throw new OfficerAccessDeniedException("USER can only list officers for their own company");
+            }
+        }
+
         List<OfficerFullView> full = queryRepo.findByCompanyId(command.companyId());
 
         if (command.callerRole().isAtLeast(Role.MANAGER)) {
             return full.stream().map(v -> (OfficerView) v).toList();
         }
-
-        companyValidationPort.findOwnerId(command.companyId()).ifPresent(ownerId -> {
-            if (!ownerId.equals(command.callerId())) {
-                throw new OfficerAccessDeniedException("USER can only list officers for their own company");
-            }
-        });
-
         return full.stream()
                 .map(v -> (OfficerView) new OfficerRestrictedView(v.id(), v.firstName(), v.lastName(), v.companyLinks()))
                 .toList();

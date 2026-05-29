@@ -140,21 +140,31 @@ public class OfficerController {
     }
 
     @GetMapping("/by-company/{companyId}")
-    @Operation(summary = "List all officers linked to a company")
-    public ResponseEntity<List<OfficerFullResponse>> listByCompany(@PathVariable UUID companyId) {
-        List<OfficerFullView> views = listOfficersByCompanyUseCase.list(
+    @Operation(summary = "List all officers linked to a company (full view for MANAGER/ADMIN, restricted for USER)")
+    public ResponseEntity<List<Object>> listByCompany(@PathVariable UUID companyId) {
+        List<OfficerView> views = listOfficersByCompanyUseCase.list(
                 new ListOfficersByCompanyUseCase.Command(currentUserId(), currentRole(), companyId)
         );
-        return ResponseEntity.ok(views.stream().map(mapper::toFullResponse).toList());
+        List<Object> responses = views.stream().map(v -> switch (v) {
+            case OfficerFullView full -> (Object) mapper.toFullResponse(full);
+            case OfficerRestrictedView restricted -> (Object) mapper.toRestrictedResponse(restricted);
+            default -> throw new IllegalStateException("Unknown view type: " + v.getClass());
+        }).toList();
+        return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/{id}/companies")
-    @Operation(summary = "List all companies an officer is linked to")
-    public ResponseEntity<OfficerFullResponse> listCompanies(@PathVariable UUID id) {
-        OfficerFullView view = listCompaniesByOfficerUseCase.list(
+    @Operation(summary = "List all companies an officer is linked to (full view for MANAGER/ADMIN, restricted for USER)")
+    public ResponseEntity<Object> listCompanies(@PathVariable UUID id) {
+        OfficerView view = listCompaniesByOfficerUseCase.list(
                 new ListCompaniesByOfficerUseCase.Command(currentUserId(), currentRole(), OfficerId.of(id))
         );
-        return ResponseEntity.ok(mapper.toFullResponse(view));
+        Object response = switch (view) {
+            case OfficerFullView full -> mapper.toFullResponse(full);
+            case OfficerRestrictedView restricted -> mapper.toRestrictedResponse(restricted);
+            default -> throw new IllegalStateException("Unknown view type: " + view.getClass());
+        };
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/{id}/links")

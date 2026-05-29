@@ -5,6 +5,8 @@ import com.company.officerservice.domain.exception.OfficerNotFoundException;
 import com.company.officerservice.domain.model.CompanyLink;
 import com.company.officerservice.domain.model.OfficerFullView;
 import com.company.officerservice.domain.model.OfficerId;
+import com.company.officerservice.domain.model.OfficerRestrictedView;
+import com.company.officerservice.domain.model.OfficerView;
 import com.company.officerservice.domain.model.Role;
 import com.company.officerservice.domain.port.usecases.ListCompaniesByOfficerUseCase;
 import com.company.officerservice.stubs.InMemoryOfficerQueryRepository;
@@ -43,13 +45,23 @@ class ListCompaniesByOfficerHandlerTest {
     }
 
     @Test
-    void returnsOfficerWithAllCompanyLinks() {
-        OfficerFullView result = handler.list(
+    void managerReceivesFullViewWithPii() {
+        OfficerView result = handler.list(
+                new ListCompaniesByOfficerUseCase.Command(UUID.randomUUID(), Role.MANAGER, seedView.id()));
+
+        assertThat(result).isInstanceOf(OfficerFullView.class);
+        OfficerFullView full = (OfficerFullView) result;
+        assertThat(full.email()).isEqualTo("alice@example.com");
+        assertThat(full.companyLinks()).hasSize(2);
+    }
+
+    @Test
+    void userReceivesRestrictedView() {
+        OfficerView result = handler.list(
                 new ListCompaniesByOfficerUseCase.Command(UUID.randomUUID(), Role.USER, seedView.id()));
 
-        assertThat(result).isNotNull();
-        assertThat(result.id()).isEqualTo(seedView.id());
-        assertThat(result.companyLinks()).hasSize(2);
+        assertThat(result).isInstanceOf(OfficerRestrictedView.class);
+        assertThat(((OfficerRestrictedView) result).companyLinks()).hasSize(2);
     }
 
     @Test

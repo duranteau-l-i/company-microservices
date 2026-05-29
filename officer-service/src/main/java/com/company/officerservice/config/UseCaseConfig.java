@@ -74,8 +74,9 @@ public class UseCaseConfig {
     }
 
     @Bean
-    public ListOfficersByCompanyUseCase listOfficersByCompanyUseCase(OfficerQueryRepository queryRepo) {
-        return new ListOfficersByCompanyHandler(queryRepo);
+    public ListOfficersByCompanyUseCase listOfficersByCompanyUseCase(OfficerQueryRepository queryRepo,
+                                                                      CompanyValidationPort companyValidationPort) {
+        return new ListOfficersByCompanyHandler(queryRepo, companyValidationPort);
     }
 
     @Bean

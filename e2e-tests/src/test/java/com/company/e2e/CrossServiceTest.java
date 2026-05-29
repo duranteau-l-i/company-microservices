@@ -15,11 +15,11 @@ class CrossServiceTest extends E2ETestBase {
     @Test
     void getCompanyWithLinkedOfficer_returnsOfficersFromOfficerService() throws InterruptedException {
         String email = randomEmail();
-        String ownerId = signUp(email, "Password123!", "Cross", "Owner");
+        signUp(email, "Password123!", "Cross", "Owner");
         String ownerToken = signIn(email, "Password123!");
         String companyId = createCompany(ownerToken, "CrossCo " + randomString(), "REG-" + randomString());
 
-        createOfficerForCompany(ownerToken, companyId, ownerId);
+        createOfficerForCompany(ownerToken, companyId);
 
         // Feign call from company-service to officer-service is synchronous,
         // but officer-service's read model is populated via Kafka (async).
@@ -30,11 +30,11 @@ class CrossServiceTest extends E2ETestBase {
     @Test
     void linkOfficerToNonExistentCompany_returns422() {
         String email = randomEmail();
-        String ownerId = signUp(email, "Password123!", "Link", "Tester");
+        signUp(email, "Password123!", "Link", "Tester");
         String ownerToken = signIn(email, "Password123!");
         String realCompanyId = createCompany(ownerToken, "RealCo " + randomString(), "REG-" + randomString());
 
-        String officerId = createOfficerForCompany(ownerToken, realCompanyId, ownerId);
+        String officerId = createOfficerForCompany(ownerToken, realCompanyId);
 
         String nonExistentCompanyId = "00000000-0000-0000-0000-000000000000";
 
@@ -42,11 +42,10 @@ class CrossServiceTest extends E2ETestBase {
                 .body("""
                         {
                           "companyId": "%s",
-                          "companyOwnerId": "%s",
                           "title": "Director",
                           "appointmentDate": "2024-01-01"
                         }
-                        """.formatted(nonExistentCompanyId, ownerId))
+                        """.formatted(nonExistentCompanyId))
                 .when()
                 .post("/api/officers/" + officerId + "/links")
                 .then()
@@ -56,10 +55,10 @@ class CrossServiceTest extends E2ETestBase {
     @Test
     void deleteCompany_deactivatesOfficerLinks() throws InterruptedException {
         String email = randomEmail();
-        String ownerId = signUp(email, "Password123!", "Del", "Owner");
+        signUp(email, "Password123!", "Del", "Owner");
         String ownerToken = signIn(email, "Password123!");
         String companyId = createCompany(ownerToken, "DelCo " + randomString(), "REG-" + randomString());
-        String officerId = createOfficerForCompany(ownerToken, companyId, ownerId);
+        String officerId = createOfficerForCompany(ownerToken, companyId);
 
         // Ensure officer has the link before deletion (wait for read model sync)
         awaitOfficersInCompany(ownerToken, companyId, 1);

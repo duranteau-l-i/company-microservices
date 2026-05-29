@@ -5,7 +5,9 @@ import com.company.userservice.domain.model.Role;
 import com.company.userservice.domain.model.UserId;
 import com.company.userservice.domain.port.infrastructure.TokenProvider.TokenPair;
 import com.company.userservice.security.JwtTokenProvider;
+import com.company.userservice.stubs.InMemoryRefreshTokenRepository;
 import io.jsonwebtoken.Claims;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,7 +17,14 @@ class JwtTokenProviderTest {
 
     private static final String SECRET = "this-is-a-long-enough-secret-for-hmac-sha-256-signing-key!!";
 
-    private final JwtTokenProvider provider = new JwtTokenProvider(SECRET, 1_800_000, 604_800_000);
+    private InMemoryRefreshTokenRepository refreshTokenRepo;
+    private JwtTokenProvider provider;
+
+    @BeforeEach
+    void setUp() {
+        refreshTokenRepo = new InMemoryRefreshTokenRepository();
+        provider = new JwtTokenProvider(SECRET, 1_800_000, 604_800_000, refreshTokenRepo);
+    }
 
     @Test
     void issueAndParseAccessToken() {
@@ -35,6 +44,14 @@ class JwtTokenProviderTest {
     }
 
     @Test
+    void refreshTokenIsOpaqueNotAJwt() {
+        TokenPair pair = provider.issueTokens(UserId.generate(), "alice@test.com", Role.USER);
+
+        assertThat(pair.refreshToken()).isNotBlank();
+        assertThat(provider.isAccessToken(pair.refreshToken())).isFalse();
+    }
+
+    @Test
     void isAccessTokenDistinguishesTypes() {
         TokenPair pair = provider.issueTokens(UserId.generate(), "alice@test.com", Role.USER);
 
@@ -45,19 +62,31 @@ class JwtTokenProviderTest {
     @Test
     void refreshRotatesTokens() {
         TokenPair original = provider.issueTokens(UserId.generate(), "alice@test.com", Role.MANAGER);
+
+        assertThat(refreshTokenRepo.size()).isEqualTo(1);
+
         TokenPair refreshed = provider.refresh(original.refreshToken());
 
         assertThat(refreshed.accessToken()).isNotBlank();
+        assertThat(refreshed.refreshToken()).isNotEqualTo(original.refreshToken());
+        assertThat(refreshTokenRepo.size()).isEqualTo(1);
 
         Claims claims = provider.parseClaims(refreshed.accessToken());
-
         assertThat(claims.get("role", String.class)).isEqualTo("MANAGER");
     }
 
     @Test
-    void refreshRejectsAccessToken() {
+    void refreshTokenIsOneTimeUse() {
         TokenPair pair = provider.issueTokens(UserId.generate(), "alice@test.com", Role.USER);
-        assertThatThrownBy(() -> provider.refresh(pair.accessToken()))
+        provider.refresh(pair.refreshToken());
+
+        assertThatThrownBy(() -> provider.refresh(pair.refreshToken()))
+                .isInstanceOf(InvalidCredentialsException.class);
+    }
+
+    @Test
+    void refreshRejectsUnknownToken() {
+        assertThatThrownBy(() -> provider.refresh("unknown-opaque-token"))
                 .isInstanceOf(InvalidCredentialsException.class);
     }
 

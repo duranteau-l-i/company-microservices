@@ -4,6 +4,8 @@ import com.company.officerservice.domain.model.OfficerFullView;
 import com.company.officerservice.domain.model.OfficerId;
 import com.company.officerservice.domain.port.infrastructure.OfficerCommandRepository;
 import com.company.officerservice.domain.port.infrastructure.OfficerQueryRepository;
+import com.company.officerservice.infrastructure.persistence.query.KnownCompanyDocument;
+import com.company.officerservice.infrastructure.persistence.query.KnownCompanyRepository;
 import com.company.officerservice.infrastructure.persistence.query.ProcessedEventDocument;
 import com.company.officerservice.infrastructure.persistence.query.ProcessedEventDocumentRepository;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -25,16 +27,19 @@ public class CompanyEventConsumer {
     private final OfficerCommandRepository commandRepository;
     private final OfficerQueryRepository queryRepository;
     private final ProcessedEventDocumentRepository processedEvents;
+    private final KnownCompanyRepository knownCompanies;
     private final ObjectMapper objectMapper;
 
     public CompanyEventConsumer(
             OfficerCommandRepository commandRepository,
             OfficerQueryRepository queryRepository,
             ProcessedEventDocumentRepository processedEvents,
+            KnownCompanyRepository knownCompanies,
             ObjectMapper objectMapper) {
         this.commandRepository = commandRepository;
         this.queryRepository = queryRepository;
         this.processedEvents = processedEvents;
+        this.knownCompanies = knownCompanies;
         this.objectMapper = objectMapper;
     }
 
@@ -55,6 +60,7 @@ public class CompanyEventConsumer {
             UUID aggregateId = UUID.fromString(envelope.get("aggregateId").asText());
 
             switch (eventType) {
+                case "CompanyCreatedEvent" -> handleCompanyCreated(aggregateId, envelope);
                 case "CompanyDeletedEvent" -> handleCompanyDeleted(aggregateId);
                 default -> log.debug("Ignoring company event type: {}", eventType);
             }
@@ -66,7 +72,17 @@ public class CompanyEventConsumer {
         }
     }
 
+    private void handleCompanyCreated(UUID companyId, JsonNode envelope) {
+        UUID ownerId = null;
+        JsonNode payload = envelope.get("payload");
+        if (payload != null && payload.hasNonNull("ownerId")) {
+            ownerId = UUID.fromString(payload.get("ownerId").asText());
+        }
+        knownCompanies.save(new KnownCompanyDocument(companyId, ownerId));
+    }
+
     private void handleCompanyDeleted(UUID companyId) {
+        knownCompanies.deleteById(companyId);
         List<OfficerFullView> linkedOfficers = queryRepository.findByCompanyId(companyId);
         for (OfficerFullView officerView : linkedOfficers) {
             commandRepository.findById(officerView.id()).ifPresent(officer -> {

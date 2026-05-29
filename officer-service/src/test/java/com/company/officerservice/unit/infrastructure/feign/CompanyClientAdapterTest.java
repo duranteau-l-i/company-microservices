@@ -17,6 +17,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class CompanyClientAdapterTest {
 
+    // knownCompanies is only used by findOwnerId (a trivial projection lookup),
+    // not by companyExists — these tests exercise the Feign companyExists path only.
+    private static CompanyClientAdapter adapterWith(com.company.officerservice.infrastructure.feign.CompanyClient client) {
+        return new CompanyClientAdapter(client, null);
+    }
+
     private static FeignException.NotFound notFoundException() {
         Request request = Request.create(
                 Request.HttpMethod.GET, "http://localhost/api/companies/test",
@@ -27,46 +33,15 @@ class CompanyClientAdapterTest {
     @Test
     void companyExists_returnsTrue_whenClientReturnsDto() {
         UUID companyId = UUID.randomUUID();
-        CompanyClientAdapter adapter = new CompanyClientAdapter(id -> new CompanyClientDto(id, UUID.randomUUID()));
+        CompanyClientAdapter adapter = adapterWith(id -> new CompanyClientDto(id));
 
         assertThat(adapter.companyExists(companyId)).isTrue();
     }
 
     @Test
-    void findOwnerId_returnsOwner_whenClientReturnsDto() {
-        UUID companyId = UUID.randomUUID();
-        UUID ownerId = UUID.randomUUID();
-        CompanyClientAdapter adapter = new CompanyClientAdapter(id -> new CompanyClientDto(id, ownerId));
-
-        assertThat(adapter.findOwnerId(companyId)).contains(ownerId);
-    }
-
-    @Test
-    void findOwnerId_returnsEmpty_whenClientThrowsNotFound() {
-        UUID companyId = UUID.randomUUID();
-        CompanyClientAdapter adapter = new CompanyClientAdapter(id -> {
-            throw notFoundException();
-        });
-
-        assertThat(adapter.findOwnerId(companyId)).isEmpty();
-    }
-
-    @Test
-    void findOwnerId_rethrows_whenFallbackThrowsServiceUnavailable() {
-        UUID companyId = UUID.randomUUID();
-        CompanyClientAdapter adapter = new CompanyClientAdapter(id -> {
-            throw new ServiceUnavailableException("Cannot verify company — try again later");
-        });
-
-        assertThatThrownBy(() -> adapter.findOwnerId(companyId))
-                .isInstanceOf(ServiceUnavailableException.class)
-                .hasMessageContaining("Cannot verify company");
-    }
-
-    @Test
     void companyExists_returnsFalse_whenClientThrowsNotFound() {
         UUID companyId = UUID.randomUUID();
-        CompanyClientAdapter adapter = new CompanyClientAdapter(id -> {
+        CompanyClientAdapter adapter = adapterWith(id -> {
             throw notFoundException();
         });
 
@@ -76,7 +51,7 @@ class CompanyClientAdapterTest {
     @Test
     void companyExists_rethrows_whenFallbackThrowsServiceUnavailable() {
         UUID companyId = UUID.randomUUID();
-        CompanyClientAdapter adapter = new CompanyClientAdapter(id -> {
+        CompanyClientAdapter adapter = adapterWith(id -> {
             throw new ServiceUnavailableException("Cannot verify company — try again later");
         });
 
@@ -88,7 +63,7 @@ class CompanyClientAdapterTest {
     @Test
     void companyExists_wrapsUnexpectedException_intoServiceUnavailable() {
         UUID companyId = UUID.randomUUID();
-        CompanyClientAdapter adapter = new CompanyClientAdapter(id -> {
+        CompanyClientAdapter adapter = adapterWith(id -> {
             throw new RuntimeException("unexpected failure");
         });
 

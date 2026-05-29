@@ -61,7 +61,9 @@ class CompanyClientIT {
 
         @Bean
         CompanyClientAdapter companyClientAdapter(CompanyClient companyClient) {
-            return new CompanyClientAdapter(companyClient);
+            // findOwnerId reads from the known_companies projection (not Feign); this
+            // WireMock-based IT only exercises companyExists, so the repo is unused here.
+            return new CompanyClientAdapter(companyClient, null);
         }
     }
 

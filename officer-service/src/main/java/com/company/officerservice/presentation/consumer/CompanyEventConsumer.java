@@ -60,7 +60,7 @@ public class CompanyEventConsumer {
             UUID aggregateId = UUID.fromString(envelope.get("aggregateId").asText());
 
             switch (eventType) {
-                case "CompanyCreatedEvent" -> handleCompanyCreated(aggregateId);
+                case "CompanyCreatedEvent" -> handleCompanyCreated(aggregateId, envelope);
                 case "CompanyDeletedEvent" -> handleCompanyDeleted(aggregateId);
                 default -> log.debug("Ignoring company event type: {}", eventType);
             }
@@ -72,8 +72,13 @@ public class CompanyEventConsumer {
         }
     }
 
-    private void handleCompanyCreated(UUID companyId) {
-        knownCompanies.save(new KnownCompanyDocument(companyId));
+    private void handleCompanyCreated(UUID companyId, JsonNode envelope) {
+        UUID ownerId = null;
+        JsonNode payload = envelope.get("payload");
+        if (payload != null && payload.has("ownerId")) {
+            ownerId = UUID.fromString(payload.get("ownerId").asText());
+        }
+        knownCompanies.save(new KnownCompanyDocument(companyId, ownerId));
     }
 
     private void handleCompanyDeleted(UUID companyId) {

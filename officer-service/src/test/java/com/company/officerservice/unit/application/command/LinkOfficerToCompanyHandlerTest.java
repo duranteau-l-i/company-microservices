@@ -41,7 +41,7 @@ class LinkOfficerToCompanyHandlerTest {
         queryRepo = new InMemoryOfficerQueryRepository();
         publisher = new InMemoryOfficerEventPublisher();
         companyValidationPort = new InMemoryCompanyValidationPort();
-        companyValidationPort.addCompany(companyId);
+        companyValidationPort.addCompany(companyId, ownerId);
         handler = new LinkOfficerToCompanyHandler(commandRepo, queryRepo, publisher, companyValidationPort);
 
         Officer.Created created = Officer.create(
@@ -56,7 +56,7 @@ class LinkOfficerToCompanyHandlerTest {
 
     @Test
     void companyOwnerLinksOfficer() {
-        OfficerFullView result = handler.link(linkCommand(ownerId, Role.USER, ownerId));
+        OfficerFullView result = handler.link(linkCommand(ownerId, Role.USER));
 
         assertThat(result.companyLinks()).hasSize(1);
         assertThat(result.companyLinks().get(0).companyId()).isEqualTo(companyId);
@@ -66,14 +66,14 @@ class LinkOfficerToCompanyHandlerTest {
 
     @Test
     void managerLinksOfficerToAnyCompany() {
-        OfficerFullView result = handler.link(linkCommand(UUID.randomUUID(), Role.MANAGER, UUID.randomUUID()));
+        OfficerFullView result = handler.link(linkCommand(UUID.randomUUID(), Role.MANAGER));
 
         assertThat(result.companyLinks()).hasSize(1);
     }
 
     @Test
     void adminLinksOfficer() {
-        OfficerFullView result = handler.link(linkCommand(UUID.randomUUID(), Role.ADMIN, UUID.randomUUID()));
+        OfficerFullView result = handler.link(linkCommand(UUID.randomUUID(), Role.ADMIN));
 
         assertThat(result.companyLinks()).hasSize(1);
     }
@@ -82,7 +82,7 @@ class LinkOfficerToCompanyHandlerTest {
     void nonOwnerUserCannotLink() {
         UUID notOwner = UUID.randomUUID();
 
-        assertThatThrownBy(() -> handler.link(linkCommand(notOwner, Role.USER, ownerId)))
+        assertThatThrownBy(() -> handler.link(linkCommand(notOwner, Role.USER)))
                 .isInstanceOf(OfficerAccessDeniedException.class);
 
         assertThat(publisher.publishedEvents()).isEmpty();
@@ -90,10 +90,10 @@ class LinkOfficerToCompanyHandlerTest {
 
     @Test
     void duplicateLinkRejected() {
-        handler.link(linkCommand(ownerId, Role.USER, ownerId));
+        handler.link(linkCommand(ownerId, Role.USER));
         publisher.clear();
 
-        assertThatThrownBy(() -> handler.link(linkCommand(ownerId, Role.USER, ownerId)))
+        assertThatThrownBy(() -> handler.link(linkCommand(ownerId, Role.USER)))
                 .isInstanceOf(DuplicateLinkException.class);
 
         assertThat(publisher.publishedEvents()).isEmpty();
@@ -103,15 +103,15 @@ class LinkOfficerToCompanyHandlerTest {
     void linkRejected_whenCompanyDoesNotExist() {
         companyValidationPort.clear();
 
-        assertThatThrownBy(() -> handler.link(linkCommand(ownerId, Role.USER, ownerId)))
+        assertThatThrownBy(() -> handler.link(linkCommand(ownerId, Role.USER)))
                 .isInstanceOf(CompanyNotFoundException.class);
 
         assertThat(publisher.publishedEvents()).isEmpty();
     }
 
-    private LinkOfficerToCompanyUseCase.Command linkCommand(UUID callerId, Role role, UUID companyOwnerId) {
+    private LinkOfficerToCompanyUseCase.Command linkCommand(UUID callerId, Role role) {
         return new LinkOfficerToCompanyUseCase.Command(
-                callerId, role, companyOwnerId,
+                callerId, role,
                 seedOfficer.id(), companyId,
                 "Director", LocalDate.of(2024, 1, 1)
         );

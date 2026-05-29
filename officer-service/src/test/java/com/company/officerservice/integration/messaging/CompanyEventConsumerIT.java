@@ -125,7 +125,7 @@ class CompanyEventConsumerIT {
     @Test
     void companyDeletedEvent_removesCompanyFromKnownCompanies() throws Exception {
         UUID companyId = UUID.randomUUID();
-        knownCompanyRepository.save(new KnownCompanyDocument(companyId));
+        knownCompanyRepository.save(new KnownCompanyDocument(companyId, null));
 
         String envelope = buildEnvelope(UUID.randomUUID(), "CompanyDeletedEvent", companyId,
                 buildDeletedPayload(companyId));
@@ -141,7 +141,7 @@ class CompanyEventConsumerIT {
         UUID companyId = UUID.randomUUID();
 
         // Seed a known company
-        knownCompanyRepository.save(new KnownCompanyDocument(companyId));
+        knownCompanyRepository.save(new KnownCompanyDocument(companyId, null));
 
         // Seed an officer linked to the company in both write and read stores
         Officer.Created created = Officer.create(

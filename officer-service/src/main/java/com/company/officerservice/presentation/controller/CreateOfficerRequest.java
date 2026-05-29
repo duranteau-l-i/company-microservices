@@ -9,7 +9,6 @@ import java.util.UUID;
 
 public record CreateOfficerRequest(
         @NotNull UUID companyId,
-        @NotNull UUID companyOwnerId,
         @NotBlank String firstName,
         @NotBlank String lastName,
         @NotNull LocalDate dateOfBirth,

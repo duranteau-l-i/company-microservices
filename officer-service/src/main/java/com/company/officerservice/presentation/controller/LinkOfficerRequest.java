@@ -8,7 +8,6 @@ import java.util.UUID;
 
 public record LinkOfficerRequest(
         @NotNull UUID companyId,
-        @NotNull UUID companyOwnerId,
         @NotBlank String title,
         @NotNull LocalDate appointmentDate
 ) {}

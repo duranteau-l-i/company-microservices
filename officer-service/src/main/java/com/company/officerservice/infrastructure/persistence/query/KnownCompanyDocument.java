@@ -11,10 +11,13 @@ public class KnownCompanyDocument {
     @Id
     private UUID id;
 
+    private UUID ownerId;
+
     public KnownCompanyDocument() {}
 
-    public KnownCompanyDocument(UUID id) {
+    public KnownCompanyDocument(UUID id, UUID ownerId) {
         this.id = id;
+        this.ownerId = ownerId;
     }
 
     public UUID getId() {
@@ -23,5 +26,13 @@ public class KnownCompanyDocument {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public UUID getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(UUID ownerId) {
+        this.ownerId = ownerId;
     }
 }

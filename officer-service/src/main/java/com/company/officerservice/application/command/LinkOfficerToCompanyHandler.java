@@ -10,6 +10,7 @@ import com.company.officerservice.domain.model.Role;
 import com.company.officerservice.domain.port.infrastructure.CompanyValidationPort;
 import com.company.officerservice.domain.port.infrastructure.OfficerCommandRepository;
 import com.company.officerservice.domain.port.infrastructure.OfficerEventPublisher;
+import org.springframework.transaction.annotation.Transactional;
 import com.company.officerservice.domain.port.infrastructure.OfficerQueryRepository;
 import com.company.officerservice.domain.port.usecases.LinkOfficerToCompanyUseCase;
 
@@ -34,6 +35,7 @@ public class LinkOfficerToCompanyHandler implements LinkOfficerToCompanyUseCase 
     }
 
     @Override
+    @Transactional
     public OfficerFullView link(Command command) {
         if (command.callerRole() == Role.USER) {
             UUID realOwnerId = companyValidationPort.findOwnerId(command.companyId())

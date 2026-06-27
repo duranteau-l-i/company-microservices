@@ -9,6 +9,7 @@ import com.company.userservice.domain.port.usecases.SignUpUseCase;
 import com.company.userservice.domain.port.infrastructure.PasswordHasher;
 import com.company.userservice.domain.port.infrastructure.UserCommandRepository;
 import com.company.userservice.domain.port.infrastructure.UserEventPublisher;
+import org.springframework.transaction.annotation.Transactional;
 
 public class SignUpHandler implements SignUpUseCase {
 
@@ -25,6 +26,7 @@ public class SignUpHandler implements SignUpUseCase {
     }
 
     @Override
+    @Transactional
     public UserReadModel signUp(Command command) {
         EmailAddress email = EmailAddress.of(command.email());
 

@@ -11,6 +11,7 @@ import com.company.officerservice.domain.port.infrastructure.OfficerCommandRepos
 import com.company.officerservice.domain.port.infrastructure.OfficerEventPublisher;
 import com.company.officerservice.domain.port.infrastructure.OfficerQueryRepository;
 import com.company.officerservice.domain.port.usecases.UnlinkOfficerFromCompanyUseCase;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -33,6 +34,7 @@ public class UnlinkOfficerFromCompanyHandler implements UnlinkOfficerFromCompany
     }
 
     @Override
+    @Transactional
     public OfficerFullView unlink(Command command) {
         if (command.callerRole() == Role.USER) {
             UUID realOwnerId = companyValidationPort.findOwnerId(command.companyId())

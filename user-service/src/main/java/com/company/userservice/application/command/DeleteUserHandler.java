@@ -9,6 +9,7 @@ import com.company.userservice.domain.port.usecases.DeleteUserUseCase;
 import com.company.userservice.domain.port.infrastructure.RefreshTokenRepository;
 import com.company.userservice.domain.port.infrastructure.UserCommandRepository;
 import com.company.userservice.domain.port.infrastructure.UserEventPublisher;
+import org.springframework.transaction.annotation.Transactional;
 
 public class DeleteUserHandler implements DeleteUserUseCase {
 
@@ -24,6 +25,7 @@ public class DeleteUserHandler implements DeleteUserUseCase {
     }
 
     @Override
+    @Transactional
     public void delete(Command command) {
         if (command.callerRole() != Role.ADMIN) {
             throw new InsufficientPermissionException("Only ADMIN can delete users");

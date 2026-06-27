@@ -8,6 +8,7 @@ import com.company.companyservice.domain.model.CompanyFullView;
 import com.company.companyservice.domain.model.Role;
 import com.company.companyservice.domain.port.infrastructure.CompanyCommandRepository;
 import com.company.companyservice.domain.port.infrastructure.CompanyEventPublisher;
+import org.springframework.transaction.annotation.Transactional;
 import com.company.companyservice.domain.port.infrastructure.CompanyQueryRepository;
 import com.company.companyservice.domain.port.usecases.CreateCompanyUseCase;
 
@@ -29,6 +30,7 @@ public class CreateCompanyHandler implements CreateCompanyUseCase {
     }
 
     @Override
+    @Transactional
     public CompanyFullView create(Command command) {
         if (command.callerRole() == Role.MANAGER) {
             throw new CompanyAccessDeniedException("MANAGER cannot create companies");

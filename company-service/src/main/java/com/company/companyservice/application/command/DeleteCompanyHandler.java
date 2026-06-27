@@ -7,6 +7,7 @@ import com.company.companyservice.domain.model.Company;
 import com.company.companyservice.domain.model.Role;
 import com.company.companyservice.domain.port.infrastructure.CompanyCommandRepository;
 import com.company.companyservice.domain.port.infrastructure.CompanyEventPublisher;
+import org.springframework.transaction.annotation.Transactional;
 import com.company.companyservice.domain.port.infrastructure.CompanyQueryRepository;
 import com.company.companyservice.domain.port.usecases.DeleteCompanyUseCase;
 
@@ -28,6 +29,7 @@ public class DeleteCompanyHandler implements DeleteCompanyUseCase {
     }
 
     @Override
+    @Transactional
     public void delete(Command command) {
         Company company = commandRepo.findById(command.companyId())
                 .orElseThrow(() -> new CompanyNotFoundException(command.companyId()));

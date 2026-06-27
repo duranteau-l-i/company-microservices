@@ -9,6 +9,7 @@ import com.company.officerservice.domain.port.infrastructure.OfficerCommandRepos
 import com.company.officerservice.domain.port.infrastructure.OfficerEventPublisher;
 import com.company.officerservice.domain.port.infrastructure.OfficerQueryRepository;
 import com.company.officerservice.domain.port.usecases.DeleteOfficerUseCase;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
@@ -27,6 +28,7 @@ public class DeleteOfficerHandler implements DeleteOfficerUseCase {
     }
 
     @Override
+    @Transactional
     public void delete(Command command) {
         if (command.callerRole() != Role.ADMIN) {
             throw new OfficerAccessDeniedException("Only ADMIN can delete officers");

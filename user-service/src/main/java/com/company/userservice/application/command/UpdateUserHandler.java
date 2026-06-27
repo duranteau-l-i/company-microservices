@@ -10,6 +10,7 @@ import com.company.userservice.domain.model.UserReadModel;
 import com.company.userservice.domain.port.usecases.UpdateUserUseCase;
 import com.company.userservice.domain.port.infrastructure.UserCommandRepository;
 import com.company.userservice.domain.port.infrastructure.UserEventPublisher;
+import org.springframework.transaction.annotation.Transactional;
 
 public class UpdateUserHandler implements UpdateUserUseCase {
 
@@ -22,6 +23,7 @@ public class UpdateUserHandler implements UpdateUserUseCase {
     }
 
     @Override
+    @Transactional
     public UserReadModel update(Command command) {
         UserId targetId = command.targetId();
 

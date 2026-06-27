@@ -28,3 +28,5 @@ app:
     topics:
       officer-events: officer-events
       company-events: company-events
+  outbox:
+    relay-interval-ms: 5000

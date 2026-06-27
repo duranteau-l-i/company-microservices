@@ -9,6 +9,7 @@ import com.company.companyservice.domain.model.CompanyFullView;
 import com.company.companyservice.domain.model.Role;
 import com.company.companyservice.domain.port.infrastructure.CompanyCommandRepository;
 import com.company.companyservice.domain.port.infrastructure.CompanyEventPublisher;
+import org.springframework.transaction.annotation.Transactional;
 import com.company.companyservice.domain.port.infrastructure.CompanyQueryRepository;
 import com.company.companyservice.domain.port.usecases.UpdateCompanyUseCase;
 
@@ -29,6 +30,7 @@ public class UpdateCompanyHandler implements UpdateCompanyUseCase {
     }
 
     @Override
+    @Transactional
     public CompanyFullView update(Command command) {
         Company company = commandRepo.findById(command.companyId())
                 .orElseThrow(() -> new CompanyNotFoundException(command.companyId()));

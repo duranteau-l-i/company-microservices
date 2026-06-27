@@ -11,6 +11,7 @@ import com.company.officerservice.domain.port.infrastructure.OfficerCommandRepos
 import com.company.officerservice.domain.port.infrastructure.OfficerEventPublisher;
 import com.company.officerservice.domain.port.infrastructure.OfficerQueryRepository;
 import com.company.officerservice.domain.port.usecases.UpdateOfficerUseCase;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
@@ -29,6 +30,7 @@ public class UpdateOfficerHandler implements UpdateOfficerUseCase {
     }
 
     @Override
+    @Transactional
     public OfficerFullView update(Command command) {
         if (!command.callerRole().isAtLeast(Role.MANAGER)) {
             throw new OfficerAccessDeniedException("Only MANAGER or ADMIN can update officers");

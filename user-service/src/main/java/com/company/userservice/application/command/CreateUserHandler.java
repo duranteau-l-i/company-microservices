@@ -9,6 +9,7 @@ import com.company.userservice.domain.port.usecases.CreateUserUseCase;
 import com.company.userservice.domain.port.infrastructure.PasswordHasher;
 import com.company.userservice.domain.port.infrastructure.UserCommandRepository;
 import com.company.userservice.domain.port.infrastructure.UserEventPublisher;
+import org.springframework.transaction.annotation.Transactional;
 
 public class CreateUserHandler implements CreateUserUseCase {
 
@@ -25,6 +26,7 @@ public class CreateUserHandler implements CreateUserUseCase {
     }
 
     @Override
+    @Transactional
     public UserReadModel create(Command command) {
         if (!command.callerRole().canCreate(command.targetRole())) {
             throw new InsufficientPermissionException(

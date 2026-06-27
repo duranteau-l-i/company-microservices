@@ -4,9 +4,6 @@ import com.company.companyservice.domain.event.DomainEvent;
 import com.company.companyservice.domain.port.infrastructure.CompanyEventPublisher;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Component;
-
-@Component
 public class KafkaEventPublisher implements CompanyEventPublisher {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;

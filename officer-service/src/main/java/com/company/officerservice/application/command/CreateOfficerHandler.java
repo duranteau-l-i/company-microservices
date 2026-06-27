@@ -12,6 +12,7 @@ import com.company.officerservice.domain.port.infrastructure.OfficerCommandRepos
 import com.company.officerservice.domain.port.infrastructure.OfficerEventPublisher;
 import com.company.officerservice.domain.port.infrastructure.OfficerQueryRepository;
 import com.company.officerservice.domain.port.usecases.CreateOfficerUseCase;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -34,6 +35,7 @@ public class CreateOfficerHandler implements CreateOfficerUseCase {
     }
 
     @Override
+    @Transactional
     public OfficerFullView create(Command command) {
         if (command.callerRole() == Role.USER) {
             UUID realOwnerId = companyValidationPort.findOwnerId(command.companyId())

@@ -5,6 +5,5 @@ url: "{{apiGatewayBaseUrl}}/api/companies/{{companyId}}"
 order: 4433186086537018
 auth:
   credentials:
-    - key: token
-      value: "{{accessToken}}"
+    token: "{{accessToken}}"
   type: bearer

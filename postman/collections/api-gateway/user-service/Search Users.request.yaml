@@ -7,7 +7,6 @@ queryParams:
     value: alice
 auth:
   credentials:
-    - key: token
-      value: "{{accessToken}}"
+    token: "{{accessToken}}"
   type: bearer
 order: 4500982268614195

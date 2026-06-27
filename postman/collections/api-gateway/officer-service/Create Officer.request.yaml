@@ -4,19 +4,16 @@ method: POST
 url: "{{apiGatewayBaseUrl}}/api/officers"
 order: 1777222555597
 headers:
-  - key: Content-Type
-    value: application/json
+  Content-Type: application/json
 auth:
   credentials:
-    - key: token
-      value: "{{accessToken}}"
+    token: "{{accessToken}}"
   type: bearer
 body:
   type: json
   content: |-
     {
       "companyId": "{{companyId}}",
-      "companyOwnerId": "{{userId}}",
       "firstName": "Alice",
       "lastName": "Smith",
       "dateOfBirth": "1990-01-15",

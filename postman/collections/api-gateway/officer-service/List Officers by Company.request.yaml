@@ -5,6 +5,5 @@ url: "{{apiGatewayBaseUrl}}/api/officers/by-company/{{companyId}}"
 order: 4503501058871332
 auth:
   credentials:
-    - key: token
-      value: "{{accessToken}}"
+    token: "{{accessToken}}"
   type: bearer

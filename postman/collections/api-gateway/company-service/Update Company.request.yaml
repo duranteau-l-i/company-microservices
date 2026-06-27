@@ -4,12 +4,10 @@ method: PUT
 url: "{{apiGatewayBaseUrl}}/api/companies/{{companyId}}"
 order: 2216218491729977
 headers:
-  - key: Content-Type
-    value: application/json
+  Content-Type: application/json
 auth:
   credentials:
-    - key: token
-      value: "{{accessToken}}"
+    token: "{{accessToken}}"
   type: bearer
 body:
   type: json

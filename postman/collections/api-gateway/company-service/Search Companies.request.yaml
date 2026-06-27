@@ -5,6 +5,5 @@ url: "{{apiGatewayBaseUrl}}/api/companies/search?term=acme"
 order: 4235004786234903
 auth:
   credentials:
-    - key: token
-      value: "{{accessToken}}"
+    token: "{{accessToken}}"
   type: bearer

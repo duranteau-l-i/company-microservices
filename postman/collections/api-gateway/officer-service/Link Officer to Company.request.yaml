@@ -4,12 +4,10 @@ method: POST
 url: "{{apiGatewayBaseUrl}}/api/officers/{{officerId}}/links"
 order: 4500030889285896
 headers:
-  - key: Content-Type
-    value: application/json
+  Content-Type: application/json
 auth:
   credentials:
-    - key: token
-      value: "{{accessToken}}"
+    token: "{{accessToken}}"
   type: bearer
 body:
   type: json

@@ -5,6 +5,5 @@ url: "{{apiGatewayBaseUrl}}/api/officers/search?firstName=Alice&lastName=Smith"
 order: 4503564038073756
 auth:
   credentials:
-    - key: token
-      value: "{{accessToken}}"
+    token: "{{accessToken}}"
   type: bearer

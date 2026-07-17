@@ -148,27 +148,32 @@ public abstract class E2ETestBase {
     }
 
     protected String createOfficerForCompany(String token, String companyId) {
-        return auth(token)
-                .body("""
-                        {
-                          "companyId": "%s",
-                          "firstName": "Alice",
-                          "lastName": "Smith",
-                          "dateOfBirth": "1990-01-15",
-                          "nationality": "French",
-                          "street": "1 Rue de la Paix",
-                          "city": "Paris",
-                          "postalCode": "75001",
-                          "country": "France",
-                          "email": "%s",
-                          "phone": "+33 1 23 45 67 89",
-                          "title": "Director",
-                          "appointmentDate": "2024-01-01"
-                        }
-                        """.formatted(companyId, randomEmail()))
-                .when()
-                .post("/api/officers")
-                .then()
+        String body = """
+                {
+                  "companyId": "%s",
+                  "firstName": "Alice",
+                  "lastName": "Smith",
+                  "dateOfBirth": "1990-01-15",
+                  "nationality": "French",
+                  "street": "1 Rue de la Paix",
+                  "city": "Paris",
+                  "postalCode": "75001",
+                  "country": "France",
+                  "email": "%s",
+                  "phone": "+33 1 23 45 67 89",
+                  "title": "Director",
+                  "appointmentDate": "2024-01-01"
+                }
+                """.formatted(companyId, randomEmail());
+
+        Response response = awaitResponse(
+                () -> auth(token).body(body).when().post("/api/officers"),
+                r -> r.statusCode() != 422,
+                Duration.ofSeconds(10),
+                "officer creation for company " + companyId
+                        + " (waiting for officer-service's known_companies projection to sync)");
+
+        return response.then()
                 .statusCode(201)
                 .extract()
                 .path("id")

@@ -181,16 +181,21 @@ public abstract class E2ETestBase {
     }
 
     protected ValidatableResponse linkOfficer(String token, String officerId, String companyId) {
-        return auth(token)
-                .body("""
-                        {
-                          "companyId": "%s",
-                          "title": "Secretary",
-                          "appointmentDate": "2024-06-01"
-                        }
-                        """.formatted(companyId))
-                .when()
-                .post("/api/officers/" + officerId + "/links")
-                .then();
+        String body = """
+                {
+                  "companyId": "%s",
+                  "title": "Secretary",
+                  "appointmentDate": "2024-06-01"
+                }
+                """.formatted(companyId);
+
+        Response response = awaitResponse(
+                () -> auth(token).body(body).when().post("/api/officers/" + officerId + "/links"),
+                r -> r.statusCode() != 422,
+                Duration.ofSeconds(10),
+                "officer link to company " + companyId
+                        + " (waiting for officer-service's known_companies projection to sync)");
+
+        return response.then();
     }
 }

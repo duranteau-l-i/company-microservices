@@ -98,7 +98,10 @@ class CrossServiceTest extends E2ETestBase {
                         .when()
                         .get("/api/companies/" + companyId),
                 r -> {
-                    List<?> officers = r.then().statusCode(200).extract().path("officers");
+                    if (r.statusCode() != 200) {
+                        return false;
+                    }
+                    List<?> officers = r.then().extract().path("officers");
                     return officers != null && officers.size() >= minCount;
                 },
                 Duration.ofSeconds(10),
@@ -112,7 +115,10 @@ class CrossServiceTest extends E2ETestBase {
                         .when()
                         .get("/api/officers/" + officerId + "/companies"),
                 r -> {
-                    List<java.util.Map<String, Object>> links = r.then().statusCode(200).extract().path("companyLinks");
+                    if (r.statusCode() != 200) {
+                        return false;
+                    }
+                    List<java.util.Map<String, Object>> links = r.then().extract().path("companyLinks");
                     if (links == null) {
                         return false;
                     }

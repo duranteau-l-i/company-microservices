@@ -66,12 +66,15 @@ class CompanyCrudTest extends E2ETestBase {
 
         String otherToken = signUpAndSignIn(randomEmail(), "Password123!");
 
+        Response response = awaitResponse(
+                () -> auth(otherToken).when().get("/api/companies/" + companyId),
+                r -> r.statusCode() == 200,
+                Duration.ofSeconds(10),
+                "company " + companyId + " to appear in the read model");
+
         // Restricted view includes id, name, registrationNumber, ownerId, ownerDisplayName, status
         // but NOT officers, address detail, or timestamps
-        auth(otherToken)
-                .when()
-                .get("/api/companies/" + companyId)
-                .then()
+        response.then()
                 .statusCode(200)
                 .body("id", equalTo(companyId))
                 .body("address", nullValue())
@@ -216,7 +219,10 @@ class CompanyCrudTest extends E2ETestBase {
         Response response = awaitResponse(
                 () -> auth(token).when().get("/api/companies"),
                 r -> {
-                    List<?> companies = r.then().statusCode(200).extract().path("$");
+                    if (r.statusCode() != 200) {
+                        return false;
+                    }
+                    List<?> companies = r.then().extract().path("$");
                     return companies != null && !companies.isEmpty();
                 },
                 Duration.ofSeconds(10),
@@ -238,7 +244,10 @@ class CompanyCrudTest extends E2ETestBase {
         Response response = awaitResponse(
                 () -> auth(otherToken).queryParam("term", uniqueName).when().get("/api/companies/search"),
                 r -> {
-                    List<?> matches = r.then().statusCode(200).extract().path("$");
+                    if (r.statusCode() != 200) {
+                        return false;
+                    }
+                    List<?> matches = r.then().extract().path("$");
                     return matches != null && !matches.isEmpty();
                 },
                 Duration.ofSeconds(10),

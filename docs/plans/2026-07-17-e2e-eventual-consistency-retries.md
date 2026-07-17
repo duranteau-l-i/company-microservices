@@ -188,7 +188,7 @@ with:
 - [ ] **Step 3: Verify the fix**
 
 Run: `cd /Users/ludovicduranteau/Documents/personal/company-microservices/e2e-tests && mvn test -Dtest=OfficerCrudTest,CrossServiceTest`
-Expected: `Tests run: 12, Failures: 0, Errors: 0, Skipped: 1` (the 10 `OfficerCrudTest` tests + the 2 non-disabled `CrossServiceTest` tests all pass; the 1 skip is the `@Disabled` test).
+Expected (corrected after Task 2 execution surfaced a miscount): `Tests run: 14, Failures: 1, Errors: 0, Skipped: 1` — 10 `OfficerCrudTest` + 4 `CrossServiceTest` (3 executable + 1 `@Disabled`). One known residual failure remains: `OfficerCrudTest.linkToSecondCompany_returns200`, which was previously masked by the `createOfficerForCompany` failure this task fixes — it hits the identical race one level deeper, via `linkOfficer`. Task 2b (below) fixes it.
 
 - [ ] **Step 4: Commit**
 
@@ -196,6 +196,80 @@ Expected: `Tests run: 12, Failures: 0, Errors: 0, Skipped: 1` (the 10 `OfficerCr
 cd /Users/ludovicduranteau/Documents/personal/company-microservices
 git add e2e-tests/src/test/java/com/company/e2e/E2ETestBase.java
 git commit -m "test(e2e): retry officer creation until company projection syncs"
+```
+
+---
+
+### Task 2b: Make `linkOfficer` retry-safe
+
+**Files:**
+- Modify: `e2e-tests/src/test/java/com/company/e2e/E2ETestBase.java`
+
+**Interfaces:**
+- Consumes: `awaitResponse(Supplier<Response>, Predicate<Response>, Duration, String)` from Task 1.
+- Produces: `protected ValidatableResponse linkOfficer(String token, String officerId, String companyId)` — same signature and return type as before (a `ValidatableResponse` callers chain `.statusCode(...)` and `.body(...)` onto), now internally retrying on `422` for up to 10s before returning.
+
+**Why this task exists:** Task 2 fixed `createOfficerForCompany`, which unmasked a second instance of the exact same race: `OfficerCrudTest.linkToSecondCompany_returns200` creates a second company and immediately calls `linkOfficer` against it — racing officer-service's `known_companies` projection sync for that second company, exactly like Task 2's race but through a different method. This was invisible in the original baseline because the test failed earlier (at `createOfficerForCompany`) every time. `linkOfficer` is also called by `OfficerCrudTest.linkDuplicate_returns409` against an already-synced company (expects an immediate `409`, not `422`) — retrying only while the response is `422` leaves that test's behavior unchanged, since `409 != 422` resolves on the first attempt.
+
+- [ ] **Step 1: Confirm the current failure**
+
+Run: `cd /Users/ludovicduranteau/Documents/personal/company-microservices/e2e-tests && mvn test -Dtest=OfficerCrudTest#linkToSecondCompany_returns200`
+Expected: `FAILURE`, with `java.lang.AssertionError: 1 expectation failed. Expected status code <200> but was <422>.` at `OfficerCrudTest.linkToSecondCompany_returns200`, inside the `linkOfficer(...)` call.
+
+- [ ] **Step 2: Replace `linkOfficer`**
+
+In `E2ETestBase.java`, replace the current method:
+
+```java
+    protected ValidatableResponse linkOfficer(String token, String officerId, String companyId) {
+        return auth(token)
+                .body("""
+                        {
+                          "companyId": "%s",
+                          "title": "Secretary",
+                          "appointmentDate": "2024-06-01"
+                        }
+                        """.formatted(companyId))
+                .when()
+                .post("/api/officers/" + officerId + "/links")
+                .then();
+    }
+```
+
+with:
+
+```java
+    protected ValidatableResponse linkOfficer(String token, String officerId, String companyId) {
+        String body = """
+                {
+                  "companyId": "%s",
+                  "title": "Secretary",
+                  "appointmentDate": "2024-06-01"
+                }
+                """.formatted(companyId);
+
+        Response response = awaitResponse(
+                () -> auth(token).body(body).when().post("/api/officers/" + officerId + "/links"),
+                r -> r.statusCode() != 422,
+                Duration.ofSeconds(10),
+                "officer link to company " + companyId
+                        + " (waiting for officer-service's known_companies projection to sync)");
+
+        return response.then();
+    }
+```
+
+- [ ] **Step 3: Verify the fix**
+
+Run: `cd /Users/ludovicduranteau/Documents/personal/company-microservices/e2e-tests && mvn test -Dtest=OfficerCrudTest,CrossServiceTest`
+Expected: `Tests run: 14, Failures: 0, Errors: 0, Skipped: 1` — all `OfficerCrudTest` and non-disabled `CrossServiceTest` tests pass, including `linkToSecondCompany_returns200` and `linkDuplicate_returns409` (which must still return `409`, not be affected by the retry).
+
+- [ ] **Step 4: Commit**
+
+```bash
+cd /Users/ludovicduranteau/Documents/personal/company-microservices
+git add e2e-tests/src/test/java/com/company/e2e/E2ETestBase.java
+git commit -m "test(e2e): retry officer-company link until second company's projection syncs"
 ```
 
 ---

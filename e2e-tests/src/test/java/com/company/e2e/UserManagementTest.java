@@ -1,6 +1,9 @@
 package com.company.e2e;
 
+import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
+
+import java.time.Duration;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
@@ -99,10 +102,13 @@ class UserManagementTest extends E2ETestBase {
         String userId = signUp(email, "Password123!", "Self", "Reader");
         String token = signIn(email, "Password123!");
 
-        auth(token)
-                .when()
-                .get("/api/users/" + userId)
-                .then()
+        Response response = awaitResponse(
+                () -> auth(token).when().get("/api/users/" + userId),
+                r -> r.statusCode() == 200,
+                Duration.ofSeconds(10),
+                "own profile to sync for user " + userId);
+
+        response.then()
                 .statusCode(200)
                 .body("id", equalTo(userId))
                 .body("email", equalTo(email));

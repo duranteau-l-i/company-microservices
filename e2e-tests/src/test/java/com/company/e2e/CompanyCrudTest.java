@@ -1,6 +1,10 @@
 package com.company.e2e;
 
+import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
+
+import java.time.Duration;
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,10 +46,13 @@ class CompanyCrudTest extends E2ETestBase {
         String token = signIn(email, "Password123!");
         String companyId = createCompany(token, "MyCompany " + randomString(), "REG-" + randomString());
 
-        auth(token)
-                .when()
-                .get("/api/companies/" + companyId)
-                .then()
+        Response response = awaitResponse(
+                () -> auth(token).when().get("/api/companies/" + companyId),
+                r -> r.statusCode() == 200,
+                Duration.ofSeconds(10),
+                "company " + companyId + " to appear in the read model");
+
+        response.then()
                 .statusCode(200)
                 .body("id", equalTo(companyId))
                 .body("ownerId", equalTo(ownerId))
@@ -206,10 +213,16 @@ class CompanyCrudTest extends E2ETestBase {
         String token = signIn(email, "Password123!");
         createCompany(token, "Listed " + randomString(), "REG-" + randomString());
 
-        auth(token)
-                .when()
-                .get("/api/companies")
-                .then()
+        Response response = awaitResponse(
+                () -> auth(token).when().get("/api/companies"),
+                r -> {
+                    List<?> companies = r.then().statusCode(200).extract().path("$");
+                    return companies != null && !companies.isEmpty();
+                },
+                Duration.ofSeconds(10),
+                "user's company list to include the newly created company");
+
+        response.then()
                 .statusCode(200)
                 .body("$", not(empty()));
     }
@@ -222,11 +235,16 @@ class CompanyCrudTest extends E2ETestBase {
 
         String otherToken = signUpAndSignIn(randomEmail(), "Password123!");
 
-        auth(otherToken)
-                .queryParam("term", uniqueName)
-                .when()
-                .get("/api/companies/search")
-                .then()
+        Response response = awaitResponse(
+                () -> auth(otherToken).queryParam("term", uniqueName).when().get("/api/companies/search"),
+                r -> {
+                    List<?> matches = r.then().statusCode(200).extract().path("$");
+                    return matches != null && !matches.isEmpty();
+                },
+                Duration.ofSeconds(10),
+                "search results for company " + uniqueName + " to appear");
+
+        response.then()
                 .statusCode(200)
                 .body("[0].name", equalTo(uniqueName));
     }

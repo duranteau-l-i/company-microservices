@@ -2,12 +2,16 @@ package com.company.e2e;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 
+import java.time.Duration;
 import java.util.UUID;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static io.restassured.RestAssured.given;
 
@@ -91,6 +95,35 @@ public abstract class E2ETestBase {
 
     protected String randomString() {
         return UUID.randomUUID().toString().replace("-", "").substring(0, 8);
+    }
+
+    /**
+     * Polls {@code request} every 500ms until {@code ready} accepts the response or
+     * {@code timeout} elapses. Used to bridge the async Kafka-driven read-model sync
+     * (see cqrs-implementation.md) between a write and a dependent read in these tests.
+     */
+    protected static Response awaitResponse(Supplier<Response> request, Predicate<Response> ready,
+                                             Duration timeout, String description) {
+        long deadline = System.currentTimeMillis() + timeout.toMillis();
+        Response last;
+        do {
+            last = request.get();
+            if (ready.test(last)) {
+                return last;
+            }
+            sleepQuietly(Duration.ofMillis(500));
+        } while (System.currentTimeMillis() < deadline);
+        throw new AssertionError("Timed out waiting for: " + description
+                + ". Last response: " + last.statusCode() + " " + last.body().asString());
+    }
+
+    private static void sleepQuietly(Duration duration) {
+        try {
+            Thread.sleep(duration.toMillis());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
+        }
     }
 
     protected String createCompany(String token, String name, String regNumber) {
